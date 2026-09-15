@@ -66,6 +66,8 @@ php artisan storage:link
 php artisan serve
 ```
 
+**نکته:** اگر با مشکلات شبکه در composer مواجه شدید، از `composer install --prefer-source` استفاده کنید.
+
 ### 3. تنظیم Frontend
 ```bash
 cd frontend
