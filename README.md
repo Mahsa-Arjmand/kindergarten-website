@@ -66,7 +66,50 @@ php artisan storage:link
 php artisan serve
 ```
 
-**نکته:** اگر با مشکلات شبکه در composer مواجه شدید، از `composer install --prefer-source` استفاده کنید.
+**یا از اسکریپت نصب استفاده کنید:**
+
+**Windows:**
+```bash
+cd backend
+install.bat
+```
+
+**Linux/Mac:**
+```bash
+cd backend
+chmod +x install.sh
+./install.sh
+```
+
+**عیب‌یابی composer:**
+
+اگر با خطای "Could not authenticate against github.com" مواجه شدید:
+
+**راه‌حل ۱: استفاده از prefer-source**
+```bash
+composer install --prefer-source
+```
+
+**راه‌حل ۲: تنظیم composer config**
+```bash
+composer config -g repo.packagist composer https://packagist.org
+composer install
+```
+
+**راه‌حل ۳: استفاده از VPN**
+- اگر در ایران هستید، از VPN استفاده کنید
+- یا DNS خود را به 8.8.8.8 تغییر دهید
+
+**راه‌حل ۴: نصب بدون dev dependencies**
+```bash
+composer install --no-dev
+```
+
+**راه‌حل ۵: استفاده از proxy در composer**
+```bash
+composer config -g http-proxy http://your-proxy:port
+composer install
+```
 
 ### 3. تنظیم Frontend
 ```bash
