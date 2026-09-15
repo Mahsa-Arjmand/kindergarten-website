@@ -28,21 +28,18 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="services" element={<Services />} />
-          <Route path="activities" element={<Activities />} />
-          <Route path="teachers" element={<Teachers />} />
-          <Route path="gallery" element={<Gallery />} />
-          <Route path="registration" element={<Registration />} />
-          <Route path="careers" element={<Careers />} />
-          <Route path="faq" element={<Faq />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="news" element={<News />} />
-        </Route>
-
+        <Route path="/" element={<Layout><Home /></Layout>} />
+        <Route path="/about" element={<Layout><About /></Layout>} />
+        <Route path="/services" element={<Layout><Services /></Layout>} />
+        <Route path="/activities" element={<Layout><Activities /></Layout>} />
+        <Route path="/teachers" element={<Layout><Teachers /></Layout>} />
+        <Route path="/gallery" element={<Layout><Gallery /></Layout>} />
+        <Route path="/registration" element={<Layout><Registration /></Layout>} />
+        <Route path="/careers" element={<Layout><Careers /></Layout>} />
+        <Route path="/faq" element={<Layout><Faq /></Layout>} />
+        <Route path="/contact" element={<Layout><Contact /></Layout>} />
+        <Route path="/news" element={<Layout><News /></Layout>} />
+        
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route

@@ -18,11 +18,12 @@ const Layout = ({ children }: LayoutProps) => {
     { name: 'گالری', path: '/gallery' },
     { name: 'اخبار', path: '/news' },
     { name: 'سوالات متداول', path: '/faq' },
+    { name: 'همکاری با ما', path: '/careers' },
     { name: 'تماس با ما', path: '/contact' },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4">

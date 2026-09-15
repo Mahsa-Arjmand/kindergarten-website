@@ -13,6 +13,7 @@ const Home = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [gallery, setGallery] = useState<Gallery[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +30,12 @@ const Home = () => {
         setGallery(galleryRes.data.slice(0, 6));
       } catch (error) {
         console.error('Error fetching data:', error);
+        setServices([]);
+        setActivities([]);
+        setTeachers([]);
+        setGallery([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -129,23 +136,29 @@ const Home = () => {
               <ArrowRight className="mr-2" size={20} />
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service) => (
-              <div key={service.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                {service.image_path && (
-                  <img
-                    src={`http://localhost:8000/storage/${service.image_path}`}
-                    alt={service.title}
-                    className="w-full h-48 object-cover"
-                  />
-                )}
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">{service.title}</h3>
-                  <p className="text-gray-600 line-clamp-3">{service.description}</p>
+          {loading ? (
+            <div className="text-center text-gray-600">در حال بارگذاری...</div>
+          ) : services.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.map((service) => (
+                <div key={service.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                  {service.image_path && (
+                    <img
+                      src={`http://localhost:8000/storage/${service.image_path}`}
+                      alt={service.title}
+                      className="w-full h-48 object-cover"
+                    />
+                  )}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">{service.title}</h3>
+                    <p className="text-gray-600 line-clamp-3">{service.description}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-600 py-8">هنوز خدماتی ثبت نشده است</div>
+          )}
         </div>
       </section>
 
@@ -162,26 +175,32 @@ const Home = () => {
               <ArrowRight className="mr-2" size={20} />
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {activities.map((activity) => (
-              <div key={activity.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                {activity.image_path && (
-                  <img
-                    src={`http://localhost:8000/storage/${activity.image_path}`}
-                    alt={activity.title}
-                    className="w-full h-32 object-cover"
-                  />
-                )}
-                <div className="p-4">
-                  <h3 className="text-lg font-bold text-gray-800 mb-1">{activity.title}</h3>
-                  <p className="text-sm text-gray-600 line-clamp-2">{activity.description}</p>
-                  <span className="inline-block mt-2 text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
-                    {activity.age_group}
-                  </span>
+          {loading ? (
+            <div className="text-center text-gray-600">در حال بارگذاری...</div>
+          ) : activities.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {activities.map((activity) => (
+                <div key={activity.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                  {activity.image_path && (
+                    <img
+                      src={`http://localhost:8000/storage/${activity.image_path}`}
+                      alt={activity.title}
+                      className="w-full h-32 object-cover"
+                    />
+                  )}
+                  <div className="p-4">
+                    <h3 className="text-lg font-bold text-gray-800 mb-1">{activity.title}</h3>
+                    <p className="text-sm text-gray-600 line-clamp-2">{activity.description}</p>
+                    <span className="inline-block mt-2 text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
+                      {activity.age_group}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-600 py-8">هنوز فعالیتی ثبت نشده است</div>
+          )}
         </div>
       </section>
 
@@ -198,24 +217,30 @@ const Home = () => {
               <ArrowRight className="mr-2" size={20} />
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {teachers.map((teacher) => (
-              <div key={teacher.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                {teacher.image_path && (
-                  <img
-                    src={`http://localhost:8000/storage/${teacher.image_path}`}
-                    alt={teacher.name}
-                    className="w-full h-48 object-cover"
-                  />
-                )}
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-1">{teacher.name}</h3>
-                  <p className="text-orange-600 font-medium mb-2">{teacher.position}</p>
-                  <p className="text-sm text-gray-600">{teacher.education}</p>
+          {loading ? (
+            <div className="text-center text-gray-600">در حال بارگذاری...</div>
+          ) : teachers.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {teachers.map((teacher) => (
+                <div key={teacher.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                  {teacher.image_path && (
+                    <img
+                      src={`http://localhost:8000/storage/${teacher.image_path}`}
+                      alt={teacher.name}
+                      className="w-full h-48 object-cover"
+                    />
+                  )}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-800 mb-1">{teacher.name}</h3>
+                    <p className="text-orange-600 font-medium mb-2">{teacher.position}</p>
+                    <p className="text-sm text-gray-600">{teacher.education}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-600 py-8">هنوز مربی ثبت نشده است</div>
+          )}
         </div>
       </section>
 
@@ -232,20 +257,26 @@ const Home = () => {
               <ArrowRight className="mr-2" size={20} />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {gallery.map((item) => (
-              <div key={item.id} className="relative group overflow-hidden rounded-xl">
-                <img
-                  src={`http://localhost:8000/storage/${item.image_path}`}
-                  alt={item.title}
-                  className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">{item.title}</span>
+          {loading ? (
+            <div className="text-center text-gray-600">در حال بارگذاری...</div>
+          ) : gallery.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {gallery.map((item) => (
+                <div key={item.id} className="relative group overflow-hidden rounded-xl">
+                  <img
+                    src={`http://localhost:8000/storage/${item.image_path}`}
+                    alt={item.title}
+                    className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">{item.title}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-600 py-8">هنوز تصویری ثبت نشده است</div>
+          )}
         </div>
       </section>
 
@@ -264,6 +295,42 @@ const Home = () => {
           >
             ثبت‌نام آنلاین
           </Link>
+        </div>
+      </section>
+
+      {/* Careers Section */}
+      <section className="py-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+              به تیم ما بپیوندید
+            </h2>
+            <p className="text-xl mb-8 text-white/90">
+              ما همیشه به دنبال مربیان دلسوز و متخصص هستیم. اگر علاقه‌مند به کار در کودکستان هستید، فرم همکاری را پر کنید.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/careers"
+                className="bg-white text-blue-600 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-all text-center"
+              >
+                فرم همکاری با ما
+              </Link>
+            </div>
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div className="bg-white/10 p-6 rounded-xl">
+                <h3 className="text-xl font-bold mb-2">مربی پیش‌دبستانی</h3>
+                <p className="text-white/80">برای کودکان ۳ تا ۶ سال</p>
+              </div>
+              <div className="bg-white/10 p-6 rounded-xl">
+                <h3 className="text-xl font-bold mb-2">کمک مربی</h3>
+                <p className="text-white/80">پشتیبانی از مربیان</p>
+              </div>
+              <div className="bg-white/10 p-6 rounded-xl">
+                <h3 className="text-xl font-bold mb-2">مربی تخصصی</h3>
+                <p className="text-white/80">هنر، موسیقی، ورزش</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
