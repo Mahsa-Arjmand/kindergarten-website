@@ -1,1 +1,185 @@
 @import "tailwindcss";
+
+@theme {
+  /* Brand */
+  --color-brand: #d96f4f;
+  --color-brand-dark: #bd5c3d;
+  --color-brand-light: #f8e5dc;
+
+  /* Supporting accents */
+  --color-sage: #a8b59b;
+  --color-sage-light: #e9eee5;
+  --color-peach: #f3b9a3;
+  --color-yellow: #f2d58b;
+
+  /* Surfaces */
+  --color-cream: #fffaf4;
+  --color-warm-white: #fffdf9;
+  --color-surface: #ffffff;
+
+  /* Typography */
+  --color-ink: #2f2a26;
+  --color-muted: #746d67;
+  --color-subtle: #9b928b;
+
+  /* Borders */
+  --color-border: #ebe2d9;
+  --color-border-light: #f2ebe4;
+
+  /* Status */
+  --color-success: #63866a;
+  --color-error: #c96c67;
+
+  --font-sans: "Vazirmatn", "IRANSans", Tahoma, Arial, sans-serif;
+}
+
+:root {
+  font-family:
+    "Vazirmatn",
+    "IRANSans",
+    Tahoma,
+    Arial,
+    sans-serif;
+
+  color: #2f2a26;
+  background: #fffaf4;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  direction: rtl;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #fffaf4;
+  color: #2f2a26;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: #f3b9a3;
+  color: #2f2a26;
+}
+
+/* Accessible keyboard focus */
+:focus-visible {
+  outline: 3px solid rgba(217, 111, 79, 0.35);
+  outline-offset: 3px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fffaf4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d9cec4;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c5b7aa;
+}
+
+/* Main container */
+.container-hedieh {
+  width: min(100% - 2rem, 1180px);
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .container-hedieh {
+    width: min(100% - 3rem, 1180px);
+  }
+}
+
+/* Section spacing */
+.section-padding {
+  padding-block: 5.5rem;
+}
+
+@media (max-width: 767px) {
+  .section-padding {
+    padding-block: 4rem;
+  }
+}
+
+/* Subtle paper texture / background detail */
+.hedieh-paper {
+  background-color: #fffaf4;
+  background-image:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(217, 111, 79, 0.035) 0,
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(168, 181, 155, 0.05) 0,
+      transparent 25%
+    );
+}
+
+/* Premium soft surface */
+.hedieh-surface {
+  background: #ffffff;
+  border: 1px solid #ebe2d9;
+  box-shadow: 0 10px 35px rgba(67, 50, 38, 0.055);
+}
+
+/* Text balance */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Hide scrollbar while keeping scrolling */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
