@@ -2,6 +2,10 @@
 node_modules/
 vendor/
 
+# Composer
+composer.lock
+backend/composer.lock
+
 # Build outputs
 frontend/dist/
 frontend/build/
