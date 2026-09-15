@@ -12,6 +12,14 @@ class GallerySeeder extends Seeder
      */
     public function run(): void
     {
-        Gallery::factory()->count(20)->create();
+        $categories = ['environment', 'classes', 'activities', 'celebrations', 'trips'];
+        for ($i = 1; $i <= 20; $i++) {
+            \App\Models\Gallery::create([
+                'title' => "تصویر {$i}",
+                'description' => "توضیحات تصویر {$i}",
+                'image_path' => "gallery{$i}.jpg",
+                'category' => $categories[$i % count($categories)],
+            ]);
+        }
     }
 }

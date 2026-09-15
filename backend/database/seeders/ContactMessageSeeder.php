@@ -12,6 +12,15 @@ class ContactMessageSeeder extends Seeder
      */
     public function run(): void
     {
-        ContactMessage::factory()->count(8)->create();
+        for ($i = 1; $i <= 8; $i++) {
+            \App\Models\ContactMessage::create([
+                'name' => "پیام‌دهنده {$i}",
+                'phone' => "091234567" . ($i % 10),
+                'email' => "contact{$i}@example.com",
+                'subject' => "موضوع {$i}",
+                'message' => "محتوای پیام نمونه {$i}",
+                'is_read' => false,
+            ]);
+        }
     }
 }
