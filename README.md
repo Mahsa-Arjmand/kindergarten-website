@@ -273,6 +273,7 @@ npm run build
 ## 👥 توسعه‌دهندگان
 
 - Mahsa Arjmand
+- Arezoo Safari
 
 ---
 
