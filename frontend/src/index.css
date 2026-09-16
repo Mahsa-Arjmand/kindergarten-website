@@ -1,34 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand */
   --color-brand: #d96f4f;
   --color-brand-dark: #bd5c3d;
   --color-brand-light: #f8e5dc;
 
-  /* Supporting accents */
   --color-sage: #a8b59b;
   --color-sage-light: #e9eee5;
   --color-peach: #f3b9a3;
   --color-yellow: #f2d58b;
 
-  /* Surfaces */
   --color-cream: #fffaf4;
   --color-warm-white: #fffdf9;
   --color-surface: #ffffff;
 
-  /* Typography */
   --color-ink: #2f2a26;
   --color-muted: #746d67;
   --color-subtle: #9b928b;
 
-  /* Borders */
   --color-border: #ebe2d9;
   --color-border-light: #f2ebe4;
-
-  /* Status */
-  --color-success: #63866a;
-  --color-error: #c96c67;
 
   --color-success: #63866a;
   --color-error: #c96c67;
@@ -56,12 +47,14 @@
 html {
   direction: rtl;
   scroll-behavior: smooth;
+  background: #fffaf4;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+
   background: #fffaf4;
   color: #2f2a26;
 }
@@ -77,9 +70,18 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: not-allowed;
+}
+
 a {
   color: inherit;
   text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 ::selection {
@@ -91,6 +93,11 @@ a {
 :focus-visible {
   outline: 3px solid rgba(217, 111, 79, 0.35);
   outline-offset: 3px;
+}
+
+/* Better anchor positioning when navigating to sections */
+[id] {
+  scroll-margin-top: 96px;
 }
 
 /* Custom scrollbar */
@@ -123,7 +130,7 @@ a {
   }
 }
 
-/* Section spacing */
+/* Standard section spacing */
 .section-padding {
   padding-block: 5.5rem;
 }
@@ -134,7 +141,7 @@ a {
   }
 }
 
-/* Subtle paper texture / background detail */
+/* Warm paper texture */
 .hedieh-paper {
   background-color: #fffaf4;
   background-image:
@@ -150,19 +157,19 @@ a {
     );
 }
 
-/* Premium soft surface */
+/* Reusable editorial surface */
 .hedieh-surface {
   background: #ffffff;
   border: 1px solid #ebe2d9;
   box-shadow: 0 10px 35px rgba(67, 50, 38, 0.055);
 }
 
-/* Text balance */
+/* Typography helpers */
 .text-balance {
   text-wrap: balance;
 }
 
-/* Hide scrollbar while keeping scrolling */
+/* Horizontal scrolling areas */
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -172,7 +179,19 @@ a {
   display: none;
 }
 
-/* Reduced motion */
+/* Prevent accidental horizontal overflow */
+#root {
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+/* Better disabled UI */
+button:disabled,
+a[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+/* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -183,6 +202,8 @@ a {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

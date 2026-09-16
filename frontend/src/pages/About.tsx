@@ -61,7 +61,7 @@ const About = () => {
 
             <h1 className="max-w-3xl text-balance text-4xl font-bold leading-[1.4] tracking-tight text-ink sm:text-5xl lg:text-6xl">
               جایی که
-              <span className="text-brand"> کودکی کردن</span>
+               کودکی کردن
               را جدی می‌گیریم.
             </h1>
 

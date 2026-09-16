@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -10,17 +9,9 @@ import {
   Users,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
 import api from '../lib/axios';
-import { Service, Activity, Teacher, Gallery } from '../types';
-
-document.title = 'کودکستان هدیه - آینده‌ای روشن برای کودکان شما';
-
-document
-  .querySelector('meta[name="description"]')
-  ?.setAttribute(
-    'content',
-    'کودکستان هدیه - محیطی امن و شاد برای رشد و شکوفایی کودکان شما با مربیان متخصص و برنامه‌های آموزشی متنوع'
-  );
+import type { Service, Activity, Teacher, Gallery } from '../types';
 
 const API_URL =
   import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
@@ -33,45 +24,162 @@ const getStorageUrl = (path?: string | null) => {
   return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
 };
 
+type SectionState = {
+  loading: boolean;
+  error: boolean;
+};
+
+const initialSectionState: SectionState = {
+  loading: true,
+  error: false,
+};
+
 const Home = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [gallery, setGallery] = useState<Gallery[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const [serviceState, setServiceState] =
+    useState<SectionState>(initialSectionState);
+
+  const [activityState, setActivityState] =
+    useState<SectionState>(initialSectionState);
+
+  const [teacherState, setTeacherState] =
+    useState<SectionState>(initialSectionState);
+
+  const [galleryState, setGalleryState] =
+    useState<SectionState>(initialSectionState);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchData = async () => {
-      try {
-        const [
-          servicesRes,
-          activitiesRes,
-          teachersRes,
-          galleryRes,
-        ] = await Promise.all([
-          api.get('/services'),
-          api.get('/activities'),
-          api.get('/teachers'),
-          api.get('/gallery'),
-        ]);
+      const requests = [
+        {
+          request: api.get('/services'),
+          onSuccess: (data: unknown) => {
+            if (!cancelled) {
+              setServices(
+                Array.isArray(data)
+                  ? (data as Service[]).slice(0, 3)
+                  : []
+              );
 
-        setServices(servicesRes.data.slice(0, 3));
-        setActivities(activitiesRes.data.slice(0, 4));
-        setTeachers(teachersRes.data.slice(0, 3));
-        setGallery(galleryRes.data.slice(0, 6));
-      } catch (error) {
-        console.error('Error fetching home page data:', error);
+              setServiceState({
+                loading: false,
+                error: false,
+              });
+            }
+          },
+          onError: () => {
+            if (!cancelled) {
+              setServices([]);
+              setServiceState({
+                loading: false,
+                error: true,
+              });
+            }
+          },
+        },
+        {
+          request: api.get('/activities'),
+          onSuccess: (data: unknown) => {
+            if (!cancelled) {
+              setActivities(
+                Array.isArray(data)
+                  ? (data as Activity[]).slice(0, 4)
+                  : []
+              );
 
-        setServices([]);
-        setActivities([]);
-        setTeachers([]);
-        setGallery([]);
-      } finally {
-        setLoading(false);
-      }
+              setActivityState({
+                loading: false,
+                error: false,
+              });
+            }
+          },
+          onError: () => {
+            if (!cancelled) {
+              setActivities([]);
+              setActivityState({
+                loading: false,
+                error: true,
+              });
+            }
+          },
+        },
+        {
+          request: api.get('/teachers'),
+          onSuccess: (data: unknown) => {
+            if (!cancelled) {
+              setTeachers(
+                Array.isArray(data)
+                  ? (data as Teacher[]).slice(0, 3)
+                  : []
+              );
+
+              setTeacherState({
+                loading: false,
+                error: false,
+              });
+            }
+          },
+          onError: () => {
+            if (!cancelled) {
+              setTeachers([]);
+              setTeacherState({
+                loading: false,
+                error: true,
+              });
+            }
+          },
+        },
+        {
+          request: api.get('/gallery'),
+          onSuccess: (data: unknown) => {
+            if (!cancelled) {
+              setGallery(
+                Array.isArray(data)
+                  ? (data as Gallery[]).slice(0, 6)
+                  : []
+              );
+
+              setGalleryState({
+                loading: false,
+                error: false,
+              });
+            }
+          },
+          onError: () => {
+            if (!cancelled) {
+              setGallery([]);
+              setGalleryState({
+                loading: false,
+                error: true,
+              });
+            }
+          },
+        },
+      ];
+
+      await Promise.all(
+        requests.map(async ({ request, onSuccess, onError }) => {
+          try {
+            const response = await request;
+            onSuccess(response.data);
+          } catch {
+            onError();
+          }
+        })
+      );
     };
 
     fetchData();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const values = [
@@ -106,62 +214,82 @@ const Home = () => {
   ];
 
   return (
-    <main className="overflow-hidden">
-
+    <>
       {/* Hero */}
-      <section className="relative bg-cream">
-        <div className="container-hedieh grid min-h-[calc(100vh-76px)] items-center gap-12 py-12 lg:grid-cols-[0.9fr_1.1fr] lg:py-16">
-
+      <section
+        aria-labelledby="hero-title"
+        className="relative bg-cream"
+      >
+        <div className="container-hedieh grid min-h-[calc(100vh-78px)] items-center gap-12 py-12 lg:grid-cols-[0.9fr_1.1fr] lg:py-16">
           <div className="order-2 lg:order-1">
             <div className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-brand">
-              <span className="h-2 w-2 rounded-full bg-brand" />
-              کودکستان هدیه
+              <span
+                aria-hidden="true"
+                className="h-2 w-2 rounded-full bg-brand"
+              />
+              مهدکودک هدیه
             </div>
 
-            <h1 className="max-w-2xl text-balance text-4xl font-bold leading-[1.35] tracking-tight text-ink sm:text-5xl lg:text-[4.2rem]">
+            <h1
+              id="hero-title"
+              className="max-w-2xl text-balance text-4xl font-bold leading-[1.35] tracking-tight text-ink sm:text-5xl lg:text-[4.2rem]"
+            >
               جایی برای
-              <span className="relative mx-2 inline-block text-brand">
+              <span className="mx-2 inline-block text-brand">
                 کودکی کردن،
               </span>
               یاد گرفتن و شکوفا شدن.
             </h1>
 
             <p className="mt-7 max-w-xl text-base leading-8 text-muted sm:text-lg">
-              در کودکستان هدیه، یادگیری با بازی، تجربه و ارتباط شکل می‌گیرد؛
-              تا هر کودک بتواند با آرامش، اعتماد و شادی مسیر خودش را پیدا کند.
+              در مهدکودک هدیه، یادگیری با بازی، تجربه و ارتباط شکل
+              می‌گیرد؛ تا هر کودک بتواند با آرامش، اعتماد و شادی مسیر
+              خودش را پیدا کند.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/registration"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand px-7 text-sm font-bold text-ink shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-md"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand px-7 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
               >
                 ثبت‌نام آنلاین
-                <ArrowLeft size={18} />
+                <ArrowLeft size={18} aria-hidden="true" />
               </Link>
 
               <Link
                 to="/about"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-white px-7 text-sm font-bold text-ink transition-colors hover:bg-brand-light"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-white px-7 text-sm font-bold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-brand hover:bg-brand-light focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
               >
                 بیشتر درباره ما
-                <ArrowLeft size={18} />
+                <ArrowLeft size={18} aria-hidden="true" />
               </Link>
             </div>
 
             <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 border-t border-border pt-6 text-sm text-muted">
               <span className="inline-flex items-center gap-2">
-                <ShieldCheck size={17} className="text-brand" />
+                <ShieldCheck
+                  size={17}
+                  className="text-brand"
+                  aria-hidden="true"
+                />
                 محیط امن و آرام
               </span>
 
               <span className="inline-flex items-center gap-2">
-                <Sparkles size={17} className="text-brand" />
+                <Sparkles
+                  size={17}
+                  className="text-brand"
+                  aria-hidden="true"
+                />
                 یادگیری خلاقانه
               </span>
 
               <span className="inline-flex items-center gap-2">
-                <Heart size={17} className="text-brand" />
+                <Heart
+                  size={17}
+                  className="text-brand"
+                  aria-hidden="true"
+                />
                 همراهی با کودک
               </span>
             </div>
@@ -169,19 +297,36 @@ const Home = () => {
 
           <div className="order-1 lg:order-2">
             <div className="relative mx-auto max-w-2xl">
-
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-peach/50 sm:h-32 sm:w-32" />
+              <div
+                aria-hidden="true"
+                className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-peach/50 sm:h-32 sm:w-32"
+              />
 
               <div className="relative overflow-hidden rounded-[2rem] bg-sage-light">
                 {gallery[0]?.image_path ? (
                   <img
                     src={getStorageUrl(gallery[0].image_path)}
-                    alt={gallery[0].title || 'کودکستان هدیه'}
+                    alt={
+                      gallery[0].title ||
+                      'محیط مهدکودک هدیه'
+                    }
+                    width={1200}
+                    height={900}
+                    fetchPriority="high"
+                    decoding="async"
                     className="aspect-[4/3] w-full object-cover"
                   />
+                ) : galleryState.loading ? (
+                  <div
+                    className="aspect-[4/3] animate-pulse bg-border-light"
+                    role="status"
+                    aria-label="در حال بارگذاری تصویر اصلی"
+                  />
                 ) : (
-                  <div className="flex aspect-[4/3] items-center justify-center text-muted">
-                    تصویر کودکستان
+                  <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-sm text-muted">
+                    {galleryState.error
+                      ? 'تصویر در حال حاضر در دسترس نیست.'
+                      : 'تصویر مهدکودک'}
                   </div>
                 )}
               </div>
@@ -189,7 +334,11 @@ const Home = () => {
               <div className="absolute -bottom-5 -left-3 max-w-[230px] rounded-2xl border border-border bg-white p-4 shadow-[0_15px_45px_rgba(67,50,38,0.10)] sm:-left-8 sm:p-5">
                 <div className="mb-2 flex items-center gap-2">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-light text-brand">
-                    <Heart size={18} fill="currentColor" />
+                    <Heart
+                      size={18}
+                      fill="currentColor"
+                      aria-hidden="true"
+                    />
                   </span>
 
                   <span className="text-sm font-bold text-ink">
@@ -202,14 +351,20 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className="absolute -bottom-7 right-8 hidden h-14 w-14 rounded-full bg-yellow sm:block" />
+              <div
+                aria-hidden="true"
+                className="absolute -bottom-7 right-8 hidden h-14 w-14 rounded-full bg-yellow sm:block"
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Values */}
-      <section className="border-y border-border bg-white">
+      <section
+        aria-label="ارزش‌های مهدکودک هدیه"
+        className="border-y border-border bg-white"
+      >
         <div className="container-hedieh grid divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
           {values.map((value) => {
             const Icon = value.icon;
@@ -217,10 +372,10 @@ const Home = () => {
             return (
               <div
                 key={value.number}
-                className="flex gap-4 px-0 py-7 sm:px-6 lg:px-7"
+                className="flex gap-4 px-0 py-7 transition-colors duration-200 hover:bg-cream sm:px-6 lg:px-7"
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-light text-brand">
-                  <Icon size={19} />
+                  <Icon size={19} aria-hidden="true" />
                 </div>
 
                 <div>
@@ -239,26 +394,39 @@ const Home = () => {
       </section>
 
       {/* About */}
-      <section className="section-padding bg-warm-white">
+      <section
+        aria-labelledby="about-title"
+        className="section-padding bg-warm-white"
+      >
         <div className="container-hedieh grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-
           <div className="relative">
             <div className="overflow-hidden rounded-[1.75rem]">
               {gallery[1]?.image_path ? (
                 <img
                   src={getStorageUrl(gallery[1].image_path)}
-                  alt={gallery[1].title || 'محیط کودکستان هدیه'}
+                  alt={
+                    gallery[1].title ||
+                    'محیط مهدکودک هدیه'
+                  }
+                  width={1200}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
                   className="aspect-[4/3] w-full object-cover"
                 />
               ) : (
-                <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-muted">
-                  تصویر محیط کودکستان
+                <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-sm text-muted">
+                  تصویر محیط مهدکودک
                 </div>
               )}
             </div>
 
             <div className="absolute -bottom-6 -right-5 hidden w-40 rounded-2xl bg-sage-light p-5 sm:block">
-              <Palette className="mb-3 text-brand" size={24} />
+              <Palette
+                className="mb-3 text-brand"
+                size={24}
+                aria-hidden="true"
+              />
 
               <p className="text-sm font-bold leading-6 text-ink">
                 یادگیری از مسیر تجربه و خلاقیت
@@ -268,64 +436,93 @@ const Home = () => {
 
           <div>
             <p className="mb-4 text-sm font-bold text-brand">
-              درباره کودکستان هدیه
+              درباره مهدکودک هدیه
             </p>
 
-            <h2 className="max-w-xl text-balance text-3xl font-bold leading-[1.5] text-ink sm:text-4xl">
+            <h2
+              id="about-title"
+              className="max-w-xl text-balance text-3xl font-bold leading-[1.5] text-ink sm:text-4xl"
+            >
               ما باور داریم کودکی، فقط مقدمه‌ی آینده نیست؛
-              <span className="text-brand"> خودش یک دوره‌ی ارزشمند است.</span>
+              <span className="text-brand">
+                {' '}
+                خودش یک دوره‌ی ارزشمند است.
+              </span>
             </h2>
 
             <p className="mt-6 text-base leading-8 text-muted">
-              کودکستان هدیه با بیش از ۱۰ سال تجربه در حوزه آموزش و پرورش
-              کودکان، تلاش می‌کند محیطی امن، شاد و پویا برای رشد کودکان فراهم
-              کند. در این مسیر، تفاوت‌های فردی هر کودک برای ما اهمیت دارد.
+              مهدکودک هدیه با بیش از ۱۰ سال تجربه در حوزه آموزش و
+              پرورش کودکان، تلاش می‌کند محیطی امن، شاد و پویا برای
+              رشد کودکان فراهم کند. در این مسیر، تفاوت‌های فردی هر
+              کودک برای ما اهمیت دارد.
             </p>
 
             <p className="mt-4 text-base leading-8 text-muted">
-              هدف ما این است که کودک در کنار یادگیری مهارت‌های جدید، فرصت
-              تجربه کردن، پرسیدن، خلاق بودن و ساختن ارتباط‌های سالم را داشته
-              باشد.
+              هدف ما این است که کودک در کنار یادگیری مهارت‌های جدید،
+              فرصت تجربه کردن، پرسیدن، خلاق بودن و ساختن ارتباط‌های
+              سالم را داشته باشد.
             </p>
 
             <Link
               to="/about"
-              className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark"
+              className="mt-7 inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               آشنایی بیشتر با هدیه
-              <ArrowLeft size={17} />
+              <ArrowLeft size={17} aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* Services */}
-      <section className="section-padding bg-cream">
+      <section
+        aria-labelledby="services-title"
+        className="section-padding bg-cream"
+      >
         <div className="container-hedieh">
-
           <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
               <p className="mb-3 text-sm font-bold text-brand">
                 آنچه ارائه می‌دهیم
               </p>
 
-              <h2 className="text-3xl font-bold text-ink sm:text-4xl">
+              <h2
+                id="services-title"
+                className="text-3xl font-bold text-ink sm:text-4xl"
+              >
                 برنامه‌هایی برای یک کودکی پربار
               </h2>
             </div>
 
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 text-sm font-bold text-brand"
+              className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               مشاهده همه خدمات
-              <ArrowLeft size={17} />
+              <ArrowLeft size={17} aria-hidden="true" />
             </Link>
           </div>
 
-          {loading ? (
-            <div className="py-16 text-center text-muted">
-              در حال بارگذاری...
+          {serviceState.loading ? (
+            <div
+              className="grid gap-5 md:grid-cols-3"
+              role="status"
+              aria-label="در حال بارگذاری خدمات"
+            >
+              {[1, 2, 3].map((item) => (
+                <div
+                  key={item}
+                  className="overflow-hidden border border-border bg-white"
+                >
+                  <div className="aspect-[4/3] animate-pulse bg-border-light" />
+
+                  <div className="space-y-3 p-6">
+                    <div className="h-5 w-2/3 animate-pulse bg-border-light" />
+                    <div className="h-4 w-full animate-pulse bg-border-light" />
+                    <div className="h-4 w-4/5 animate-pulse bg-border-light" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : services.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-3">
@@ -339,16 +536,23 @@ const Home = () => {
                       <img
                         src={getStorageUrl(service.image_path)}
                         alt={service.title}
+                        width={800}
+                        height={600}
+                        loading="lazy"
+                        decoding="async"
                         className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     ) : (
-                      <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-muted">
+                      <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-sm text-muted">
                         تصویر خدمت
                       </div>
                     )}
 
-                    <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-xs font-bold text-brand">
-                      ۰{index +1}
+                    <span
+                      aria-hidden="true"
+                      className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-xs font-bold text-brand"
+                    >
+                      ۰{index + 1}
                     </span>
                   </div>
 
@@ -363,50 +567,69 @@ const Home = () => {
 
                     <Link
                       to="/services"
-                      className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-brand"
+                      className="mt-5 inline-flex min-h-9 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
                     >
                       بیشتر بدانید
-                      <ArrowLeft size={15} />
+                      <ArrowLeft size={15} aria-hidden="true" />
                     </Link>
                   </div>
                 </article>
               ))}
             </div>
           ) : (
-            <div className="border border-dashed border-border py-14 text-center text-muted">
-              هنوز خدماتی ثبت نشده است.
+            <div
+              className="border border-dashed border-border py-14 text-center text-sm text-muted"
+              role="status"
+            >
+              {serviceState.error
+                ? 'امکان دریافت اطلاعات خدمات وجود نداشت.'
+                : 'هنوز خدماتی ثبت نشده است.'}
             </div>
           )}
         </div>
       </section>
 
       {/* Activities */}
-      <section className="section-padding bg-white">
+      <section
+        aria-labelledby="activities-title"
+        className="section-padding bg-white"
+      >
         <div className="container-hedieh">
-
           <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
               <p className="mb-3 text-sm font-bold text-brand">
                 روزهای کودکانه
               </p>
 
-              <h2 className="text-3xl font-bold text-ink sm:text-4xl">
+              <h2
+                id="activities-title"
+                className="text-3xl font-bold text-ink sm:text-4xl"
+              >
                 هر روز، فرصتی برای کشف کردن
               </h2>
             </div>
 
             <Link
               to="/activities"
-              className="inline-flex items-center gap-2 text-sm font-bold text-brand"
+              className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               همه فعالیت‌ها
-              <ArrowLeft size={17} />
+              <ArrowLeft size={17} aria-hidden="true" />
             </Link>
           </div>
 
-          {loading ? (
-            <div className="py-16 text-center text-muted">
-              در حال بارگذاری...
+          {activityState.loading ? (
+            <div
+              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+              role="status"
+              aria-label="در حال بارگذاری فعالیت‌ها"
+            >
+              {[1, 2, 3, 4].map((item) => (
+                <div
+                  key={item}
+                  className="aspect-[3/4] animate-pulse bg-border-light"
+                />
+              ))}
             </div>
           ) : activities.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -419,6 +642,10 @@ const Home = () => {
                     <img
                       src={getStorageUrl(activity.image_path)}
                       alt={activity.title}
+                      width={750}
+                      height={1000}
+                      loading="lazy"
+                      decoding="async"
                       className="aspect-[3/4] w-full object-cover opacity-90 transition duration-500 group-hover:scale-105 group-hover:opacity-100"
                     />
                   ) : (
@@ -444,38 +671,48 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="border border-dashed border-border py-14 text-center text-muted">
-              هنوز فعالیتی ثبت نشده است.
+            <div
+              className="border border-dashed border-border py-14 text-center text-sm text-muted"
+              role="status"
+            >
+              {activityState.error
+                ? 'امکان دریافت اطلاعات فعالیت‌ها وجود نداشت.'
+                : 'هنوز فعالیتی ثبت نشده است.'}
             </div>
           )}
         </div>
       </section>
 
       {/* Why Hediyeh */}
-      <section className="section-padding bg-sage-light">
+      <section
+        aria-labelledby="why-title"
+        className="section-padding bg-sage-light"
+      >
         <div className="container-hedieh grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-
           <div>
             <p className="mb-4 text-sm font-bold text-brand">
               چرا هدیه؟
             </p>
 
-            <h2 className="text-3xl font-bold leading-[1.5] text-ink sm:text-4xl">
+            <h2
+              id="why-title"
+              className="text-3xl font-bold leading-[1.5] text-ink sm:text-4xl"
+            >
               فضایی که در آن کودک
               <span className="text-brand"> دیده می‌شود.</span>
             </h2>
 
             <p className="mt-5 max-w-lg text-base leading-8 text-muted">
-              از محیط و فعالیت‌ها تا ارتباط با خانواده، تلاش می‌کنیم تجربه‌ای
-              هماهنگ و انسانی برای کودک و والدینش بسازیم.
+              از محیط و فعالیت‌ها تا ارتباط با خانواده، تلاش می‌کنیم
+              تجربه‌ای هماهنگ و انسانی برای کودک و والدینش بسازیم.
             </p>
 
             <Link
               to="/about"
-              className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-brand"
+              className="mt-7 inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               درباره رویکرد ما
-              <ArrowLeft size={17} />
+              <ArrowLeft size={17} aria-hidden="true" />
             </Link>
           </div>
 
@@ -486,9 +723,13 @@ const Home = () => {
               return (
                 <div
                   key={value.number}
-                  className="bg-warm-white p-7 sm:p-8"
+                  className="bg-warm-white p-7 transition-colors duration-200 hover:bg-white sm:p-8"
                 >
-                  <Icon size={25} className="text-brand" />
+                  <Icon
+                    size={25}
+                    className="text-brand"
+                    aria-hidden="true"
+                  />
 
                   <h3 className="mt-5 text-lg font-bold text-ink">
                     {value.title}
@@ -505,48 +746,73 @@ const Home = () => {
       </section>
 
       {/* Teachers */}
-      <section className="section-padding bg-warm-white">
+      <section
+        aria-labelledby="teachers-title"
+        className="section-padding bg-warm-white"
+      >
         <div className="container-hedieh">
-
           <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
               <p className="mb-3 text-sm font-bold text-brand">
                 تیم آموزشی
               </p>
 
-              <h2 className="text-3xl font-bold text-ink sm:text-4xl">
+              <h2
+                id="teachers-title"
+                className="text-3xl font-bold text-ink sm:text-4xl"
+              >
                 آدم‌هایی که کنار کودک هستند
               </h2>
             </div>
 
             <Link
               to="/teachers"
-              className="inline-flex items-center gap-2 text-sm font-bold text-brand"
+              className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               آشنایی با تیم ما
-              <ArrowLeft size={17} />
+              <ArrowLeft size={17} aria-hidden="true" />
             </Link>
           </div>
 
-          {loading ? (
-            <div className="py-16 text-center text-muted">
-              در حال بارگذاری...
+          {teacherState.loading ? (
+            <div
+              className="grid gap-5 md:grid-cols-3"
+              role="status"
+              aria-label="در حال بارگذاری مربیان"
+            >
+              {[1, 2, 3].map((item) => (
+                <div
+                  key={item}
+                  className="overflow-hidden border border-border bg-white"
+                >
+                  <div className="aspect-[4/3] animate-pulse bg-border-light" />
+
+                  <div className="space-y-3 p-6">
+                    <div className="h-5 w-1/2 animate-pulse bg-border-light" />
+                    <div className="h-4 w-1/3 animate-pulse bg-border-light" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : teachers.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-3">
               {teachers.map((teacher) => (
                 <article
                   key={teacher.id}
-                  className="group overflow-hidden border border-border bg-white"
+                  className="group overflow-hidden border border-border bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(67,50,38,0.08)]"
                 >
                   {teacher.image_path ? (
                     <img
                       src={getStorageUrl(teacher.image_path)}
                       alt={teacher.name}
+                      width={800}
+                      height={600}
+                      loading="lazy"
+                      decoding="async"
                       className="aspect-[4/3] w-full object-cover grayscale-[10%] transition duration-500 group-hover:grayscale-0"
                     />
                   ) : (
-                    <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-muted">
+                    <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-sm text-muted">
                       تصویر مربی
                     </div>
                   )}
@@ -570,40 +836,64 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="border border-dashed border-border py-14 text-center text-muted">
-              هنوز مربی ثبت نشده است.
+            <div
+              className="border border-dashed border-border py-14 text-center text-sm text-muted"
+              role="status"
+            >
+              {teacherState.error
+                ? 'امکان دریافت اطلاعات مربیان وجود نداشت.'
+                : 'هنوز مربی ثبت نشده است.'}
             </div>
           )}
         </div>
       </section>
 
       {/* Gallery */}
-      <section className="section-padding bg-cream">
+      <section
+        aria-labelledby="gallery-title"
+        className="section-padding bg-cream"
+      >
         <div className="container-hedieh">
-
           <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
               <p className="mb-3 text-sm font-bold text-brand">
                 لحظه‌های هدیه
               </p>
 
-              <h2 className="text-3xl font-bold text-ink sm:text-4xl">
+              <h2
+                id="gallery-title"
+                className="text-3xl font-bold text-ink sm:text-4xl"
+              >
                 گوشه‌ای از دنیای ما
               </h2>
             </div>
 
             <Link
               to="/gallery"
-              className="inline-flex items-center gap-2 text-sm font-bold text-brand"
+              className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               مشاهده گالری
-              <ArrowLeft size={17} />
+              <ArrowLeft size={17} aria-hidden="true" />
             </Link>
           </div>
 
-          {loading ? (
-            <div className="py-16 text-center text-muted">
-              در حال بارگذاری...
+          {galleryState.loading ? (
+            <div
+              className="grid grid-cols-2 gap-3 md:grid-cols-4"
+              role="status"
+              aria-label="در حال بارگذاری گالری"
+            >
+              {[1, 2, 3, 4, 5, 6].map((item) => (
+                <div
+                  key={item}
+                  className={[
+                    'animate-pulse bg-border-light',
+                    item === 1
+                      ? 'col-span-2 row-span-2 min-h-[320px] md:min-h-[520px]'
+                      : 'min-h-[160px] md:min-h-[250px]',
+                  ].join(' ')}
+                />
+              ))}
             </div>
           ) : gallery.length > 0 ? (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2">
@@ -611,8 +901,9 @@ const Home = () => {
                 <Link
                   key={item.id}
                   to="/gallery"
+                  aria-label={`مشاهده گالری: ${item.title}`}
                   className={[
-                    'group relative overflow-hidden bg-sage-light',
+                    'group relative overflow-hidden bg-sage-light focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light',
                     index === 0
                       ? 'col-span-2 row-span-2'
                       : index === 3
@@ -623,6 +914,10 @@ const Home = () => {
                   <img
                     src={getStorageUrl(item.image_path)}
                     alt={item.title}
+                    width={1000}
+                    height={700}
+                    loading="lazy"
+                    decoding="async"
                     className={[
                       'h-full w-full object-cover transition duration-500 group-hover:scale-105',
                       index === 0
@@ -631,7 +926,10 @@ const Home = () => {
                     ].join(' ')}
                   />
 
-                  <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20"
+                  />
 
                   <div className="absolute bottom-3 right-3 max-w-[80%] translate-y-2 bg-white/95 px-3 py-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                     <span className="text-xs font-semibold text-ink">
@@ -642,20 +940,34 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="border border-dashed border-border py-14 text-center text-muted">
-              هنوز تصویری ثبت نشده است.
+            <div
+              className="border border-dashed border-border py-14 text-center text-sm text-muted"
+              role="status"
+            >
+              {galleryState.error
+                ? 'امکان دریافت تصاویر گالری وجود نداشت.'
+                : 'هنوز تصویری ثبت نشده است.'}
             </div>
           )}
         </div>
       </section>
 
       {/* Registration CTA */}
-      <section className="section-padding bg-brand">
+      <section
+        aria-labelledby="registration-title"
+        className="section-padding bg-brand"
+      >
         <div className="container-hedieh">
           <div className="relative overflow-hidden rounded-[2rem] bg-brand-dark px-7 py-12 text-white sm:px-12 sm:py-16 lg:px-16">
+            <div
+              aria-hidden="true"
+              className="absolute -left-10 -top-16 h-40 w-40 rounded-full border-[28px] border-white/10"
+            />
 
-            <div className="absolute -left-10 -top-16 h-40 w-40 rounded-full border-[28px] border-white/10" />
-            <div className="absolute -bottom-20 right-10 h-48 w-48 rounded-full bg-white/5" />
+            <div
+              aria-hidden="true"
+              className="absolute -bottom-20 right-10 h-48 w-48 rounded-full bg-white/5"
+            />
 
             <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
               <div>
@@ -663,62 +975,83 @@ const Home = () => {
                   قدم بعدی را با هم برداریم
                 </p>
 
-                <h2 className="max-w-2xl text-3xl font-bold leading-[1.5] sm:text-4xl">
-                  آماده‌اید دنیای کودکستان هدیه را از نزدیک ببینید؟
+                <h2
+                  id="registration-title"
+                  className="max-w-2xl text-3xl font-bold leading-[1.5] sm:text-4xl"
+                >
+                  آماده‌اید دنیای مهدکودک هدیه را از نزدیک ببینید؟
                 </h2>
 
                 <p className="mt-4 max-w-xl text-sm leading-7 text-white/75 sm:text-base">
-                  برای ثبت درخواست، کافی است فرم ثبت‌نام را تکمیل کنید.
+                  برای ثبت درخواست، کافی است فرم ثبت‌نام را تکمیل
+                  کنید.
                 </p>
               </div>
 
               <Link
-  to="/registration"
-  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-white px-7 text-sm font-bold transition-colors hover:bg-brand-light"
-  style={{ color: '#2f2a26' }}
->
-  شروع ثبت‌نام
-  <ArrowLeft size={18} />
-</Link>
+                to="/registration"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-white px-7 text-sm font-bold transition-colors hover:bg-brand-light"
+
+
+
+
+
+
+
+  style={{ color: '#2f2a26' }}   >
+                شروع ثبت‌نام
+                <ArrowLeft size={18} aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Careers */}
-      <section className="section-padding bg-white">
+      <section
+        aria-labelledby="careers-title"
+        className="section-padding bg-white"
+      >
         <div className="container-hedieh grid items-center gap-8 md:grid-cols-[1fr_auto]">
-
           <div>
             <p className="mb-3 text-sm font-bold text-brand">
               فرصت همکاری
             </p>
 
-            <h2 className="text-2xl font-bold text-ink sm:text-3xl">
+            <h2
+              id="careers-title"
+              className="text-2xl font-bold text-ink sm:text-3xl"
+            >
               دوست دارید بخشی از تیم هدیه باشید؟
             </h2>
 
             <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
-              اگر به کار با کودکان علاقه‌مند هستید و خودتان را فردی مسئول،
-              خلاق و همراه می‌دانید، با ما در ارتباط باشید.
+              اگر به کار با کودکان علاقه‌مند هستید و خودتان را فردی
+              مسئول، خلاق و همراه می‌دانید، با ما در ارتباط باشید.
             </p>
           </div>
 
           <Link
             to="/careers"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border px-6 text-sm font-bold text-ink transition-colors hover:border-brand hover:bg-brand-light hover:text-brand"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border px-6 text-sm font-bold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-brand hover:bg-brand-light hover:text-brand focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
           >
             فرصت‌های همکاری
-            <ArrowLeft size={17} />
+            <ArrowLeft size={17} aria-hidden="true" />
           </Link>
         </div>
       </section>
 
       {/* Contact */}
-      <section className="border-t border-border bg-cream">
+      <section
+        aria-labelledby="contact-title"
+        className="border-t border-border bg-cream"
+      >
         <div className="container-hedieh flex flex-col gap-5 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-bold text-ink">
+            <p
+              id="contact-title"
+              className="text-sm font-bold text-ink"
+            >
               سؤالی دارید؟
             </p>
 
@@ -729,17 +1062,15 @@ const Home = () => {
 
           <Link
             to="/contact"
-            className="inline-flex items-center gap-2 text-sm font-bold text-brand"
+            className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
           >
-            تماس با کودکستان هدیه
-            <ArrowLeft size={17} />
+            تماس با مهدکودک هدیه
+            <ArrowLeft size={17} aria-hidden="true" />
           </Link>
         </div>
       </section>
-
-    </main>
+    </>
   );
 };
 
 export default Home;
-
