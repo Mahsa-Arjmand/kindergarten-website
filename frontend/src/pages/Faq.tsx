@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 import api from '../lib/axios';
-import { Faq } from '../types';
+import { Faq as FaqType } from '../types';
+
+document.title = 'سوالات متداول - مهدکودک هدیه';
+
+document
+  .querySelector('meta[name="description"]')
+  ?.setAttribute(
+    'content',
+    'پاسخ سوالات متداول درباره ثبت‌نام، برنامه‌ها و خدمات مهدکودک هدیه'
+  );
 
 const Faq = () => {
-  const [faqs, setFaqs] = useState<Faq[]>([]);
+  const [faqs, setFaqs] = useState<FaqType[]>([]);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -15,6 +24,7 @@ const Faq = () => {
         setFaqs(response.data);
       } catch (error) {
         console.error('Error fetching FAQs:', error);
+        setFaqs([]);
       } finally {
         setLoading(false);
       }
@@ -27,44 +37,84 @@ const Faq = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen py-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen py-16">
-      <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">سوالات متداول</h1>
-        <div className="max-w-3xl mx-auto space-y-4">
-          {faqs.map((faq, index) => (
-            <div key={faq.id} className="bg-white rounded-xl shadow-md overflow-hidden">
-              <button
-                onClick={() => toggleFaq(index)}
-                className="w-full px-6 py-4 text-right flex items-center justify-between hover:bg-gray-50 transition-colors"
-              >
-                <span className="font-semibold text-gray-800">{faq.question}</span>
-                {openIndex === index ? (
-                  <ChevronUp size={20} className="text-orange-600" />
-                ) : (
-                  <ChevronDown size={20} className="text-orange-600" />
-                )}
-              </button>
-              {openIndex === index && (
-                <div className="px-6 py-4 bg-orange-50 border-t">
-                  <p className="text-gray-700">{faq.answer}</p>
-                </div>
-              )}
-            </div>
-          ))}
+    <main className="min-h-screen bg-cream">
+      <section className="border-b border-border bg-cream">
+        <div className="container-hedieh py-16 sm:py-20">
+          <p className="mb-4 text-sm font-bold text-brand">
+            راهنمای والدین
+          </p>
+
+          <h1 className="max-w-3xl text-balance text-4xl font-bold leading-[1.4] text-ink sm:text-5xl">
+            سؤالاتی که
+            <span className="text-brand"> بیشتر پرسیده می‌شوند.</span>
+          </h1>
+
+          <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
+            پاسخ برخی از پرسش‌های رایج درباره مهدکودک هدیه را اینجا پیدا
+            کنید.
+          </p>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section className="section-padding bg-warm-white">
+        <div className="container-hedieh">
+          {loading ? (
+            <div className="flex min-h-[350px] items-center justify-center">
+              <div className="h-10 w-10 animate-spin rounded-full border-2 border-brand-light border-t-brand" />
+            </div>
+          ) : faqs.length === 0 ? (
+            <div className="border border-dashed border-border py-16 text-center text-muted">
+              هنوز سؤالی ثبت نشده است.
+            </div>
+          ) : (
+            <div className="mx-auto max-w-3xl">
+              {faqs.map((faq, index) => {
+                const isOpen = openIndex === index;
+
+                return (
+                  <div
+                    key={faq.id}
+                    className="border-b border-border first:border-t"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleFaq(index)}
+                      aria-expanded={isOpen}
+                      className="flex w-full items-center gap-5 py-6 text-right"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-light text-brand">
+                        <HelpCircle size={19} />
+                      </div>
+
+                      <span className="flex-1 text-sm font-bold leading-7 text-ink sm:text-base">
+                        {faq.question}
+                      </span>
+
+                      <span className="shrink-0 text-brand">
+                        {isOpen ? (
+                          <ChevronUp size={20} />
+                        ) : (
+                          <ChevronDown size={20} />
+                        )}
+                      </span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="mr-[60px] pb-6 pl-2">
+                        <p className="text-sm leading-8 text-muted">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
   );
 };
 
