@@ -8,20 +8,9 @@ const API_URL =
 
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
-
   const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-
   return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
 };
-
-document.title = 'گالری تصاویر - مهدکودک هدیه';
-
-document
-  .querySelector('meta[name="description"]')
-  ?.setAttribute(
-    'content',
-    'گالری تصاویر مهدکودک هدیه؛ نگاهی به محیط، کلاس‌ها، فعالیت‌ها و لحظه‌های کودکان'
-  );
 
 const Gallery = () => {
   const [gallery, setGallery] = useState<GalleryType[]>([]);
@@ -38,14 +27,22 @@ const Gallery = () => {
   ];
 
   useEffect(() => {
+    document.title = 'گالری تصاویر - مهدکودک هدیه';
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute(
+        'content',
+        'گالری تصاویر مهدکودک هدیه؛ نگاهی به محیط، کلاس‌ها، فعالیت‌ها و لحظه‌های کودکان'
+      );
+  }, []);
+
+  useEffect(() => {
     const fetchGallery = async () => {
       setLoading(true);
-
       try {
         const response = await api.get('/gallery', {
           params: filter !== 'all' ? { category: filter } : {},
         });
-
         setGallery(response.data);
       } catch (error) {
         console.error('Error fetching gallery:', error);
@@ -54,48 +51,43 @@ const Gallery = () => {
         setLoading(false);
       }
     };
-
     fetchGallery();
   }, [filter]);
 
   return (
-    <main className="min-h-screen bg-cream">
+    <main className="bg-cream">
       {/* Header */}
-      <section className="border-b border-border bg-cream">
-        <div className="container-hedieh py-16 sm:py-20">
-          <p className="mb-4 text-sm font-bold text-brand">گالری هدیه</p>
-
-          <div className="grid gap-6 lg:grid-cols-[1fr_0.7fr] lg:items-end">
-            <h1 className="text-balance text-4xl font-bold leading-[1.4] text-ink sm:text-5xl">
+      <section className="border-b border-border-light bg-cream">
+        <div className="container-hedieh py-10 lg:py-12">
+          <p className="section-kicker">گالری هدیه</p>
+          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-10">
+            <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
               گوشه‌ای از
-              <span className="text-brand"> دنیای ما.</span>
+              <span className="text-brand-dark"> دنیای ما.</span>
             </h1>
-
-            <p className="max-w-xl text-base leading-8 text-muted">
-              از محیط مهدکودک تا فعالیت‌ها و جشن‌های کودکانه؛ اینجا می‌توانید
-              بخشی از روزهای ما را ببینید.
+            <p className="max-w-[520px] text-[15px] leading-8 text-muted">
+              از محیط مهدکودک تا فعالیت‌ها و جشن‌های کودکانه؛ اینجا می‌توانید بخشی از روزهای ما را ببینید.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="border-b border-border bg-white">
-        <div className="container-hedieh py-5">
+      {/* Filters - pill style */}
+      <section className="border-b border-border-light bg-white">
+        <div className="container-hedieh py-4">
           <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
             {categories.map((category) => {
               const active = filter === category.value;
-
               return (
                 <button
                   key={category.value}
                   type="button"
                   onClick={() => setFilter(category.value)}
                   className={[
-                    'shrink-0 border px-5 py-2.5 text-sm font-semibold transition-all',
+                    'shrink-0 rounded-full px-4 py-1.5 text-[13px] font-bold transition',
                     active
-                      ? 'border-brand bg-brand text-white'
-                      : 'border-border bg-white text-muted hover:border-brand hover:bg-brand-light hover:text-brand',
+                      ? 'bg-ink text-white shadow-sm'
+                      : 'border border-border bg-white text-muted hover:border-ink/15 hover:bg-warm-white hover:text-ink',
                   ].join(' ')}
                 >
                   {category.label}
@@ -107,56 +99,40 @@ const Gallery = () => {
       </section>
 
       {/* Gallery */}
-      <section className="section-padding bg-cream">
+      <section className="py-8 lg:py-10">
         <div className="container-hedieh">
           {loading ? (
-            <div className="flex min-h-[350px] items-center justify-center">
-              <div className="h-10 w-10 animate-spin rounded-full border-2 border-brand-light border-t-brand" />
+            <div className="flex min-h-[280px] items-center justify-center">
+              <div className="h-9 w-9 animate-spin rounded-full border-2 border-brand-light border-t-brand-dark" />
             </div>
           ) : gallery.length === 0 ? (
-            <div className="flex min-h-[300px] flex-col items-center justify-center border border-dashed border-border text-center">
-              <ImageIcon size={34} className="mb-4 text-subtle" />
-              <p className="text-sm text-muted">
-                تصویری در این دسته‌بندی وجود ندارد.
-              </p>
+            <div className="flex min-h-[260px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-white px-4 py-10 text-center">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cream text-subtle">
+                <ImageIcon size={20} aria-hidden="true" />
+              </span>
+              <p className="mt-3 text-[13.5px] font-medium text-muted">تصویری در این دسته‌بندی وجود ندارد.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {gallery.map((item, index) => (
                 <div
                   key={item.id}
                   className={[
-                    'group relative overflow-hidden bg-sage-light',
-                    index === 0
-                      ? 'col-span-2 row-span-2'
-                      : index === 3
-                        ? 'col-span-2'
-                        : '',
+                    'group relative overflow-hidden rounded-2xl bg-sage-light shadow-sm',
+                    index === 0 ? 'col-span-2 row-span-2' : index === 3 ? 'col-span-2' : '',
                   ].join(' ')}
                 >
                   <img
                     src={getStorageUrl(item.image_path)}
                     alt={item.title}
                     className={[
-                      'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105',
-                      index === 0
-                        ? 'min-h-[320px] md:min-h-[540px]'
-                        : 'min-h-[160px] md:min-h-[260px]',
+                      'h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]',
+                      index === 0 ? 'min-h-[320px] md:min-h-[520px]' : 'min-h-[160px] md:min-h-[250px]',
                     ].join(' ')}
                   />
-
-                  <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
-
-                  <div className="absolute bottom-4 right-4 max-w-[80%] translate-y-2 bg-white/95 px-4 py-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    <h2 className="text-sm font-bold text-ink">
-                      {item.title}
-                    </h2>
-
-                    {item.description && (
-                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted">
-                        {item.description}
-                      </p>
-                    )}
+                  <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/15" />
+                  <div className="absolute bottom-2.5 right-2.5 max-w-[85%] translate-y-1 rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-bold text-ink opacity-0 shadow-sm transition group-hover:translate-y-0 group-hover:opacity-100">
+                    {item.title}
                   </div>
                 </div>
               ))}

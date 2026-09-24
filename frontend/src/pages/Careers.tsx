@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -10,15 +10,6 @@ import {
   Upload,
 } from 'lucide-react';
 import api from '../lib/axios';
-
-document.title = 'همکاری با ما - مهدکودک هدیه';
-
-document
-  .querySelector('meta[name="description"]')
-  ?.setAttribute(
-    'content',
-    'فرصت همکاری با مهدکودک هدیه؛ ارسال درخواست همکاری و رزومه'
-  );
 
 const careerSchema = z.object({
   first_name: z.string().min(2, 'نام باید حداقل ۲ کاراکتر باشد'),
@@ -42,7 +33,7 @@ const careerSchema = z.object({
 type CareerFormData = z.infer<typeof careerSchema>;
 
 const inputClass =
-  'w-full min-h-11 border border-border bg-white px-4 text-sm text-ink outline-none transition-colors focus:border-brand focus:ring-4 focus:ring-brand-light';
+  'w-full min-h-11 rounded-xl border border-border bg-white px-4 text-[14px] text-ink outline-none transition focus:border-brand-dark focus:ring-4 focus:ring-brand-light placeholder:text-subtle';
 
 const Careers = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -56,25 +47,29 @@ const Careers = () => {
     resolver: zodResolver(careerSchema),
   });
 
+  useEffect(() => {
+    document.title = 'همکاری با ما - مهدکودک هدیه';
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute(
+        'content',
+        'فرصت همکاری با مهدکودک هدیه؛ ارسال درخواست همکاری و رزومه'
+      );
+  }, []);
+
   const onSubmit = async (data: CareerFormData) => {
     try {
       const formData = new FormData();
-
       Object.keys(data).forEach((key) => {
         if (key === 'cv' && data.cv instanceof File) {
           formData.append('cv', data.cv);
         } else if (key !== 'cv' && key !== 'confirm') {
-          formData.append(
-            key,
-            data[key as keyof CareerFormData] as string
-          );
+          formData.append(key, data[key as keyof CareerFormData] as string);
         }
       });
-
       await api.post('/job-applications', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
       setSubmitted(true);
       setError('');
     } catch (err: any) {
@@ -84,24 +79,18 @@ const Careers = () => {
 
   if (submitted) {
     return (
-      <main className="min-h-screen bg-cream">
-        <div className="container-hedieh flex min-h-[calc(100vh-76px)] items-center justify-center py-16">
-          <div className="w-full max-w-2xl border border-border bg-white p-8 text-center sm:p-12">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-sage-light text-brand">
-              <CheckCircle size={40} />
+      <main className="bg-cream">
+        <div className="container-hedieh flex min-h-[60vh] items-center justify-center py-12">
+          <div className="w-full max-w-[560px] rounded-2xl border border-border bg-white p-8 text-center shadow-sm sm:p-10">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage-light text-brand-dark">
+              <CheckCircle size={32} aria-hidden="true" />
             </div>
-
-            <p className="mt-7 text-sm font-bold text-brand">
-              درخواست شما ثبت شد
-            </p>
-
-            <h1 className="mt-3 text-3xl font-bold text-ink">
+            <p className="mt-5 text-[13px] font-extrabold tracking-wide text-brand-dark">درخواست شما ثبت شد</p>
+            <h1 className="mt-2 text-[22px] font-black leading-8 text-ink sm:text-[26px]">
               درخواست همکاری با موفقیت ارسال شد
             </h1>
-
-            <p className="mt-5 text-base leading-8 text-muted">
-              پس از بررسی اطلاعات و رزومه شما، در صورت نیاز با شما تماس
-              خواهیم گرفت.
+            <p className="mt-3 text-[14px] leading-7 text-muted">
+              پس از بررسی اطلاعات و رزومه شما، در صورت نیاز با شما تماس خواهیم گرفت.
             </p>
           </div>
         </div>
@@ -110,146 +99,80 @@ const Careers = () => {
   }
 
   return (
-    <main className="min-h-screen bg-cream">
-      <section className="border-b border-border bg-cream">
-        <div className="container-hedieh py-16 sm:py-20">
-          <p className="mb-4 text-sm font-bold text-brand">
-            فرصت همکاری
-          </p>
-
-          <h1 className="max-w-3xl text-balance text-4xl font-bold leading-[1.4] text-ink sm:text-5xl">
+    <main className="bg-cream">
+      <section className="border-b border-border-light bg-cream">
+        <div className="container-hedieh py-10 lg:py-12">
+          <p className="section-kicker">فرصت همکاری</p>
+          <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
             بخشی از
-              تیم هدیه
-
-            شوید. 
+            <span className="text-brand-dark"> تیم هدیه</span> شوید.
           </h1>
-
-          <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
-            اگر به کار با کودکان علاقه‌مند هستید و خودتان را فردی مسئول،
-            خلاق و همراه می‌دانید، خوشحال می‌شویم با شما آشنا شویم.
+          <p className="mt-4 max-w-[520px] text-[15px] leading-8 text-muted">
+            اگر به کار با کودکان علاقه‌مند هستید و خودتان را فردی مسئول، خلاق و همراه می‌دانید، خوشحال می‌شویم با شما آشنا شویم.
           </p>
         </div>
       </section>
 
-      <section className="section-padding bg-warm-white">
+      <section className="bg-warm-white py-8 lg:py-10">
         <div className="container-hedieh">
-          <div className="mx-auto max-w-4xl border border-border bg-white">
+          <div className="mx-auto max-w-[760px] overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
             {error && (
-              <div className="m-6 border border-error bg-red-50 px-4 py-3 text-sm text-error">
+              <div className="m-5 rounded-xl border border-error/20 bg-red-50 px-4 py-3 text-[13.5px] text-error">
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 sm:p-10">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-6 sm:p-8">
               <section>
-                <div className="flex items-start gap-4 border-b border-border pb-5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-light text-brand">
-                    <FileText size={21} />
+                <div className="flex items-start gap-3 border-b border-border-light pb-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-light text-brand-dark">
+                    <FileText size={18} aria-hidden="true" />
                   </div>
-
                   <div>
-                    <h2 className="text-xl font-bold text-ink">
-                      اطلاعات شخصی
-                    </h2>
-                    <p className="mt-1 text-sm text-muted">
-                      اطلاعات اولیه خود را وارد کنید.
-                    </p>
+                    <h2 className="text-[16px] font-extrabold text-ink">اطلاعات شخصی</h2>
+                    <p className="mt-1 text-[13px] text-muted">اطلاعات اولیه خود را وارد کنید.</p>
                   </div>
                 </div>
 
-                <div className="mt-6 grid gap-5 md:grid-cols-2">
+                <div className="mt-6 grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-ink">
-                      نام
-                    </label>
-                    <input
-                      type="text"
-                      {...register('first_name')}
-                      className={inputClass}
-                    />
-                    {errors.first_name && (
-                      <p className="mt-1 text-xs text-error">
-                        {errors.first_name.message}
-                      </p>
-                    )}
+                    <label className="mb-1.5 block text-[13px] font-bold text-ink">نام</label>
+                    <input type="text" {...register('first_name')} className={inputClass} />
+                    {errors.first_name && <p className="mt-1.5 text-xs font-medium text-error">{errors.first_name.message}</p>}
                   </div>
-
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-ink">
-                      نام خانوادگی
-                    </label>
-                    <input
-                      type="text"
-                      {...register('last_name')}
-                      className={inputClass}
-                    />
-                    {errors.last_name && (
-                      <p className="mt-1 text-xs text-error">
-                        {errors.last_name.message}
-                      </p>
-                    )}
+                    <label className="mb-1.5 block text-[13px] font-bold text-ink">نام خانوادگی</label>
+                    <input type="text" {...register('last_name')} className={inputClass} />
+                    {errors.last_name && <p className="mt-1.5 text-xs font-medium text-error">{errors.last_name.message}</p>}
                   </div>
-
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-ink">
-                      شماره تماس
-                    </label>
-                    <input
-                      type="tel"
-                      {...register('phone')}
-                      className={inputClass}
-                    />
-                    {errors.phone && (
-                      <p className="mt-1 text-xs text-error">
-                        {errors.phone.message}
-                      </p>
-                    )}
+                    <label className="mb-1.5 block text-[13px] font-bold text-ink">شماره تماس</label>
+                    <input type="tel" {...register('phone')} className={inputClass} />
+                    {errors.phone && <p className="mt-1.5 text-xs font-medium text-error">{errors.phone.message}</p>}
                   </div>
-
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-ink">
-                      سن
-                    </label>
-                    <input
-                      type="number"
-                      {...register('age', { valueAsNumber: true })}
-                      className={inputClass}
-                    />
-                    {errors.age && (
-                      <p className="mt-1 text-xs text-error">
-                        {errors.age.message}
-                      </p>
-                    )}
+                    <label className="mb-1.5 block text-[13px] font-bold text-ink">سن</label>
+                    <input type="number" {...register('age', { valueAsNumber: true })} className={inputClass} />
+                    {errors.age && <p className="mt-1.5 text-xs font-medium text-error">{errors.age.message}</p>}
                   </div>
                 </div>
               </section>
 
-              <section className="mt-12">
-                <div className="flex items-start gap-4 border-b border-border pb-5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sage-light text-brand">
-                    <GraduationCap size={21} />
+              <section className="mt-8">
+                <div className="flex items-start gap-3 border-b border-border-light pb-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage-light text-brand-dark">
+                    <GraduationCap size={18} aria-hidden="true" />
                   </div>
-
                   <div>
-                    <h2 className="text-xl font-bold text-ink">
-                      تحصیلات
-                    </h2>
-                    <p className="mt-1 text-sm text-muted">
-                      سوابق تحصیلی خود را وارد کنید.
-                    </p>
+                    <h2 className="text-[16px] font-extrabold text-ink">تحصیلات</h2>
+                    <p className="mt-1 text-[13px] text-muted">سوابق تحصیلی خود را وارد کنید.</p>
                   </div>
                 </div>
 
-                <div className="mt-6 grid gap-5 md:grid-cols-2">
+                <div className="mt-6 grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-ink">
-                      آخرین مدرک تحصیلی
-                    </label>
-
-                    <select
-                      {...register('education')}
-                      className={inputClass}
-                    >
+                    <label className="mb-1.5 block text-[13px] font-bold text-ink">آخرین مدرک تحصیلی</label>
+                    <select {...register('education')} className={inputClass}>
                       <option value="">انتخاب کنید</option>
                       <option value="diploma">دیپلم</option>
                       <option value="associate">فوق دیپلم</option>
@@ -257,125 +180,60 @@ const Careers = () => {
                       <option value="master">فوق لیسانس</option>
                       <option value="phd">دکترا</option>
                     </select>
-
-                    {errors.education && (
-                      <p className="mt-1 text-xs text-error">
-                        {errors.education.message}
-                      </p>
-                    )}
+                    {errors.education && <p className="mt-1.5 text-xs font-medium text-error">{errors.education.message}</p>}
                   </div>
-
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-ink">
-                      رشته تحصیلی
-                    </label>
-
-                    <input
-                      type="text"
-                      {...register('field_of_study')}
-                      className={inputClass}
-                    />
-
-                    {errors.field_of_study && (
-                      <p className="mt-1 text-xs text-error">
-                        {errors.field_of_study.message}
-                      </p>
-                    )}
+                    <label className="mb-1.5 block text-[13px] font-bold text-ink">رشته تحصیلی</label>
+                    <input type="text" {...register('field_of_study')} className={inputClass} />
+                    {errors.field_of_study && <p className="mt-1.5 text-xs font-medium text-error">{errors.field_of_study.message}</p>}
                   </div>
-                </div>
-              </section>
-
-              <section className="mt-12">
-                <h2 className="border-b border-border pb-5 text-xl font-bold text-ink">
-                  تجربه و مهارت‌ها
-                </h2>
-
-                <div className="mt-6 space-y-5">
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-ink">
-                      سابقه کار (اختیاری)
-                    </label>
-                    <textarea
-                      {...register('work_experience')}
-                      rows={4}
-                      className={`${inputClass} py-3`}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-ink">
-                      مهارت‌ها (اختیاری)
-                    </label>
-                    <textarea
-                      {...register('skills')}
-                      rows={4}
-                      className={`${inputClass} py-3`}
-                    />
-                  </div>
-                </div>
-              </section>
-
-              <section className="mt-12">
-                <h2 className="border-b border-border pb-5 text-xl font-bold text-ink">
-                  رزومه
-                </h2>
-
-                <div className="mt-6 border border-dashed border-border bg-cream p-7 text-center">
-                  <Upload className="mx-auto text-brand" size={30} />
-
-                  <p className="mt-3 text-sm font-semibold text-ink">
-                    رزومه خود را انتخاب کنید
-                  </p>
-
-                  <p className="mt-1 text-xs text-muted">
-                    PDF, DOC, DOCX — حداکثر ۵MB
-                  </p>
-
-                  <input
-                    type="file"
-                    {...register('cv')}
-                    accept=".pdf,.doc,.docx"
-                    className="mt-5 w-full text-sm text-muted"
-                  />
                 </div>
               </section>
 
               <section className="mt-8">
-                <label className="mb-2 block text-sm font-semibold text-ink">
-                  توضیحات اضافی (اختیاری)
-                </label>
-
-                <textarea
-                  {...register('notes')}
-                  rows={4}
-                  className={`${inputClass} py-3`}
-                />
+                <h2 className="border-b border-border-light pb-4 text-[15px] font-extrabold text-ink">تجربه و مهارت‌ها</h2>
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-bold text-ink">سابقه کار (اختیاری)</label>
+                    <textarea {...register('work_experience')} rows={3} className={`${inputClass} py-3`} />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-bold text-ink">مهارت‌ها (اختیاری)</label>
+                    <textarea {...register('skills')} rows={3} className={`${inputClass} py-3`} />
+                  </div>
+                </div>
               </section>
 
-              <div className="mt-8 border-t border-border pt-7">
-                <label className="flex items-start gap-3 text-sm text-muted">
-                  <input
-                    type="checkbox"
-                    {...register('confirm')}
-                    className="mt-0.5 h-5 w-5 shrink-0 accent-brand"
-                  />
+              <section className="mt-8">
+                <h2 className="border-b border-border-light pb-4 text-[15px] font-extrabold text-ink">رزومه</h2>
+                <div className="mt-5 rounded-xl border border-dashed border-border bg-cream p-6 text-center">
+                  <Upload className="mx-auto text-brand-dark" size={24} aria-hidden="true" />
+                  <p className="mt-2 text-[13px] font-bold text-ink">رزومه خود را انتخاب کنید</p>
+                  <p className="mt-1 text-[12px] text-muted">PDF, DOC, DOCX — حداکثر ۵MB</p>
+                  <input type="file" {...register('cv')} accept=".pdf,.doc,.docx" className="mt-4 w-full text-[13px] text-muted file:mr-3 file:rounded-full file:border-0 file:bg-white file:px-4 file:py-2 file:text-[13px] file:font-bold file:text-ink file:shadow-sm" />
+                </div>
+              </section>
 
+              <section className="mt-6">
+                <label className="mb-1.5 block text-[13px] font-bold text-ink">توضیحات اضافی (اختیاری)</label>
+                <textarea {...register('notes')} rows={3} className={`${inputClass} py-3`} />
+              </section>
+
+              <div className="mt-6 border-t border-border-light pt-6">
+                <label className="flex items-start gap-2.5 text-[13px] leading-6 text-muted">
+                  <input type="checkbox" {...register('confirm')} className="mt-0.5 h-4 w-4 shrink-0 accent-brand-dark" />
                   <span>اطلاعات وارد شده را تایید می‌کنم.</span>
                 </label>
-
-                {errors.confirm && (
-                  <p className="mt-2 text-xs text-error">
-                    {errors.confirm.message}
-                  </p>
-                )}
+                {errors.confirm && <p className="mt-2 text-xs font-medium text-error">{errors.confirm.message}</p>}
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="mt-7 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-brand px-7 text-sm font-bold text-white transition-all hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
+                  style={{ color: '#fff' }}
+                  className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 text-[14px] font-bold text-white shadow-sm transition hover:bg-brand-dark disabled:opacity-50"
                 >
                   {isSubmitting ? 'در حال ارسال...' : 'ارسال درخواست'}
-                  {!isSubmitting && <ArrowLeft size={18} />}
+                  {!isSubmitting && <ArrowLeft size={17} aria-hidden="true" />}
                 </button>
               </div>
             </form>

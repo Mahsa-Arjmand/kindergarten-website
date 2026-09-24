@@ -1,43 +1,37 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand: #d96f4f;
-  --color-brand-dark: #bd5c3d;
-  --color-brand-light: #f8e5dc;
+  /* Deeper, more grounded palette - better contrast & calmer feel */
+  --color-brand: #b94a2c;
+  --color-brand-dark: #8d351f;
+  --color-brand-light: #fde8df;
 
   --color-sage: #a8b59b;
-  --color-sage-light: #e9eee5;
-  --color-peach: #f3b9a3;
+  --color-sage-light: #eef2eb;
+  --color-peach: #e9a88f;
   --color-yellow: #f2d58b;
 
   --color-cream: #fffaf4;
   --color-warm-white: #fffdf9;
   --color-surface: #ffffff;
 
-  --color-ink: #2f2a26;
-  --color-muted: #746d67;
-  --color-subtle: #9b928b;
+  --color-ink: #1f1a18;
+  --color-muted: #524a45;
+  --color-subtle: #8a807a;
 
-  --color-border: #ebe2d9;
-  --color-border-light: #f2ebe4;
+  --color-border: #eadfd4;
+  --color-border-light: #f2e9e0;
 
-  --color-success: #63866a;
-  --color-error: #c96c67;
+  --color-success: #5a7a60;
+  --color-error: #b95f5a;
 
   --font-sans: "Vazirmatn", "IRANSans", Tahoma, Arial, sans-serif;
 }
 
 :root {
-  font-family:
-    "Vazirmatn",
-    "IRANSans",
-    Tahoma,
-    Arial,
-    sans-serif;
-
-  color: #2f2a26;
+  font-family: "Vazirmatn", "IRANSans", Tahoma, Arial, sans-serif;
+  color: #1f1a18;
   background: #fffaf4;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -54,9 +48,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-
   background: #fffaf4;
-  color: #2f2a26;
+  color: #1f1a18;
 }
 
 button,
@@ -85,22 +78,19 @@ img {
 }
 
 ::selection {
-  background: #f3b9a3;
-  color: #2f2a26;
+  background: #f3c4b2;
+  color: #1f1a18;
 }
 
-/* Accessible keyboard focus */
 :focus-visible {
-  outline: 3px solid rgba(217, 111, 79, 0.35);
-  outline-offset: 3px;
+  outline: 2px solid rgba(185, 74, 44, 0.35);
+  outline-offset: 2px;
 }
 
-/* Better anchor positioning when navigating to sections */
 [id] {
-  scroll-margin-top: 96px;
+  scroll-margin-top: 84px;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -118,58 +108,78 @@ img {
   background: #c5b7aa;
 }
 
-/* Main container */
 .container-hedieh {
-  width: min(100% - 2rem, 1180px);
+  width: min(100% - 2rem, 1120px);
   margin-inline: auto;
 }
 
 @media (min-width: 768px) {
   .container-hedieh {
-    width: min(100% - 3rem, 1180px);
+    width: min(100% - 3rem, 1120px);
   }
 }
 
-/* Standard section spacing */
+/* Tighter, calmer rhythm - less distance between sections */
 .section-padding {
-  padding-block: 5.5rem;
+  padding-block: 3.25rem;
 }
 
 @media (max-width: 767px) {
   .section-padding {
-    padding-block: 4rem;
+    padding-block: 2.5rem;
   }
 }
 
-/* Warm paper texture */
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-block: 3.75rem;
+  }
+}
+
+/* Section headings - smaller, darker, tighter */
+.section-kicker {
+  color: #8d351f;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  color: #1f1a18;
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.section-description {
+  max-width: 640px;
+  color: #524a45;
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+/* Subtle paper texture - very light */
 .hedieh-paper {
   background-color: #fffaf4;
   background-image:
-    radial-gradient(
-      circle at 10% 20%,
-      rgba(217, 111, 79, 0.035) 0,
-      transparent 24%
-    ),
-    radial-gradient(
-      circle at 90% 80%,
-      rgba(168, 181, 155, 0.05) 0,
-      transparent 25%
-    );
+    radial-gradient(circle at 8% 18%, rgba(185, 74, 44, 0.02) 0, transparent 22%),
+    radial-gradient(circle at 92% 82%, rgba(168, 181, 155, 0.03) 0, transparent 24%);
 }
 
-/* Reusable editorial surface */
+/* Clean surfaces */
 .hedieh-surface {
   background: #ffffff;
-  border: 1px solid #ebe2d9;
-  box-shadow: 0 10px 35px rgba(67, 50, 38, 0.055);
+  border: 1px solid #eadfd4;
+  box-shadow: 0 8px 24px rgba(31, 26, 24, 0.045);
 }
 
-/* Typography helpers */
 .text-balance {
   text-wrap: balance;
 }
 
-/* Horizontal scrolling areas */
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -179,24 +189,20 @@ img {
   display: none;
 }
 
-/* Prevent accidental horizontal overflow */
 #root {
   min-height: 100vh;
   overflow-x: clip;
 }
 
-/* Better disabled UI */
 button:disabled,
 a[aria-disabled="true"] {
   pointer-events: none;
 }
 
-/* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-
   *,
   *::before,
   *::after {
