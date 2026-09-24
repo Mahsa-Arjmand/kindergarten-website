@@ -19,12 +19,9 @@ class AdminGalleryController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'category' => 'required|in:environment,classes,activities,celebrations,trips',
-            'is_visible' => 'boolean',
-            'order' => 'integer',
+            'category' => 'required|in:classroom,playground,activities,events,food',
+            'caption' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -44,6 +41,37 @@ class AdminGalleryController extends Controller
             'message' => 'تصویر با موفقیت اضافه شد.',
             'data' => $galleryItem
         ], 201);
+    }
+
+    public function update(Request $request, Gallery $gallery): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'category' => 'required|in:classroom,playground,activities,events,food',
+            'caption' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            if ($gallery->image_path) {
+                \Storage::disk('public')->delete($gallery->image_path);
+            }
+            $imagePath = $request->file('image')->store('gallery', 'public');
+            $data['image_path'] = $imagePath;
+        }
+
+        $gallery->update($data);
+        $gallery->refresh();
+
+        return response()->json([
+            'message' => 'تصویر با موفقیت ویرایش شد.',
+            'data' => $gallery
+        ]);
     }
 
     public function destroy(Gallery $gallery): JsonResponse

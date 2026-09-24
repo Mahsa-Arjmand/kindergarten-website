@@ -20,7 +20,6 @@ class AdminTeacherController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
             'education' => 'required|string|max:255',
             'specialization' => 'required|string|max:255',
             'experience' => 'nullable|string',
@@ -58,7 +57,6 @@ class AdminTeacherController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
             'education' => 'required|string|max:255',
             'specialization' => 'required|string|max:255',
             'experience' => 'nullable|string',

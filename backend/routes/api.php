@@ -96,6 +96,7 @@ Route::prefix('v1')->group(function () {
         // Gallery
         Route::get('/gallery', [AdminGalleryController::class, 'index']);
         Route::post('/gallery', [AdminGalleryController::class, 'store']);
+        Route::put('/gallery/{id}', [AdminGalleryController::class, 'update']);
         Route::delete('/gallery/{id}', [AdminGalleryController::class, 'destroy']);
 
         // News

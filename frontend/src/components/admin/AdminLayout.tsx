@@ -16,7 +16,6 @@ const AdminLayout = () => {
     { name: 'داشبورد', path: '/admin', icon: LayoutDashboard },
     { name: 'ثبت‌نام‌ها', path: '/admin/registrations', icon: Users },
     { name: 'درخواست‌های همکاری', path: '/admin/job-applications', icon: Briefcase },
-    { name: 'پیام‌ها', path: '/admin/messages', icon: MessageSquare },
     { name: 'مربیان', path: '/admin/teachers', icon: User },
     { name: 'خدمات', path: '/admin/services', icon: Palette },
     { name: 'فعالیت‌ها', path: '/admin/activities', icon: Activity },
@@ -26,27 +25,34 @@ const AdminLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 right-4 z-50 p-2 bg-white rounded-lg shadow-md"
+        className="lg:hidden fixed top-4 right-4 z-50 p-2 bg-white rounded-lg shadow-md border border-gray-200"
       >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+        {isOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static inset-y-0 right-0 z-40 w-64 bg-white shadow-lg transform ${
+        className={`fixed lg:static inset-y-0 right-0 z-40 w-64 bg-white shadow-sm border-l border-gray-200 transform ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         } lg:translate-x-0 transition-transform duration-300 ease-in-out`}
       >
-        <div className="p-6 border-b">
-          <h1 className="text-xl font-bold text-gray-800">پنل مدیریت</h1>
-          <p className="text-sm text-gray-600">کودکستان هدیه</p>
+        <div className="p-5 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-500 rounded-lg flex items-center justify-center">
+              <span className="text-white text-lg font-bold">ه</span>
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-800">پنل مدیریت</h1>
+              <p className="text-xs text-gray-500">کودکستان هدیه</p>
+            </div>
+          </div>
         </div>
         <nav className="p-4">
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -55,13 +61,13 @@ const AdminLayout = () => {
                   <Link
                     to={item.path}
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg transition-colors ${
+                    className={`flex items-center space-x-3 space-x-reverse px-4 py-2.5 rounded-lg transition-colors text-sm ${
                       isActive
-                        ? 'bg-orange-500 text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-orange-50 text-orange-600 font-medium'
+                        : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
-                    <Icon size={20} />
+                    <Icon size={18} />
                     <span>{item.name}</span>
                   </Link>
                 </li>
@@ -69,19 +75,19 @@ const AdminLayout = () => {
             })}
           </ul>
         </nav>
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
           <button
             onClick={handleLogout}
-            className="flex items-center space-x-3 space-x-reverse w-full px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+            className="flex items-center space-x-3 space-x-reverse w-full px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-sm"
           >
-            <LogOut size={20} />
+            <LogOut size={18} />
             <span>خروج</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 lg:p-8 overflow-auto">
+      <main className="flex-1 p-4 lg:p-6 overflow-auto">
         <Outlet />
       </main>
 

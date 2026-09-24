@@ -14,16 +14,11 @@ return new class extends Migration
         Schema::create('gallery', function (Blueprint $table) {
             $table->id();
             
-            $table->string('title');
-            $table->text('description')->nullable();
             $table->string('image_path');
-            $table->enum('category', ['environment', 'classes', 'activities', 'celebrations', 'trips']);
-            
-            $table->boolean('is_visible')->default(true);
-            $table->integer('order')->default(0);
+            $table->enum('category', ['classroom', 'playground', 'activities', 'events', 'food']);
+            $table->string('caption')->nullable();
             
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
