@@ -19,11 +19,11 @@ const Gallery = () => {
 
   const categories = [
     { value: 'all', label: 'همه' },
-    { value: 'environment', label: 'محیط مهدکودک' },
-    { value: 'classes', label: 'کلاس‌ها' },
+    { value: 'classroom', label: 'کلاس درس' },
+    { value: 'playground', label: 'محیط بازی' },
     { value: 'activities', label: 'فعالیت‌ها' },
-    { value: 'celebrations', label: 'جشن‌ها' },
-    { value: 'trips', label: 'اردوها' },
+    { value: 'events', label: 'رویدادها' },
+    { value: 'food', label: 'غذا' },
   ];
 
   useEffect(() => {
@@ -43,6 +43,7 @@ const Gallery = () => {
         const response = await api.get('/gallery', {
           params: filter !== 'all' ? { category: filter } : {},
         });
+        console.log('Gallery data received:', response.data);
         setGallery(response.data);
       } catch (error) {
         console.error('Error fetching gallery:', error);
@@ -114,25 +115,19 @@ const Gallery = () => {
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-              {gallery.map((item, index) => (
+              {gallery.map((item) => (
                 <div
                   key={item.id}
-                  className={[
-                    'group relative overflow-hidden rounded-2xl bg-sage-light shadow-sm',
-                    index === 0 ? 'col-span-2 row-span-2' : index === 3 ? 'col-span-2' : '',
-                  ].join(' ')}
+                  className="group relative overflow-hidden rounded-2xl bg-sage-light shadow-sm aspect-square"
                 >
                   <img
                     src={getStorageUrl(item.image_path)}
-                    alt={item.title}
-                    className={[
-                      'h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]',
-                      index === 0 ? 'min-h-[320px] md:min-h-[520px]' : 'min-h-[160px] md:min-h-[250px]',
-                    ].join(' ')}
+                    alt={item.caption}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                   />
                   <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/15" />
                   <div className="absolute bottom-2.5 right-2.5 max-w-[85%] translate-y-1 rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-bold text-ink opacity-0 shadow-sm transition group-hover:translate-y-0 group-hover:opacity-100">
-                    {item.title}
+                    {item.caption}
                   </div>
                 </div>
               ))}

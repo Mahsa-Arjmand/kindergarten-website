@@ -11,10 +11,10 @@ class GalleryController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Gallery::visible()->ordered();
+        $query = Gallery::query()->orderBy('created_at', 'desc');
 
         if ($request->has('category') && $request->category !== 'all') {
-            $query->byCategory($request->category);
+            $query->where('category', $request->category);
         }
 
         $gallery = $query->get();

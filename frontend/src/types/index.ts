@@ -38,12 +38,10 @@ export interface Teacher {
 
 export interface Gallery {
   id: number;
-  title: string;
-  description: string | null;
   image_path: string;
-  category: 'environment' | 'classes' | 'activities' | 'celebrations' | 'trips';
+  category: 'classroom' | 'playground' | 'activities' | 'events' | 'food';
+  caption: string;
   is_visible: boolean;
-  order: number;
   created_at: string;
   updated_at: string;
 }

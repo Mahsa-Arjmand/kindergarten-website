@@ -15,9 +15,25 @@ class Gallery extends Model
         'image_path',
         'category',
         'caption',
+        'is_visible',
     ];
 
     protected $casts = [
         'category' => 'string',
     ];
+
+    public function scopeVisible($query)
+    {
+        return $query->where('is_visible', true);
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
+
+    public function scopeByCategory($query, $category)
+    {
+        return $query->where('category', $category);
+    }
 }
