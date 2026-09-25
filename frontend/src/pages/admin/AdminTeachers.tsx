@@ -84,17 +84,13 @@ const AdminTeachers = () => {
         }
         
         closeModal();
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        fetchTeachers();
       } else {
         const response = await api.post('/admin/teachers', data);
         console.log('Create response:', response.data);
         
         closeModal();
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        fetchTeachers();
       }
     } catch (error: any) {
       console.error('Error saving teacher:', error);
@@ -114,9 +110,7 @@ const AdminTeachers = () => {
     if (window.confirm('آیا مطمئن هستید که می‌خواهید این مربی را حذف کنید؟')) {
       try {
         await api.delete(`/admin/teachers/${id}`);
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        fetchTeachers();
       } catch (error: any) {
         console.error('Error deleting teacher:', error);
         if (error.response?.data?.message) {

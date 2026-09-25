@@ -75,42 +75,42 @@ Route::prefix('v1')->group(function () {
         // Teachers
         Route::get('/teachers', [AdminTeacherController::class, 'index']);
         Route::post('/teachers', [AdminTeacherController::class, 'store']);
-        Route::get('/teachers/{id}', [AdminTeacherController::class, 'show']);
-        Route::put('/teachers/{id}', [AdminTeacherController::class, 'update']);
-        Route::delete('/teachers/{id}', [AdminTeacherController::class, 'destroy']);
+        Route::get('/teachers/{teacher}', [AdminTeacherController::class, 'show']);
+        Route::put('/teachers/{teacher}', [AdminTeacherController::class, 'update']);
+        Route::delete('/teachers/{teacher}', [AdminTeacherController::class, 'destroy']);
 
         // Services
         Route::get('/services', [AdminServiceController::class, 'index']);
         Route::post('/services', [AdminServiceController::class, 'store']);
-        Route::get('/services/{id}', [AdminServiceController::class, 'show']);
-        Route::put('/services/{id}', [AdminServiceController::class, 'update']);
-        Route::delete('/services/{id}', [AdminServiceController::class, 'destroy']);
+        Route::get('/services/{service}', [AdminServiceController::class, 'show']);
+        Route::put('/services/{service}', [AdminServiceController::class, 'update']);
+        Route::delete('/services/{service}', [AdminServiceController::class, 'destroy']);
 
         // Activities
         Route::get('/activities', [AdminActivityController::class, 'index']);
         Route::post('/activities', [AdminActivityController::class, 'store']);
-        Route::get('/activities/{id}', [AdminActivityController::class, 'show']);
-        Route::put('/activities/{id}', [AdminActivityController::class, 'update']);
-        Route::delete('/activities/{id}', [AdminActivityController::class, 'destroy']);
+        Route::get('/activities/{activity}', [AdminActivityController::class, 'show']);
+        Route::put('/activities/{activity}', [AdminActivityController::class, 'update']);
+        Route::delete('/activities/{activity}', [AdminActivityController::class, 'destroy']);
 
         // Gallery
         Route::get('/gallery', [AdminGalleryController::class, 'index']);
         Route::post('/gallery', [AdminGalleryController::class, 'store']);
-        Route::put('/gallery/{id}', [AdminGalleryController::class, 'update']);
-        Route::delete('/gallery/{id}', [AdminGalleryController::class, 'destroy']);
+        Route::put('/gallery/{gallery}', [AdminGalleryController::class, 'update']);
+        Route::delete('/gallery/{gallery}', [AdminGalleryController::class, 'destroy']);
 
         // News
         Route::get('/news', [AdminNewsController::class, 'index']);
         Route::post('/news', [AdminNewsController::class, 'store']);
-        Route::get('/news/{id}', [AdminNewsController::class, 'show']);
-        Route::put('/news/{id}', [AdminNewsController::class, 'update']);
-        Route::delete('/news/{id}', [AdminNewsController::class, 'destroy']);
+        Route::get('/news/{news}', [AdminNewsController::class, 'show']);
+        Route::put('/news/{news}', [AdminNewsController::class, 'update']);
+        Route::delete('/news/{news}', [AdminNewsController::class, 'destroy']);
 
         // FAQs
         Route::get('/faqs', [AdminFaqController::class, 'index']);
         Route::post('/faqs', [AdminFaqController::class, 'store']);
-        Route::get('/faqs/{id}', [AdminFaqController::class, 'show']);
-        Route::put('/faqs/{id}', [AdminFaqController::class, 'update']);
-        Route::delete('/faqs/{id}', [AdminFaqController::class, 'destroy']);
+        Route::get('/faqs/{faq}', [AdminFaqController::class, 'show']);
+        Route::put('/faqs/{faq}', [AdminFaqController::class, 'update']);
+        Route::delete('/faqs/{faq}', [AdminFaqController::class, 'destroy']);
     });
 });

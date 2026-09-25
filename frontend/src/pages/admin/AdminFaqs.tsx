@@ -55,8 +55,8 @@ const AdminFaqs = () => {
         await api.post('/admin/faqs', data);
       }
 
-      fetchFaqs();
       closeModal();
+      fetchFaqs();
     } catch (error) {
       console.error('Error saving FAQ:', error);
     }

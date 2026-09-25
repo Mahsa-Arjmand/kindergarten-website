@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../lib/axios';
 import { Plus, Trash2, Search, X, Upload, Edit, Image as ImageIcon } from 'lucide-react';
 
@@ -11,6 +12,7 @@ interface GalleryItem {
 }
 
 const AdminGallery = () => {
+  const navigate = useNavigate();
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,7 +37,6 @@ const AdminGallery = () => {
       const response = await api.get('/admin/gallery');
       console.log('Gallery data received:', response.data);
       setGallery(response.data);
-      setRefreshKey(prev => prev + 1); // Force re-render
     } catch (error) {
       console.error('Error fetching gallery:', error);
     } finally {
@@ -62,17 +63,24 @@ const AdminGallery = () => {
       }
 
       console.log('Submitting gallery item:', editingItem ? 'UPDATE' : 'CREATE', editingItem?.id);
+      console.log('Editing item:', editingItem);
+      console.log('FormData keys:', Array.from(data.keys()));
+      console.log('FormData values:', Array.from(data.entries()));
       console.log('FormData:', { category: formData.category, caption: formData.caption, hasImage: !!formData.image });
 
       if (editingItem) {
-        data.append('_method', 'PUT');
+        console.log('=== UPDATE MODE ===');
+        console.log('Editing item ID:', editingItem.id);
         
         if (formData.image) {
-          // Use FormData only if there's an image
+          // If there's a new image, use POST with _method=PUT
+          data.append('_method', 'PUT');
+          console.log('Sending FormData POST+PUT update to:', `/admin/gallery/${editingItem.id}`);
           const response = await api.post(`/admin/gallery/${editingItem.id}`, data);
           console.log('Update response:', response.data);
         } else {
-          // Use JSON for text-only updates
+          // If no new image, use JSON
+          console.log('Sending JSON update to:', `/admin/gallery/${editingItem.id}`);
           const response = await api.put(`/admin/gallery/${editingItem.id}`, {
             category: formData.category,
             caption: formData.caption
@@ -81,18 +89,15 @@ const AdminGallery = () => {
         }
         
         closeModal();
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        fetchGallery();
       } else {
+        console.log('=== CREATE MODE ===');
+        console.log('Sending POST to:', '/admin/gallery');
         const response = await api.post('/admin/gallery', data);
         console.log('Create response:', response.data);
         
         closeModal();
-        // Force page reload to ensure UI updates
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        fetchGallery();
       }
     } catch (error: any) {
       console.error('Error adding gallery item:', error);
@@ -117,10 +122,8 @@ const AdminGallery = () => {
         const response = await api.delete(`/admin/gallery/${id}`);
         console.log('Delete response:', response.data);
         
-        // Force page reload to ensure UI updates
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        // Optimistic update - remove from UI immediately
+        setGallery(prev => prev.filter(item => item.id !== id));
       } catch (error: any) {
         console.error('Error deleting gallery item:', error);
         if (error.response?.data?.message) {
@@ -128,11 +131,14 @@ const AdminGallery = () => {
         } else {
           alert('خطا در حذف تصویر: ' + error.message);
         }
+        // Revert optimistic update on error
+        fetchGallery();
       }
     }
   };
 
   const openModal = (item?: GalleryItem) => {
+    console.log('Opening modal with item:', item);
     if (item) {
       setEditingItem(item);
       setFormData({
@@ -225,7 +231,7 @@ const AdminGallery = () => {
             <option value="food">غذا</option>
           </select>
           <button
-            onClick={openModal}
+            onClick={() => openModal()}
             className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
           >
             <Plus size={16} />

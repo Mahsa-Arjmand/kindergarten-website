@@ -57,8 +57,8 @@ const AdminActivities = () => {
         await api.post('/admin/activities', data);
       }
 
-      fetchActivities();
       closeModal();
+      fetchActivities();
     } catch (error: any) {
       console.error('Error saving activity:', error);
       if (error.response?.data?.errors) {

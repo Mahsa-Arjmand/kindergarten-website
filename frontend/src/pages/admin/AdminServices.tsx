@@ -58,11 +58,11 @@ const AdminServices = () => {
           });
         }
         closeModal();
-        setTimeout(() => window.location.reload(), 100);
+        fetchServices();
       } else {
         await api.post('/admin/services', data);
         closeModal();
-        setTimeout(() => window.location.reload(), 100);
+        fetchServices();
       }
     } catch (error: any) {
       console.error('Error saving service:', error);
@@ -82,7 +82,7 @@ const AdminServices = () => {
     if (window.confirm('آیا مطمئن هستید که می‌خواهید این خدمت را حذف کنید؟')) {
       try {
         await api.delete(`/admin/services/${id}`);
-        setTimeout(() => window.location.reload(), 100);
+        fetchServices();
       } catch (error: any) {
         console.error('Error deleting service:', error);
         if (error.response?.data?.message) {

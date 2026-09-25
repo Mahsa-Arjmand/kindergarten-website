@@ -61,8 +61,8 @@ const AdminNews = () => {
         await api.post('/admin/news', data);
       }
 
-      fetchNews();
       closeModal();
+      fetchNews();
     } catch (error: any) {
       console.error('Error saving news:', error);
       if (error.response?.data?.errors) {
