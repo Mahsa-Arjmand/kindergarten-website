@@ -9,6 +9,7 @@ const AdminLayout = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     navigate('/admin/login');
   };
 
@@ -48,6 +49,14 @@ const AdminLayout = () => {
             <div>
               <h1 className="text-lg font-bold text-gray-800">پنل مدیریت</h1>
               <p className="text-xs text-gray-500">کودکستان هدیه</p>
+              {(() => {
+                const userStr = localStorage.getItem('user');
+                if (userStr) {
+                  const user = JSON.parse(userStr);
+                  return <p className="text-xs text-orange-600 mt-1">مدیر: {user.name}</p>;
+                }
+                return null;
+              })()}
             </div>
           </div>
         </div>

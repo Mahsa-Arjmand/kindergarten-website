@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../lib/axios';
 import { DashboardStats } from '../../types';
-import { Users, Briefcase, MessageSquare, User as UserIcon, Palette, Activity, Image } from 'lucide-react';
+import { Users, Briefcase, User as UserIcon, Palette, Activity, Image } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -64,13 +64,6 @@ const AdminDashboard = () => {
       new: stats.job_applications.new,
       icon: Briefcase,
       color: 'bg-green-500',
-    },
-    {
-      title: 'پیام‌های تماس',
-      value: stats.contact_messages.total,
-      new: stats.contact_messages.unread,
-      icon: MessageSquare,
-      color: 'bg-purple-500',
     },
     {
       title: 'مربیان',

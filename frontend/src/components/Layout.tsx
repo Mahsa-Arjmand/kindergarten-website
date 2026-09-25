@@ -288,6 +288,13 @@ const Layout = ({ children }: LayoutProps) => {
                     aria-hidden="true"
                   />
                 </Link>
+
+                <Link
+                  to="/admin/login"
+                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-muted transition-colors hover:bg-brand-light/50 hover:text-ink focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
+                >
+                  ورود مدیر
+                </Link>
               </nav>
             </div>
           )}
@@ -420,12 +427,20 @@ const Layout = ({ children }: LayoutProps) => {
               حقوق محفوظ است.
             </p>
 
-            <Link
-              to="/contact"
-              className="font-medium transition-colors hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
-            >
-              ارتباط با ما
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                to="/contact"
+                className="font-medium transition-colors hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              >
+                ارتباط با ما
+              </Link>
+              <Link
+                to="/admin/login"
+                className="font-medium text-subtle transition-colors hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              >
+                ورود مدیر
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
