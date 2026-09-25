@@ -45,10 +45,14 @@ const AdminJobApplications = () => {
       console.log('Updating status for application', id, 'to', status);
       const response = await api.put(`/admin/job-applications/${id}`, { status });
       console.log('Status update response:', response.data);
-      fetchApplications();
+      // Optimistic update
+      setApplications(prev => prev.map(app => 
+        app.id === id ? { ...app, status: status as any } : app
+      ));
     } catch (error) {
       console.error('Error updating status:', error);
       alert('خطا در تغییر وضعیت');
+      fetchApplications(); // Refresh on error
     }
   };
 

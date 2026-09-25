@@ -49,10 +49,14 @@ const AdminRegistrations = () => {
       console.log('Updating status for registration', id, 'to', status);
       const response = await api.put(`/admin/registrations/${id}`, { status });
       console.log('Status update response:', response.data);
-      fetchRegistrations();
+      // Optimistic update
+      setRegistrations(prev => prev.map(reg => 
+        reg.id === id ? { ...reg, status: status as any } : reg
+      ));
     } catch (error) {
       console.error('Error updating status:', error);
       alert('خطا در تغییر وضعیت');
+      fetchRegistrations(); // Refresh on error
     }
   };
 

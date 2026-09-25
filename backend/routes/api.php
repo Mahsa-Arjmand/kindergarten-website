@@ -62,15 +62,15 @@ Route::prefix('v1')->group(function () {
 
         // Registrations
         Route::get('/registrations', [AdminRegistrationController::class, 'index']);
-        Route::get('/registrations/{id}', [AdminRegistrationController::class, 'show']);
-        Route::put('/registrations/{id}', [AdminRegistrationController::class, 'update']);
-        Route::delete('/registrations/{id}', [AdminRegistrationController::class, 'destroy']);
+        Route::get('/registrations/{registration}', [AdminRegistrationController::class, 'show']);
+        Route::put('/registrations/{registration}', [AdminRegistrationController::class, 'update']);
+        Route::delete('/registrations/{registration}', [AdminRegistrationController::class, 'destroy']);
 
         // Job Applications
         Route::get('/job-applications', [AdminJobApplicationController::class, 'index']);
-        Route::get('/job-applications/{id}', [AdminJobApplicationController::class, 'show']);
-        Route::put('/job-applications/{id}', [AdminJobApplicationController::class, 'update']);
-        Route::delete('/job-applications/{id}', [AdminJobApplicationController::class, 'destroy']);
+        Route::get('/job-applications/{jobApplication}', [AdminJobApplicationController::class, 'show']);
+        Route::put('/job-applications/{jobApplication}', [AdminJobApplicationController::class, 'update']);
+        Route::delete('/job-applications/{jobApplication}', [AdminJobApplicationController::class, 'destroy']);
 
         // Teachers
         Route::get('/teachers', [AdminTeacherController::class, 'index']);
