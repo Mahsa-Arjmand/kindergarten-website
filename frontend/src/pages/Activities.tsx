@@ -9,26 +9,23 @@ const API_URL =
 
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
-
   const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-
   return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
 };
-
-document.title = 'کلاس‌ها و فعالیت‌ها - مهدکودک هدیه';
-
-document
-  .querySelector('meta[name="description"]')
-  ?.setAttribute(
-    'content',
-    'کلاس‌ها و فعالیت‌های مهدکودک هدیه؛ تجربه‌های آموزشی، هنری و خلاقانه برای کودکان'
-  );
 
 const Activities = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = 'کلاس‌ها و فعالیت‌ها - مهدکودک هدیه';
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute(
+        'content',
+        'کلاس‌ها و فعالیت‌های مهدکودک هدیه؛ تجربه‌های آموزشی، هنری و خلاقانه برای کودکان'
+      );
+
     const fetchActivities = async () => {
       try {
         const response = await api.get('/activities');
@@ -40,84 +37,74 @@ const Activities = () => {
         setLoading(false);
       }
     };
-
     fetchActivities();
   }, []);
 
   return (
-    <main className="min-h-screen bg-cream">
-      {/* Header */}
-      <section className="border-b border-border bg-white">
-        <div className="container-hedieh py-16 sm:py-20">
-          <p className="mb-4 text-sm font-bold text-brand">
-            روزهای کودکانه
-          </p>
-
-          <div className="grid gap-6 lg:grid-cols-[1fr_0.7fr] lg:items-end">
-            <h1 className="text-balance text-4xl font-bold leading-[1.4] text-ink sm:text-5xl">
+    <main className="bg-cream">
+      {/* Header - compact */}
+      <section className="border-b border-border-light bg-white">
+        <div className="container-hedieh py-10 lg:py-12">
+          <p className="section-kicker">روزهای کودکانه</p>
+          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-10">
+            <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
               هر روز، فرصتی برای
-              <span className="text-brand"> کشف کردن.</span>
+              <span className="text-brand-dark"> کشف کردن.</span>
             </h1>
-
-            <p className="max-w-xl text-base leading-8 text-muted">
-              در فعالیت‌های روزانه، کودکان از طریق بازی، هنر، حرکت و تجربه
-              فرصت پیدا می‌کنند دنیای اطرافشان را بهتر بشناسند.
+            <p className="max-w-[520px] text-[15px] leading-8 text-muted">
+              در فعالیت‌های روزانه، کودکان از طریق بازی، هنر، حرکت و تجربه فرصت پیدا می‌کنند دنیای اطرافشان را بهتر بشناسند.
             </p>
           </div>
         </div>
       </section>
 
       {/* Activities */}
-      <section className="section-padding bg-cream">
+      <section className="py-10 lg:py-12">
         <div className="container-hedieh">
           {loading ? (
-            <div className="flex min-h-[300px] items-center justify-center">
-              <div className="h-10 w-10 animate-spin rounded-full border-2 border-brand-light border-t-brand" />
+            <div className="flex min-h-[280px] items-center justify-center">
+              <div className="h-9 w-9 animate-spin rounded-full border-2 border-brand-light border-t-brand-dark" />
             </div>
           ) : activities.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {activities.map((activity, index) => (
                 <article
                   key={activity.id}
-                  className="group overflow-hidden border border-border bg-white"
+                  className="group overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition hover:shadow-md"
                 >
                   <div className="relative overflow-hidden">
                     {activity.image_path ? (
                       <img
                         src={getStorageUrl(activity.image_path)}
                         alt={activity.title}
-                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                        className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                       />
                     ) : (
                       <div className="flex aspect-[4/3] items-center justify-center bg-sage-light">
-                        <Sparkles className="text-brand" size={34} />
+                        <Sparkles className="text-brand-dark" size={28} aria-hidden="true" />
                       </div>
                     )}
-
-                    <div className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white text-xs font-bold text-brand">
+                    <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-[11px] font-bold text-brand-dark shadow-sm">
                       ۰{index + 1}
-                    </div>
+                    </span>
                   </div>
 
-                  <div className="p-6">
-                    <div className="flex items-center justify-between gap-3">
-                      <h2 className="text-xl font-bold text-ink">
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <h2 className="text-[16px] font-extrabold leading-7 text-ink">
                         {activity.title}
                       </h2>
-
                       {activity.age_group && (
-                        <span className="shrink-0 border border-border bg-cream px-3 py-1.5 text-[11px] font-semibold text-muted">
+                        <span className="shrink-0 rounded-full border border-border bg-cream px-2.5 py-1 text-[11px] font-bold text-muted">
                           {activity.age_group}
                         </span>
                       )}
                     </div>
-
-                    <p className="mt-4 text-sm leading-7 text-muted">
+                    <p className="mt-2 line-clamp-3 text-[13.5px] leading-7 text-muted">
                       {activity.description}
                     </p>
-
-                    <div className="mt-5 flex items-center gap-2 border-t border-border-light pt-4 text-xs font-semibold text-brand">
-                      <CalendarDays size={15} />
+                    <div className="mt-4 flex items-center gap-1.5 border-t border-border-light pt-3 text-[12px] font-bold text-brand-dark">
+                      <CalendarDays size={14} aria-hidden="true" />
                       تجربه‌ای متناسب با دنیای کودک
                     </div>
                   </div>
@@ -125,32 +112,27 @@ const Activities = () => {
               ))}
             </div>
           ) : (
-            <div className="border border-dashed border-border py-16 text-center text-muted">
+            <div className="rounded-xl border border-dashed border-border bg-white px-4 py-10 text-center text-[13.5px] text-muted">
               هنوز فعالیتی ثبت نشده است.
             </div>
           )}
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="border-t border-border bg-white">
-        <div className="container-hedieh flex flex-col gap-5 py-12 sm:flex-row sm:items-center sm:justify-between">
+      {/* CTA - tight */}
+      <section className="border-t border-border-light bg-white">
+        <div className="container-hedieh flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-bold text-ink">
-              می‌خواهید بیشتر بدانید؟
-            </p>
-
-            <p className="mt-1 text-sm text-muted">
-              با ما درباره برنامه‌ها و فعالیت‌های مهدکودک صحبت کنید.
-            </p>
+            <p className="text-[14px] font-extrabold text-ink">می‌خواهید بیشتر بدانید؟</p>
+            <p className="mt-1 text-[13px] text-muted">با ما درباره برنامه‌ها و فعالیت‌های مهدکودک صحبت کنید.</p>
           </div>
-
           <Link
             to="/contact"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand px-6 text-sm font-bold text-white transition-all hover:bg-brand-dark"
+            style={{ color: '#000' }}
+            className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 text-[14px] font-bold !text-ink shadow-sm transition hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
           >
             تماس با ما
-            <ArrowLeft size={17} />
+            <ArrowLeft size={16} aria-hidden="true" />
           </Link>
         </div>
       </section>

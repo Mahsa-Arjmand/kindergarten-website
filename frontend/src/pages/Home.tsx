@@ -18,9 +18,7 @@ const API_URL =
 
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
-
   const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-
   return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
 };
 
@@ -42,13 +40,10 @@ const Home = () => {
 
   const [serviceState, setServiceState] =
     useState<SectionState>(initialSectionState);
-
   const [activityState, setActivityState] =
     useState<SectionState>(initialSectionState);
-
   const [teacherState, setTeacherState] =
     useState<SectionState>(initialSectionState);
-
   const [galleryState, setGalleryState] =
     useState<SectionState>(initialSectionState);
 
@@ -62,24 +57,15 @@ const Home = () => {
           onSuccess: (data: unknown) => {
             if (!cancelled) {
               setServices(
-                Array.isArray(data)
-                  ? (data as Service[]).slice(0, 3)
-                  : []
+                Array.isArray(data) ? (data as Service[]).slice(0, 3) : []
               );
-
-              setServiceState({
-                loading: false,
-                error: false,
-              });
+              setServiceState({ loading: false, error: false });
             }
           },
           onError: () => {
             if (!cancelled) {
               setServices([]);
-              setServiceState({
-                loading: false,
-                error: true,
-              });
+              setServiceState({ loading: false, error: true });
             }
           },
         },
@@ -88,24 +74,15 @@ const Home = () => {
           onSuccess: (data: unknown) => {
             if (!cancelled) {
               setActivities(
-                Array.isArray(data)
-                  ? (data as Activity[]).slice(0, 4)
-                  : []
+                Array.isArray(data) ? (data as Activity[]).slice(0, 4) : []
               );
-
-              setActivityState({
-                loading: false,
-                error: false,
-              });
+              setActivityState({ loading: false, error: false });
             }
           },
           onError: () => {
             if (!cancelled) {
               setActivities([]);
-              setActivityState({
-                loading: false,
-                error: true,
-              });
+              setActivityState({ loading: false, error: true });
             }
           },
         },
@@ -114,24 +91,15 @@ const Home = () => {
           onSuccess: (data: unknown) => {
             if (!cancelled) {
               setTeachers(
-                Array.isArray(data)
-                  ? (data as Teacher[]).slice(0, 3)
-                  : []
+                Array.isArray(data) ? (data as Teacher[]).slice(0, 3) : []
               );
-
-              setTeacherState({
-                loading: false,
-                error: false,
-              });
+              setTeacherState({ loading: false, error: false });
             }
           },
           onError: () => {
             if (!cancelled) {
               setTeachers([]);
-              setTeacherState({
-                loading: false,
-                error: true,
-              });
+              setTeacherState({ loading: false, error: true });
             }
           },
         },
@@ -140,24 +108,15 @@ const Home = () => {
           onSuccess: (data: unknown) => {
             if (!cancelled) {
               setGallery(
-                Array.isArray(data)
-                  ? (data as Gallery[]).slice(0, 6)
-                  : []
+                Array.isArray(data) ? (data as Gallery[]).slice(0, 6) : []
               );
-
-              setGalleryState({
-                loading: false,
-                error: false,
-              });
+              setGalleryState({ loading: false, error: false });
             }
           },
           onError: () => {
             if (!cancelled) {
               setGallery([]);
-              setGalleryState({
-                loading: false,
-                error: true,
-              });
+              setGalleryState({ loading: false, error: true });
             }
           },
         },
@@ -176,7 +135,6 @@ const Home = () => {
     };
 
     fetchData();
-
     return () => {
       cancelled = true;
     };
@@ -187,205 +145,129 @@ const Home = () => {
       number: '۰۱',
       icon: ShieldCheck,
       title: 'امنیت و آرامش',
-      description:
-        'محیطی امن و آرام که کودک در آن احساس اعتماد و تعلق داشته باشد.',
+      description: 'محیطی امن و آرام که کودک در آن احساس اعتماد و تعلق داشته باشد.',
     },
     {
       number: '۰۲',
       icon: Heart,
       title: 'رشد همه‌جانبه',
-      description:
-        'توجه همزمان به رشد عاطفی، اجتماعی، خلاقیت و مهارت‌های کودک.',
+      description: 'توجه همزمان به رشد عاطفی، اجتماعی، خلاقیت و مهارت‌های کودک.',
     },
     {
       number: '۰۳',
       icon: Users,
       title: 'توجه به هر کودک',
-      description:
-        'شناخت تفاوت‌های فردی و همراهی با مسیر رشد منحصر به فرد هر کودک.',
+      description: 'شناخت تفاوت‌های فردی و همراهی با مسیر رشد منحصر به فرد هر کودک.',
     },
     {
       number: '۰۴',
       icon: BookOpen,
       title: 'یادگیری خلاق',
-      description:
-        'یادگیری از طریق تجربه، بازی، هنر و فعالیت‌های متنوع روزانه.',
+      description: 'یادگیری از طریق تجربه، بازی، هنر و فعالیت‌های متنوع روزانه.',
     },
   ];
 
   return (
     <>
-      {/* Hero */}
-      <section
-        aria-labelledby="hero-title"
-        className="relative bg-cream"
-      >
-        <div className="container-hedieh grid min-h-[calc(100vh-78px)] items-center gap-12 py-12 lg:grid-cols-[0.9fr_1.1fr] lg:py-16">
+      {/* Hero - unified spacing */}
+      <section aria-labelledby="hero-title" className="bg-cream">
+        <div className="container-hedieh grid items-center gap-10 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14 lg:py-12">
           <div className="order-2 lg:order-1">
-            <div className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-brand">
-              <span
-                aria-hidden="true"
-                className="h-2 w-2 rounded-full bg-brand"
-              />
-              مهدکودک هدیه
-            </div>
-
             <h1
               id="hero-title"
-              className="max-w-2xl text-balance text-4xl font-bold leading-[1.35] tracking-tight text-ink sm:text-5xl lg:text-[4.2rem]"
-            >
-              جایی برای
-              <span className="mx-2 inline-block text-brand">
-                کودکی کردن،
-              </span>
-              یاد گرفتن و شکوفا شدن.
+              className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]"
+            ><span>مکانی برای </span>
+               
+              <span className="mr-1.5 text-brand-dark">یاد گرفتن و شکوفا شدن </span>
             </h1>
 
-            <p className="mt-7 max-w-xl text-base leading-8 text-muted sm:text-lg">
-              در مهدکودک هدیه، یادگیری با بازی، تجربه و ارتباط شکل
-              می‌گیرد؛ تا هر کودک بتواند با آرامش، اعتماد و شادی مسیر
-              خودش را پیدا کند.
+            <p className="mt-4 max-w-[520px] text-[15px] leading-8 text-muted sm:text-[16px] sm:leading-8">
+              در هدیه، یادگیری با بازی و تجربه شکل می‌گیرد؛ تا هر کودک با آرامش،
+              اعتماد و شادی مسیر خودش را پیدا کند.
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/registration"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand px-7 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
+                style={{ color: '#000' }}
+                className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl border border-border bg-white px-6 text-[14px] font-bold !text-ink shadow-sm transition hover:border-ink/15 hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
               >
                 ثبت‌نام آنلاین
-                <ArrowLeft size={18} aria-hidden="true" />
+                <ArrowLeft size={17} aria-hidden="true" />
               </Link>
 
               <Link
                 to="/about"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-white px-7 text-sm font-bold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-brand hover:bg-brand-light focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
+                style={{ color: '#000' }}
+                className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl border border-border bg-white px-6 text-[14px] font-bold !text-ink transition hover:border-brand/30 hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
               >
                 بیشتر درباره ما
-                <ArrowLeft size={18} aria-hidden="true" />
+                <ArrowLeft size={17} aria-hidden="true" />
               </Link>
             </div>
 
-            <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 border-t border-border pt-6 text-sm text-muted">
-              <span className="inline-flex items-center gap-2">
-                <ShieldCheck
-                  size={17}
-                  className="text-brand"
-                  aria-hidden="true"
-                />
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-border-light pt-5 text-[13px] font-medium text-muted">
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldCheck size={16} className="text-brand-dark" aria-hidden="true" />
                 محیط امن و آرام
               </span>
-
-              <span className="inline-flex items-center gap-2">
-                <Sparkles
-                  size={17}
-                  className="text-brand"
-                  aria-hidden="true"
-                />
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles size={16} className="text-brand-dark" aria-hidden="true" />
                 یادگیری خلاقانه
               </span>
-
-              <span className="inline-flex items-center gap-2">
-                <Heart
-                  size={17}
-                  className="text-brand"
-                  aria-hidden="true"
-                />
+              <span className="inline-flex items-center gap-1.5">
+                <Heart size={16} className="text-brand-dark" aria-hidden="true" />
                 همراهی با کودک
               </span>
             </div>
           </div>
 
           <div className="order-1 lg:order-2">
-            <div className="relative mx-auto max-w-2xl">
-              <div
-                aria-hidden="true"
-                className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-peach/50 sm:h-32 sm:w-32"
-              />
-
-              <div className="relative overflow-hidden rounded-[2rem] bg-sage-light">
+            <div className="mx-auto max-w-[560px]">
+              <div className="overflow-hidden rounded-[1.6rem] border border-border bg-white shadow-[0_16px_40px_rgba(31,26,23,0.07)]">
                 {gallery[0]?.image_path ? (
                   <img
                     src={getStorageUrl(gallery[0].image_path)}
-                    alt={
-                      gallery[0].title ||
-                      'محیط مهدکودک هدیه'
-                    }
+                    alt={gallery[0].title || 'محیط مهدکودک هدیه'}
                     width={1200}
                     height={900}
                     fetchPriority="high"
                     decoding="async"
-                    className="aspect-[4/3] w-full object-cover"
+                    className="aspect-[4/3.2] w-full object-cover"
                   />
                 ) : galleryState.loading ? (
                   <div
-                    className="aspect-[4/3] animate-pulse bg-border-light"
+                    className="aspect-[4/3.2] animate-pulse bg-border-light"
                     role="status"
                     aria-label="در حال بارگذاری تصویر اصلی"
                   />
                 ) : (
-                  <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-sm text-muted">
+                  <div className="flex aspect-[4/3.2] items-center justify-center bg-sage-light text-sm text-muted">
                     {galleryState.error
                       ? 'تصویر در حال حاضر در دسترس نیست.'
                       : 'تصویر مهدکودک'}
                   </div>
                 )}
               </div>
-
-              <div className="absolute -bottom-5 -left-3 max-w-[230px] rounded-2xl border border-border bg-white p-4 shadow-[0_15px_45px_rgba(67,50,38,0.10)] sm:-left-8 sm:p-5">
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-light text-brand">
-                    <Heart
-                      size={18}
-                      fill="currentColor"
-                      aria-hidden="true"
-                    />
-                  </span>
-
-                  <span className="text-sm font-bold text-ink">
-                    کودکی، با احترام
-                  </span>
-                </div>
-
-                <p className="text-xs leading-6 text-muted">
-                  فضایی برای تجربه کردن، دوست داشتن و رشد کردن.
-                </p>
-              </div>
-
-              <div
-                aria-hidden="true"
-                className="absolute -bottom-7 right-8 hidden h-14 w-14 rounded-full bg-yellow sm:block"
-              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Values */}
-      <section
-        aria-label="ارزش‌های مهدکودک هدیه"
-        className="border-y border-border bg-white"
-      >
-        <div className="container-hedieh grid divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
+      <section aria-label="ارزش‌های مهدکودک هدیه" className="border-y border-border-light bg-white">
+        <div className="container-hedieh grid divide-y divide-border-light sm:grid-cols-2 sm:divide-x sm:divide-x-reverse sm:divide-y-0 lg:grid-cols-4">
           {values.map((value) => {
             const Icon = value.icon;
-
             return (
-              <div
-                key={value.number}
-                className="flex gap-4 px-0 py-7 transition-colors duration-200 hover:bg-cream sm:px-6 lg:px-7"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-light text-brand">
-                  <Icon size={19} aria-hidden="true" />
+              <div key={value.number} className="flex gap-3.5 px-0 py-5 sm:px-5 lg:px-6">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-warm-white text-brand-dark">
+                  <Icon size={17} aria-hidden="true" />
                 </div>
-
                 <div>
-                  <span className="text-xs font-bold text-subtle">
-                    {value.number}
-                  </span>
-
-                  <h2 className="mt-1 text-sm font-bold text-ink">
-                    {value.title}
-                  </h2>
+                  <span className="text-[11px] font-bold tracking-wide text-subtle">{value.number}</span>
+                  <h2 className="mt-0.5 text-[14px] font-extrabold text-ink">{value.title}</h2>
+                  <p className="mt-1 hidden text-[12.5px] leading-6 text-muted lg:block">{value.description}</p>
                 </div>
               </div>
             );
@@ -393,133 +275,86 @@ const Home = () => {
         </div>
       </section>
 
-      {/* About */}
-      <section
-        aria-labelledby="about-title"
-        className="section-padding bg-warm-white"
-      >
-        <div className="container-hedieh grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+      {/* About - unified spacing */}
+      <section aria-labelledby="about-title" className="bg-warm-white py-10 lg:py-12">
+        <div className="container-hedieh grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="relative">
-            <div className="overflow-hidden rounded-[1.75rem]">
+            <div className="overflow-hidden rounded-[1.5rem] border border-border bg-white shadow-sm">
               {gallery[1]?.image_path ? (
                 <img
                   src={getStorageUrl(gallery[1].image_path)}
-                  alt={
-                    gallery[1].title ||
-                    'محیط مهدکودک هدیه'
-                  }
+                  alt={gallery[1].title || 'محیط مهدکودک هدیه'}
                   width={1200}
                   height={900}
                   loading="lazy"
                   decoding="async"
-                  className="aspect-[4/3] w-full object-cover"
+                  className="aspect-[4/3.1] w-full object-cover"
                 />
               ) : (
-                <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-sm text-muted">
+                <div className="flex aspect-[4/3.1] items-center justify-center bg-sage-light text-sm text-muted">
                   تصویر محیط مهدکودک
                 </div>
               )}
             </div>
-
-            <div className="absolute -bottom-6 -right-5 hidden w-40 rounded-2xl bg-sage-light p-5 sm:block">
-              <Palette
-                className="mb-3 text-brand"
-                size={24}
-                aria-hidden="true"
-              />
-
-              <p className="text-sm font-bold leading-6 text-ink">
-                یادگیری از مسیر تجربه و خلاقیت
-              </p>
+            <div className="absolute -bottom-5 -right-4 hidden w-[170px] rounded-2xl border border-border bg-white p-4 shadow-sm sm:block">
+              <Palette className="mb-2 text-brand-dark" size={20} aria-hidden="true" />
+              <p className="text-[13px] font-bold leading-6 text-ink">یادگیری از مسیر تجربه و خلاقیت</p>
             </div>
           </div>
 
           <div>
-            <p className="mb-4 text-sm font-bold text-brand">
-              درباره مهدکودک هدیه
-            </p>
-
-            <h2
-              id="about-title"
-              className="max-w-xl text-balance text-3xl font-bold leading-[1.5] text-ink sm:text-4xl"
-            >
-              ما باور داریم کودکی، فقط مقدمه‌ی آینده نیست؛
-              <span className="text-brand">
-                {' '}
-                خودش یک دوره‌ی ارزشمند است.
-              </span>
+            <p className="section-kicker">درباره مهدکودک هدیه</p>
+            <h2 id="about-title" className="max-w-[520px] text-balance text-[26px] font-black leading-[1.45] tracking-tight text-ink sm:text-[30px]">
+              کودکی، فقط مقدمه‌ی آینده نیست؛
+              <span className="text-brand-dark"> خودش یک دوره‌ی ارزشمند است.</span>
             </h2>
-
-            <p className="mt-6 text-base leading-8 text-muted">
-              مهدکودک هدیه با بیش از ۱۰ سال تجربه در حوزه آموزش و
-              پرورش کودکان، تلاش می‌کند محیطی امن، شاد و پویا برای
-              رشد کودکان فراهم کند. در این مسیر، تفاوت‌های فردی هر
-              کودک برای ما اهمیت دارد.
+            <p className="mt-4 max-w-[560px] text-[15px] leading-8 text-muted">
+              با بیش از ۱۰ سال تجربه، محیطی امن، شاد و پویا برای رشد کودکان فراهم کرده‌ایم. تفاوت‌های فردی هر
+              کودک را جدی می‌گیریم و مسیر رشد منحصر به فرد او را همراهی می‌کنیم.
             </p>
-
-            <p className="mt-4 text-base leading-8 text-muted">
-              هدف ما این است که کودک در کنار یادگیری مهارت‌های جدید،
-              فرصت تجربه کردن، پرسیدن، خلاق بودن و ساختن ارتباط‌های
-              سالم را داشته باشد.
+            <p className="mt-3 max-w-[560px] text-[15px] leading-8 text-muted">
+              هدف ما این است که کودک در کنار مهارت‌های جدید، فرصت تجربه کردن، پرسیدن و ساختن ارتباط‌های سالم را
+              داشته باشد.
             </p>
-
             <Link
               to="/about"
-              className="mt-7 inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              className="mt-6 inline-flex min-h-10 items-center gap-2 text-[14px] font-bold text-brand-dark transition hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               آشنایی بیشتر با هدیه
-              <ArrowLeft size={17} aria-hidden="true" />
+              <ArrowLeft size={16} aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Services */}
-      <section
-        aria-labelledby="services-title"
-        className="section-padding bg-cream"
-      >
+      {/* Services - unified spacing */}
+      <section aria-labelledby="services-title" className="bg-cream py-10 lg:py-12">
         <div className="container-hedieh">
-          <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-3 text-sm font-bold text-brand">
-                آنچه ارائه می‌دهیم
-              </p>
-
-              <h2
-                id="services-title"
-                className="text-3xl font-bold text-ink sm:text-4xl"
-              >
+              <p className="section-kicker">آنچه ارائه می‌دهیم</p>
+              <h2 id="services-title" className="section-title">
                 برنامه‌هایی برای یک کودکی پربار
               </h2>
             </div>
-
             <Link
               to="/services"
-              className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              className="inline-flex min-h-9 items-center gap-1.5 text-[14px] font-bold text-brand-dark hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               مشاهده همه خدمات
-              <ArrowLeft size={17} aria-hidden="true" />
+              <ArrowLeft size={16} aria-hidden="true" />
             </Link>
           </div>
 
           {serviceState.loading ? (
-            <div
-              className="grid gap-5 md:grid-cols-3"
-              role="status"
-              aria-label="در حال بارگذاری خدمات"
-            >
+            <div className="grid gap-5 md:grid-cols-3" role="status" aria-label="در حال بارگذاری خدمات">
               {[1, 2, 3].map((item) => (
-                <div
-                  key={item}
-                  className="overflow-hidden border border-border bg-white"
-                >
+                <div key={item} className="overflow-hidden rounded-2xl border border-border bg-white">
                   <div className="aspect-[4/3] animate-pulse bg-border-light" />
-
-                  <div className="space-y-3 p-6">
-                    <div className="h-5 w-2/3 animate-pulse bg-border-light" />
-                    <div className="h-4 w-full animate-pulse bg-border-light" />
-                    <div className="h-4 w-4/5 animate-pulse bg-border-light" />
+                  <div className="space-y-3 p-5">
+                    <div className="h-5 w-2/3 animate-pulse rounded bg-border-light" />
+                    <div className="h-4 w-full animate-pulse rounded bg-border-light" />
+                    <div className="h-4 w-4/5 animate-pulse rounded bg-border-light" />
                   </div>
                 </div>
               ))}
@@ -529,7 +364,7 @@ const Home = () => {
               {services.map((service, index) => (
                 <article
                   key={service.id}
-                  className="group overflow-hidden border border-border bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(67,50,38,0.08)]"
+                  className="group overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition hover:shadow-md"
                 >
                   <div className="relative overflow-hidden">
                     {service.image_path ? (
@@ -540,95 +375,67 @@ const Home = () => {
                         height={600}
                         loading="lazy"
                         decoding="async"
-                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                       />
                     ) : (
                       <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-sm text-muted">
                         تصویر خدمت
                       </div>
                     )}
-
                     <span
                       aria-hidden="true"
-                      className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-xs font-bold text-brand"
+                      className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 text-[11px] font-bold text-brand-dark shadow-sm"
                     >
                       ۰{index + 1}
                     </span>
                   </div>
-
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-ink">
-                      {service.title}
-                    </h3>
-
-                    <p className="mt-3 line-clamp-3 text-sm leading-7 text-muted">
-                      {service.description}
-                    </p>
-
+                  <div className="p-5">
+                    <h3 className="text-[17px] font-extrabold leading-7 text-ink">{service.title}</h3>
+                    <p className="mt-2 line-clamp-3 text-[13.5px] leading-7 text-muted">{service.description}</p>
                     <Link
                       to="/services"
-                      className="mt-5 inline-flex min-h-9 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+                      className="mt-4 inline-flex min-h-8 items-center gap-1.5 text-[13px] font-bold text-brand-dark hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
                     >
                       بیشتر بدانید
-                      <ArrowLeft size={15} aria-hidden="true" />
+                      <ArrowLeft size={14} aria-hidden="true" />
                     </Link>
                   </div>
                 </article>
               ))}
             </div>
           ) : (
-            <div
-              className="border border-dashed border-border py-14 text-center text-sm text-muted"
-              role="status"
-            >
-              {serviceState.error
-                ? 'امکان دریافت اطلاعات خدمات وجود نداشت.'
-                : 'هنوز خدماتی ثبت نشده است.'}
+            <div className="rounded-2xl border border-border bg-white px-6 py-6 text-center shadow-sm" role="status">
+              <p className="text-[13.5px] font-medium leading-7 text-muted">
+                {serviceState.error ? 'امکان دریافت اطلاعات خدمات وجود نداشت.' : 'هنوز خدماتی ثبت نشده است.'}
+              </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Activities */}
-      <section
-        aria-labelledby="activities-title"
-        className="section-padding bg-white"
-      >
+      {/* Activities - unified spacing */}
+      <section aria-labelledby="activities-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
-          <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-3 text-sm font-bold text-brand">
-                روزهای کودکانه
-              </p>
-
-              <h2
-                id="activities-title"
-                className="text-3xl font-bold text-ink sm:text-4xl"
-              >
+              <p className="section-kicker">روزهای کودکانه</p>
+              <h2 id="activities-title" className="section-title">
                 هر روز، فرصتی برای کشف کردن
               </h2>
             </div>
-
             <Link
               to="/activities"
-              className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              className="inline-flex min-h-9 items-center gap-1.5 text-[14px] font-bold text-brand-dark hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               همه فعالیت‌ها
-              <ArrowLeft size={17} aria-hidden="true" />
+              <ArrowLeft size={16} aria-hidden="true" />
             </Link>
           </div>
 
           {activityState.loading ? (
-            <div
-              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-              role="status"
-              aria-label="در حال بارگذاری فعالیت‌ها"
-            >
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="status" aria-label="در حال بارگذاری فعالیت‌ها">
               {[1, 2, 3, 4].map((item) => (
-                <div
-                  key={item}
-                  className="aspect-[3/4] animate-pulse bg-border-light"
-                />
+                <div key={item} className="aspect-[3/4] animate-pulse rounded-2xl bg-border-light" />
               ))}
             </div>
           ) : activities.length > 0 ? (
@@ -636,7 +443,7 @@ const Home = () => {
               {activities.map((activity) => (
                 <article
                   key={activity.id}
-                  className="group relative overflow-hidden bg-ink"
+                  className="group relative overflow-hidden rounded-2xl bg-ink shadow-sm"
                 >
                   {activity.image_path ? (
                     <img
@@ -646,23 +453,16 @@ const Home = () => {
                       height={1000}
                       loading="lazy"
                       decoding="async"
-                      className="aspect-[3/4] w-full object-cover opacity-90 transition duration-500 group-hover:scale-105 group-hover:opacity-100"
+                      className="aspect-[3/4] w-full object-cover opacity-[0.92] transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
                     />
                   ) : (
                     <div className="aspect-[3/4] bg-sage-light" />
                   )}
-
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-5 pt-20 text-white">
-                    <h3 className="text-lg font-bold">
-                      {activity.title}
-                    </h3>
-
-                    <p className="mt-2 line-clamp-2 text-xs leading-6 text-white/80">
-                      {activity.description}
-                    </p>
-
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent p-4 pt-14 text-white">
+                    <h3 className="text-[15px] font-bold leading-6">{activity.title}</h3>
+                    <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-6 text-white/80">{activity.description}</p>
                     {activity.age_group && (
-                      <span className="mt-3 inline-block border border-white/30 px-3 py-1 text-[11px] text-white/90">
+                      <span className="mt-2.5 inline-block rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
                         {activity.age_group}
                       </span>
                     )}
@@ -671,73 +471,45 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div
-              className="border border-dashed border-border py-14 text-center text-sm text-muted"
-              role="status"
-            >
-              {activityState.error
-                ? 'امکان دریافت اطلاعات فعالیت‌ها وجود نداشت.'
-                : 'هنوز فعالیتی ثبت نشده است.'}
+            <div className="rounded-2xl border border-border bg-white px-6 py-6 text-center shadow-sm" role="status">
+              <p className="text-[13.5px] font-medium leading-7 text-muted">
+                {activityState.error ? 'امکان دریافت اطلاعات فعالیت‌ها وجود نداشت.' : 'هنوز فعالیتی ثبت نشده است.'}
+              </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Why Hediyeh */}
-      <section
-        aria-labelledby="why-title"
-        className="section-padding bg-sage-light"
-      >
-        <div className="container-hedieh grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <p className="mb-4 text-sm font-bold text-brand">
-              چرا هدیه؟
-            </p>
-
-            <h2
-              id="why-title"
-              className="text-3xl font-bold leading-[1.5] text-ink sm:text-4xl"
-            >
+      {/* Why Hediyeh - unified spacing */}
+      <section aria-labelledby="why-title" className="bg-sage-light/60 py-10 lg:py-12">
+        <div className="container-hedieh grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+          <div className="lg:sticky lg:top-24">
+            <p className="section-kicker">چرا هدیه؟</p>
+            <h2 id="why-title" className="text-[26px] font-black leading-[1.45] tracking-tight text-ink sm:text-[30px]">
               فضایی که در آن کودک
-              <span className="text-brand"> دیده می‌شود.</span>
+              <span className="text-brand-dark"> دیده می‌شود.</span>
             </h2>
-
-            <p className="mt-5 max-w-lg text-base leading-8 text-muted">
-              از محیط و فعالیت‌ها تا ارتباط با خانواده، تلاش می‌کنیم
-              تجربه‌ای هماهنگ و انسانی برای کودک و والدینش بسازیم.
+            <p className="mt-4 max-w-[480px] text-[15px] leading-8 text-muted">
+              از محیط و فعالیت‌ها تا ارتباط با خانواده، تلاش می‌کنیم تجربه‌ای هماهنگ و انسانی برای کودک و والدینش
+              بسازیم.
             </p>
-
             <Link
               to="/about"
-              className="mt-7 inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              className="mt-6 inline-flex min-h-9 items-center gap-1.5 text-[14px] font-bold text-brand-dark hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               درباره رویکرد ما
-              <ArrowLeft size={17} aria-hidden="true" />
+              <ArrowLeft size={16} aria-hidden="true" />
             </Link>
           </div>
 
-          <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             {values.map((value) => {
               const Icon = value.icon;
-
               return (
-                <div
-                  key={value.number}
-                  className="bg-warm-white p-7 transition-colors duration-200 hover:bg-white sm:p-8"
-                >
-                  <Icon
-                    size={25}
-                    className="text-brand"
-                    aria-hidden="true"
-                  />
-
-                  <h3 className="mt-5 text-lg font-bold text-ink">
-                    {value.title}
-                  </h3>
-
-                  <p className="mt-3 text-sm leading-7 text-muted">
-                    {value.description}
-                  </p>
+                <div key={value.number} className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+                  <Icon size={22} className="text-brand-dark" aria-hidden="true" />
+                  <h3 className="mt-4 text-[15px] font-extrabold text-ink">{value.title}</h3>
+                  <p className="mt-2 text-[13.5px] leading-7 text-muted">{value.description}</p>
                 </div>
               );
             })}
@@ -745,51 +517,33 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Teachers */}
-      <section
-        aria-labelledby="teachers-title"
-        className="section-padding bg-warm-white"
-      >
+      {/* Teachers - unified, no extra gap */}
+      <section aria-labelledby="teachers-title" className="bg-warm-white py-10 lg:py-12">
         <div className="container-hedieh">
-          <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-3 text-sm font-bold text-brand">
-                تیم آموزشی
-              </p>
-
-              <h2
-                id="teachers-title"
-                className="text-3xl font-bold text-ink sm:text-4xl"
-              >
-                آدم‌هایی که کنار کودک هستند
+              <p className="section-kicker">تیم آموزشی</p>
+              <h2 id="teachers-title" className="section-title">
+                افرادی که همراه کودک شما هستند
               </h2>
             </div>
-
             <Link
               to="/teachers"
-              className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              className="inline-flex min-h-9 items-center gap-1.5 text-[14px] font-bold text-brand-dark hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               آشنایی با تیم ما
-              <ArrowLeft size={17} aria-hidden="true" />
+              <ArrowLeft size={16} aria-hidden="true" />
             </Link>
           </div>
 
           {teacherState.loading ? (
-            <div
-              className="grid gap-5 md:grid-cols-3"
-              role="status"
-              aria-label="در حال بارگذاری مربیان"
-            >
+            <div className="grid gap-5 md:grid-cols-3" role="status" aria-label="در حال بارگذاری مربیان">
               {[1, 2, 3].map((item) => (
-                <div
-                  key={item}
-                  className="overflow-hidden border border-border bg-white"
-                >
+                <div key={item} className="overflow-hidden rounded-2xl border border-border bg-white">
                   <div className="aspect-[4/3] animate-pulse bg-border-light" />
-
-                  <div className="space-y-3 p-6">
-                    <div className="h-5 w-1/2 animate-pulse bg-border-light" />
-                    <div className="h-4 w-1/3 animate-pulse bg-border-light" />
+                  <div className="space-y-3 p-5">
+                    <div className="h-5 w-1/2 animate-pulse rounded bg-border-light" />
+                    <div className="h-4 w-1/3 animate-pulse rounded bg-border-light" />
                   </div>
                 </div>
               ))}
@@ -799,7 +553,7 @@ const Home = () => {
               {teachers.map((teacher) => (
                 <article
                   key={teacher.id}
-                  className="group overflow-hidden border border-border bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(67,50,38,0.08)]"
+                  className="overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition hover:shadow-md"
                 >
                   {teacher.image_path ? (
                     <img
@@ -809,88 +563,60 @@ const Home = () => {
                       height={600}
                       loading="lazy"
                       decoding="async"
-                      className="aspect-[4/3] w-full object-cover grayscale-[10%] transition duration-500 group-hover:grayscale-0"
+                      className="aspect-[4/3] w-full object-cover"
                     />
                   ) : (
                     <div className="flex aspect-[4/3] items-center justify-center bg-sage-light text-sm text-muted">
                       تصویر مربی
                     </div>
                   )}
-
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-ink">
-                      {teacher.name}
-                    </h3>
-
-                    <p className="mt-1 text-sm font-semibold text-brand">
-                      {teacher.position}
-                    </p>
-
+                  <div className="p-5">
+                    <h3 className="text-[17px] font-extrabold text-ink">{teacher.name}</h3>
+                    <p className="mt-1 text-[13px] font-bold text-brand-dark">{teacher.position}</p>
                     {teacher.education && (
-                      <p className="mt-3 text-sm leading-6 text-muted">
-                        {teacher.education}
-                      </p>
+                      <p className="mt-2 text-[13px] leading-6 text-muted">{teacher.education}</p>
                     )}
                   </div>
                 </article>
               ))}
             </div>
           ) : (
-            <div
-              className="border border-dashed border-border py-14 text-center text-sm text-muted"
-              role="status"
-            >
-              {teacherState.error
-                ? 'امکان دریافت اطلاعات مربیان وجود نداشت.'
-                : 'هنوز مربی ثبت نشده است.'}
+            <div className="rounded-2xl border border-border bg-white px-6 py-6 text-center shadow-sm" role="status">
+              <p className="text-[13.5px] font-medium leading-7 text-muted">
+                {teacherState.error ? 'امکان دریافت اطلاعات مربیان وجود نداشت.' : 'هنوز مربی ثبت نشده است.'}
+              </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Gallery */}
-      <section
-        aria-labelledby="gallery-title"
-        className="section-padding bg-cream"
-      >
+      {/* Gallery - unified, tight */}
+      <section aria-labelledby="gallery-title" className="bg-cream py-10 lg:py-12">
         <div className="container-hedieh">
-          <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-3 text-sm font-bold text-brand">
-                لحظه‌های هدیه
-              </p>
-
-              <h2
-                id="gallery-title"
-                className="text-3xl font-bold text-ink sm:text-4xl"
-              >
+              <p className="section-kicker">لحظه‌های هدیه</p>
+              <h2 id="gallery-title" className="section-title">
                 گوشه‌ای از دنیای ما
               </h2>
             </div>
-
             <Link
               to="/gallery"
-              className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              className="inline-flex min-h-9 items-center gap-1.5 text-[14px] font-bold text-brand-dark hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
             >
               مشاهده گالری
-              <ArrowLeft size={17} aria-hidden="true" />
+              <ArrowLeft size={16} aria-hidden="true" />
             </Link>
           </div>
 
           {galleryState.loading ? (
-            <div
-              className="grid grid-cols-2 gap-3 md:grid-cols-4"
-              role="status"
-              aria-label="در حال بارگذاری گالری"
-            >
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4" role="status" aria-label="در حال بارگذاری گالری">
               {[1, 2, 3, 4, 5, 6].map((item) => (
                 <div
                   key={item}
                   className={[
-                    'animate-pulse bg-border-light',
-                    item === 1
-                      ? 'col-span-2 row-span-2 min-h-[320px] md:min-h-[520px]'
-                      : 'min-h-[160px] md:min-h-[250px]',
+                    'animate-pulse rounded-2xl bg-border-light',
+                    item === 1 ? 'col-span-2 row-span-2 min-h-[300px] md:min-h-[480px]' : 'min-h-[150px] md:min-h-[232px]',
                   ].join(' ')}
                 />
               ))}
@@ -903,12 +629,8 @@ const Home = () => {
                   to="/gallery"
                   aria-label={`مشاهده گالری: ${item.title}`}
                   className={[
-                    'group relative overflow-hidden bg-sage-light focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light',
-                    index === 0
-                      ? 'col-span-2 row-span-2'
-                      : index === 3
-                        ? 'col-span-2'
-                        : '',
+                    'group relative overflow-hidden rounded-2xl bg-sage-light focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light',
+                    index === 0 ? 'col-span-2 row-span-2' : index === 3 ? 'col-span-2' : '',
                   ].join(' ')}
                 >
                   <img
@@ -919,154 +641,105 @@ const Home = () => {
                     loading="lazy"
                     decoding="async"
                     className={[
-                      'h-full w-full object-cover transition duration-500 group-hover:scale-105',
-                      index === 0
-                        ? 'min-h-[320px] md:min-h-[520px]'
-                        : 'min-h-[160px] md:min-h-[250px]',
+                      'h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]',
+                      index === 0 ? 'min-h-[300px] md:min-h-[480px]' : 'min-h-[150px] md:min-h-[232px]',
                     ].join(' ')}
                   />
-
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20"
-                  />
-
-                  <div className="absolute bottom-3 right-3 max-w-[80%] translate-y-2 bg-white/95 px-3 py-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    <span className="text-xs font-semibold text-ink">
-                      {item.title}
-                    </span>
+                  <div aria-hidden="true" className="absolute inset-0 bg-black/0 transition group-hover:bg-black/15" />
+                  <div className="absolute bottom-2.5 right-2.5 rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-bold text-ink opacity-0 shadow-sm transition group-hover:opacity-100">
+                    {item.title}
                   </div>
                 </Link>
               ))}
             </div>
           ) : (
-            <div
-              className="border border-dashed border-border py-14 text-center text-sm text-muted"
-              role="status"
-            >
-              {galleryState.error
-                ? 'امکان دریافت تصاویر گالری وجود نداشت.'
-                : 'هنوز تصویری ثبت نشده است.'}
+            <div className="rounded-2xl border border-border bg-white px-6 py-6 text-center shadow-sm" role="status">
+              <p className="text-[13.5px] font-medium leading-7 text-muted">
+                {galleryState.error ? 'امکان دریافت تصاویر گالری وجود نداشت.' : 'هنوز تصویری ثبت نشده است.'}
+              </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Registration CTA */}
-      <section
-        aria-labelledby="registration-title"
-        className="section-padding bg-brand"
-      >
+      {/* Registration CTA - unified */}
+      <section aria-labelledby="registration-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
-          <div className="relative overflow-hidden rounded-[2rem] bg-brand-dark px-7 py-12 text-white sm:px-12 sm:py-16 lg:px-16">
-            <div
-              aria-hidden="true"
-              className="absolute -left-10 -top-16 h-40 w-40 rounded-full border-[28px] border-white/10"
-            />
-
-            <div
-              aria-hidden="true"
-              className="absolute -bottom-20 right-10 h-48 w-48 rounded-full bg-white/5"
-            />
-
-            <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+          <div className="relative overflow-hidden rounded-[1.75rem] bg-brand-dark px-6 py-8 text-white sm:px-10 sm:py-10 lg:px-12">
+            <div aria-hidden="true" className="absolute -left-10 -top-14 h-40 w-40 rounded-full border-[24px] border-white/[0.07]" />
+            <div aria-hidden="true" className="absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-white/[0.06]" />
+            <div className="relative grid items-center gap-6 lg:grid-cols-[1fr_auto]">
               <div>
-                <p className="mb-4 text-sm font-semibold text-white/70">
-                  قدم بعدی را با هم برداریم
-                </p>
-
-                <h2
-                  id="registration-title"
-                  className="max-w-2xl text-3xl font-bold leading-[1.5] sm:text-4xl"
-                >
-                  آماده‌اید دنیای مهدکودک هدیه را از نزدیک ببینید؟
+                <p className="mb-2 text-[13px] font-bold tracking-wide text-white/70">قدم بعدی را با هم برداریم</p>
+                <h2 id="registration-title" className="max-w-2xl text-balance text-[22px] font-black leading-[1.45] sm:text-[26px]">
+                  آماده‌اید دنیای هدیه را از نزدیک ببینید؟
                 </h2>
-
-                <p className="mt-4 max-w-xl text-sm leading-7 text-white/75 sm:text-base">
-                  برای ثبت درخواست، کافی است فرم ثبت‌نام را تکمیل
-                  کنید.
+                <p className="mt-2 max-w-xl text-[13.5px] leading-7 text-white/75">
+                  برای ثبت درخواست، کافی است فرم ثبت‌نام را تکمیل کنید. همکاران ما خیلی زود با شما تماس می‌گیرند.
                 </p>
               </div>
-
               <Link
                 to="/registration"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-white px-7 text-sm font-bold transition-colors hover:bg-brand-light"
-
-
-
-
-
-
-
-  style={{ color: '#2f2a26' }}   >
+                style={{ color: '#000' }}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-7 text-[14px] font-extrabold !text-ink shadow-sm transition hover:bg-cream focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30"
+              >
                 شروع ثبت‌نام
-                <ArrowLeft size={18} aria-hidden="true" />
+                <ArrowLeft size={17} aria-hidden="true" />
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Careers */}
-      <section
-        aria-labelledby="careers-title"
-        className="section-padding bg-white"
-      >
-        <div className="container-hedieh grid items-center gap-8 md:grid-cols-[1fr_auto]">
-          <div>
-            <p className="mb-3 text-sm font-bold text-brand">
-              فرصت همکاری
-            </p>
-
-            <h2
-              id="careers-title"
-              className="text-2xl font-bold text-ink sm:text-3xl"
+      {/* Careers + Contact - unified like Teachers page, no gaps */}
+      <section className="bg-cream py-6">
+        <div className="container-hedieh space-y-4">
+          {/* Careers card */}
+          <div
+            aria-labelledby="careers-title"
+            className="flex flex-col gap-4 rounded-2xl border border-border bg-white px-6 py-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-7"
+          >
+            <div>
+              <p className="section-kicker mb-1">فرصت همکاری</p>
+              <h2 id="careers-title" className="text-[17px] font-black leading-7 text-ink sm:text-[18px]">
+                دوست دارید بخشی از تیم هدیه باشید؟
+              </h2>
+              <p className="mt-1 max-w-2xl text-[13px] leading-6 text-muted">
+                اگر به کار با کودکان علاقه‌مند هستید و خودتان را فردی مسئول و همراه می‌دانید، با ما در ارتباط باشید.
+              </p>
+            </div>
+            <Link
+              to="/careers"
+              style={{ color: '#000' }}
+              className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 text-[14px] font-bold !text-ink shadow-sm transition hover:border-brand/20 hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
             >
-              دوست دارید بخشی از تیم هدیه باشید؟
-            </h2>
-
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
-              اگر به کار با کودکان علاقه‌مند هستید و خودتان را فردی
-              مسئول، خلاق و همراه می‌دانید، با ما در ارتباط باشید.
-            </p>
+              فرصت‌های همکاری
+              <ArrowLeft size={16} aria-hidden="true" />
+            </Link>
           </div>
 
-          <Link
-            to="/careers"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border px-6 text-sm font-bold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-brand hover:bg-brand-light hover:text-brand focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
+          {/* Contact card - same style, no gap */}
+          <div
+            aria-labelledby="contact-title"
+            className="flex flex-col gap-3 rounded-2xl border border-border bg-white px-6 py-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-7"
           >
-            فرصت‌های همکاری
-            <ArrowLeft size={17} aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Contact */}
-      <section
-        aria-labelledby="contact-title"
-        className="border-t border-border bg-cream"
-      >
-        <div className="container-hedieh flex flex-col gap-5 py-10 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p
-              id="contact-title"
-              className="text-sm font-bold text-ink"
+            <div>
+              <p id="contact-title" className="text-[14px] font-extrabold text-ink">
+                سؤالی دارید؟
+              </p>
+              <p className="mt-1 text-[13px] leading-6 text-muted">
+                برای آشنایی بیشتر، می‌توانید با ما در تماس باشید.
+              </p>
+            </div>
+            <Link
+              to="/contact"
+              style={{ color: '#000' }}
+              className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 text-[14px] font-bold !text-ink shadow-sm transition hover:border-brand/20 hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
             >
-              سؤالی دارید؟
-            </p>
-
-            <p className="mt-1 text-sm text-muted">
-              برای آشنایی بیشتر، می‌توانید با ما در تماس باشید.
-            </p>
+              تماس با مهدکودک هدیه
+              <ArrowLeft size={16} aria-hidden="true" />
+            </Link>
           </div>
-
-          <Link
-            to="/contact"
-            className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
-          >
-            تماس با مهدکودک هدیه
-            <ArrowLeft size={17} aria-hidden="true" />
-          </Link>
         </div>
       </section>
     </>
