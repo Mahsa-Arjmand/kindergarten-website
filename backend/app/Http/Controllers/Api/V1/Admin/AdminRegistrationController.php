@@ -29,7 +29,7 @@ class AdminRegistrationController extends Controller
             });
         }
 
-        $registrations = $query->latest()->paginate(20);
+        $registrations = $query->latest()->get();
         return response()->json($registrations);
     }
 

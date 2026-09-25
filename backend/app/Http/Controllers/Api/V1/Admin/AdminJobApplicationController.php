@@ -27,7 +27,7 @@ class AdminJobApplicationController extends Controller
             });
         }
 
-        $applications = $query->latest()->paginate(20);
+        $applications = $query->latest()->get();
         return response()->json($applications);
     }
 
