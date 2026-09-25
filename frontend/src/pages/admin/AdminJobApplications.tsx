@@ -42,7 +42,9 @@ const AdminJobApplications = () => {
 
   const updateStatus = async (id: number, status: string) => {
     try {
-      await api.put(`/admin/job-applications/${id}`, { status });
+      console.log('Updating status for application', id, 'to', status);
+      const response = await api.put(`/admin/job-applications/${id}`, { status });
+      console.log('Status update response:', response.data);
       fetchApplications();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -179,28 +181,28 @@ const AdminJobApplications = () => {
                         </button>
                       )}
                       <button
-                        onClick={() => updateStatus(app.id, 'reviewing')}
+                        onClick={async () => await updateStatus(app.id, 'reviewing')}
                         className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
                         title="شروع بررسی"
                       >
                         <Filter size={16} />
                       </button>
                       <button
-                        onClick={() => updateStatus(app.id, 'interview')}
+                        onClick={async () => await updateStatus(app.id, 'interview')}
                         className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
                         title="دعوت به مصاحبه"
                       >
                         <Filter size={16} />
                       </button>
                       <button
-                        onClick={() => updateStatus(app.id, 'accepted')}
+                        onClick={async () => await updateStatus(app.id, 'accepted')}
                         className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
                         title="تایید"
                       >
                         <Check size={16} />
                       </button>
                       <button
-                        onClick={() => updateStatus(app.id, 'rejected')}
+                        onClick={async () => await updateStatus(app.id, 'rejected')}
                         className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                         title="رد"
                       >
@@ -288,25 +290,37 @@ const AdminJobApplications = () => {
                   <label className="block text-sm font-medium text-gray-600 mb-2">تغییر وضعیت</label>
                   <div className="flex gap-2 flex-wrap">
                     <button
-                      onClick={() => {updateStatus(selectedApplication.id, 'reviewing'); setSelectedApplication(null);}}
+                      onClick={async () => {
+                        await updateStatus(selectedApplication.id, 'reviewing');
+                        setSelectedApplication(null);
+                      }}
                       className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors"
                     >
                       شروع بررسی
                     </button>
                     <button
-                      onClick={() => {updateStatus(selectedApplication.id, 'interview'); setSelectedApplication(null);}}
+                      onClick={async () => {
+                        await updateStatus(selectedApplication.id, 'interview');
+                        setSelectedApplication(null);
+                      }}
                       className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
                     >
                       دعوت به مصاحبه
                     </button>
                     <button
-                      onClick={() => {updateStatus(selectedApplication.id, 'accepted'); setSelectedApplication(null);}}
+                      onClick={async () => {
+                        await updateStatus(selectedApplication.id, 'accepted');
+                        setSelectedApplication(null);
+                      }}
                       className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
                     >
                       تایید
                     </button>
                     <button
-                      onClick={() => {updateStatus(selectedApplication.id, 'rejected'); setSelectedApplication(null);}}
+                      onClick={async () => {
+                        await updateStatus(selectedApplication.id, 'rejected');
+                        setSelectedApplication(null);
+                      }}
                       className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
                     >
                       رد
