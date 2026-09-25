@@ -160,7 +160,8 @@ const Layout = ({ children }: LayoutProps) => {
             <div className="flex items-center gap-2">
               <Link
                 to="/registration"
-                className="hidden min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-full border border-border bg-white px-5 text-[13.5px] font-bold text-ink shadow-sm transition hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light xl:inline-flex"
+                style={{ color: '#000' }}
+                className="hidden min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-full border border-border bg-white px-5 text-[13.5px] font-bold !text-ink shadow-sm transition hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light xl:inline-flex"
               >
                 ثبت‌نام
                 <ArrowLeft size={15} aria-hidden="true" />
@@ -198,7 +199,8 @@ const Layout = ({ children }: LayoutProps) => {
                 ))}
                 <Link
                   to="/registration"
-                  className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 text-sm font-bold text-ink shadow-sm hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
+                  style={{ color: '#000' }}
+                  className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 text-sm font-bold !text-ink shadow-sm hover:bg-warm-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-light"
                 >
                   ثبت‌نام آنلاین
                   <ArrowLeft size={17} aria-hidden="true" />
@@ -281,12 +283,20 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="border-t border-border-light">
           <div className="container-hedieh flex min-h-14 flex-col items-center justify-between gap-2 py-4 text-center text-[12px] text-subtle sm:flex-row sm:text-right">
             <p>© {new Date().getFullYear()} مهدکودک هدیه. تمامی حقوق محفوظ است.</p>
-            <Link
-              to="/contact"
-              className="font-medium transition hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
-            >
-              ارتباط با ما
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                to="/contact"
+                className="font-medium transition hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              >
+                ارتباط با ما
+              </Link>
+              <Link
+                to="/admin/login"
+                className="font-medium text-subtle transition hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
+              >
+                ورود مدیر
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
