@@ -294,23 +294,12 @@ const Layout = ({ children }: LayoutProps) => {
               <Link
                 to="/contact"
                 className="font-medium transition hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
-          <div className="container-hedieh flex min-h-16 flex-col items-center justify-between gap-3 py-4 text-center text-xs text-subtle sm:flex-row sm:text-right">
-            <p>
-              © {new Date().getFullYear()} مهدکودک هدیه. تمامی
-              حقوق محفوظ است.
-            </p>
-
-            <div className="flex items-center gap-4">
-              <Link
-                to="/contact"
-                className="font-medium transition-colors hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
               >
                 ارتباط با ما
               </Link>
               <Link
                 to="/admin/login"
                 className="font-medium text-subtle transition hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
-                className="font-medium text-subtle transition-colors hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-light"
               >
                 ورود مدیر
               </Link>
