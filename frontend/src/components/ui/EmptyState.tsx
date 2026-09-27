@@ -1,25 +1,34 @@
-import { Inbox } from 'lucide-react';
+import { ReactNode } from 'react';
 
-interface EmptyStateProps {
-  title?: string;
+export interface EmptyStateProps {
+  title: string;
   description?: string;
+  icon?: ReactNode;
+  action?: ReactNode;
+  className?: string;
 }
 
-const EmptyState = ({
-  title = 'موردی یافت نشد',
-  description = 'در حال حاضر اطلاعاتی برای نمایش وجود ندارد.',
+const EmptyState = ({ 
+  title, 
+  description, 
+  icon, 
+  action, 
+  className = '' 
 }: EmptyStateProps) => {
   return (
-    <div className="flex min-h-40 flex-col items-center justify-center rounded-2xl border border-dashed border-hedieh-border bg-white/70 px-6 text-center">
-      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-hedieh-primary">
-        <Inbox size={22} aria-hidden="true" />
-      </div>
-
-      <h3 className="font-bold text-hedieh-text">{title}</h3>
-
-      <p className="mt-1 max-w-md text-sm leading-7 text-hedieh-muted">
-        {description}
-      </p>
+    <div className={`text-center py-16 px-4 ${className}`}>
+      {icon && (
+        <div className="flex justify-center mb-6">
+          <div className="w-16 h-16 bg-warm-100 rounded-full flex items-center justify-center">
+            {icon}
+          </div>
+        </div>
+      )}
+      <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
+      {description && (
+        <p className="text-gray-600 max-w-md mx-auto mb-6">{description}</p>
+      )}
+      {action && <div className="flex justify-center">{action}</div>}
     </div>
   );
 };
