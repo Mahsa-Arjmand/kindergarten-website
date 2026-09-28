@@ -107,6 +107,12 @@ const Teachers = () => {
                       </p>
                     )}
 
+                    {teacher.experience && (
+                      <p className="mt-3 text-[13px] leading-6 text-muted">
+                        <span className="font-bold text-ink">سابقه کاری:</span> {teacher.experience}
+                      </p>
+                    )}
+
                     {teacher.bio && (
                       <p className="mt-3 line-clamp-3 text-[13.5px] leading-7 text-muted">{teacher.bio}</p>
                     )}

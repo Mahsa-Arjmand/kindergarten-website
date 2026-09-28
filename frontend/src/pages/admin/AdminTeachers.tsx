@@ -5,6 +5,7 @@ import { Plus, Edit, Trash2, Search, X, Upload } from 'lucide-react';
 interface Teacher {
   id: number;
   name: string;
+  position: string;
   education: string;
   specialization: string;
   experience: string;
@@ -22,6 +23,7 @@ const AdminTeachers = () => {
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [formData, setFormData] = useState({
     name: '',
+    position: '',
     education: '',
     specialization: '',
     experience: '',
@@ -53,10 +55,17 @@ const AdminTeachers = () => {
     try {
       const data = new FormData();
       data.append('name', formData.name);
+      data.append('position', formData.position);
       data.append('education', formData.education);
-      data.append('specialization', formData.specialization);
-      data.append('experience', formData.experience);
-      data.append('bio', formData.bio);
+      if (formData.specialization) {
+        data.append('specialization', formData.specialization);
+      }
+      if (formData.experience) {
+        data.append('experience', formData.experience);
+      }
+      if (formData.bio) {
+        data.append('bio', formData.bio);
+      }
       data.append('is_active', formData.is_active ? '1' : '0');
       data.append('order', formData.order.toString());
       if (formData.image) {
@@ -73,10 +82,11 @@ const AdminTeachers = () => {
         } else {
           const response = await api.put(`/admin/teachers/${editingTeacher.id}`, {
             name: formData.name,
+            position: formData.position,
             education: formData.education,
-            specialization: formData.specialization,
-            experience: formData.experience,
-            bio: formData.bio,
+            specialization: formData.specialization || null,
+            experience: formData.experience || null,
+            bio: formData.bio || null,
             is_active: formData.is_active ? 1 : 0,
             order: formData.order
           });
@@ -127,6 +137,7 @@ const AdminTeachers = () => {
       setEditingTeacher(teacher);
       setFormData({
         name: teacher.name,
+        position: teacher.position,
         education: teacher.education,
         specialization: teacher.specialization,
         experience: teacher.experience,
@@ -139,6 +150,7 @@ const AdminTeachers = () => {
       setEditingTeacher(null);
       setFormData({
         name: '',
+        position: '',
         education: '',
         specialization: '',
         experience: '',
@@ -156,6 +168,7 @@ const AdminTeachers = () => {
     setEditingTeacher(null);
     setFormData({
       name: '',
+      position: '',
       education: '',
       specialization: '',
       experience: '',
@@ -210,6 +223,7 @@ const AdminTeachers = () => {
             <tr>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تصویر</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام</th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">سمت</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تحصیلات</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تخصص</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">سابقه</th>
@@ -241,6 +255,7 @@ const AdminTeachers = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-800">{teacher.name}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{teacher.position}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{teacher.education}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{teacher.specialization}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{teacher.experience}</td>
@@ -304,6 +319,18 @@ const AdminTeachers = () => {
                 </div>
 
                 <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">سمت</label>
+                  <input
+                    type="text"
+                    value={formData.position}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    placeholder="مثال: مدیر، مربی پیش دبستانی، کمک مربی"
+                    required
+                  />
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">تحصیلات</label>
                   <input
                     type="text"
@@ -321,7 +348,6 @@ const AdminTeachers = () => {
                     value={formData.specialization}
                     onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    required
                   />
                 </div>
 
@@ -342,7 +368,6 @@ const AdminTeachers = () => {
                     value={formData.bio}
                     onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent h-32"
-                    required
                   />
                 </div>
 
