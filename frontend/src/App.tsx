@@ -17,6 +17,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminRegistrations from './pages/admin/AdminRegistrations';
 import AdminJobApplications from './pages/admin/AdminJobApplications';
 import AdminTeachers from './pages/admin/AdminTeachers';
+import AdminChildren from './pages/admin/AdminChildren';
 import AdminServices from './pages/admin/AdminServices';
 import AdminActivities from './pages/admin/AdminActivities';
 import AdminGallery from './pages/admin/AdminGallery';
@@ -54,6 +55,7 @@ function App() {
           <Route path="registrations" element={<AdminRegistrations />} />
           <Route path="job-applications" element={<AdminJobApplications />} />
           <Route path="teachers" element={<AdminTeachers />} />
+          <Route path="children" element={<AdminChildren />} />
           <Route path="services" element={<AdminServices />} />
           <Route path="activities" element={<AdminActivities />} />
           <Route path="gallery" element={<AdminGallery />} />

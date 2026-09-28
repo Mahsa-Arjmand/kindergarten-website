@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\Admin\AdminActivityController;
 use App\Http\Controllers\Api\V1\Admin\AdminGalleryController;
 use App\Http\Controllers\Api\V1\Admin\AdminNewsController;
 use App\Http\Controllers\Api\V1\Admin\AdminFaqController;
+use App\Http\Controllers\Api\V1\Admin\AdminChildController;
 use App\Http\Controllers\Api\V1\AuthController;
 
 /*
@@ -114,5 +115,12 @@ Route::prefix('v1')->group(function () {
         Route::get('/faqs/{faq}', [AdminFaqController::class, 'show']);
         Route::put('/faqs/{faq}', [AdminFaqController::class, 'update']);
         Route::delete('/faqs/{faq}', [AdminFaqController::class, 'destroy']);
+
+        // Children
+        Route::get('/children', [AdminChildController::class, 'index']);
+        Route::post('/children', [AdminChildController::class, 'store']);
+        Route::get('/children/{child}', [AdminChildController::class, 'show']);
+        Route::put('/children/{child}', [AdminChildController::class, 'update']);
+        Route::delete('/children/{child}', [AdminChildController::class, 'destroy']);
     });
 });

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../lib/axios';
 import { DashboardStats } from '../../types';
-import { Users, Briefcase, User as UserIcon, Palette, Activity, Image } from 'lucide-react';
+import { Users, Briefcase, User as UserIcon, Baby, Palette, Activity, Image } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -70,6 +70,12 @@ const AdminDashboard = () => {
       value: stats.teachers,
       icon: UserIcon,
       color: 'bg-orange-500',
+    },
+    {
+      title: 'کودکان',
+      value: stats.children || 0,
+      icon: Baby,
+      color: 'bg-purple-500',
     },
     {
       title: 'خدمات',

@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Briefcase, MessageSquare, User, Palette, Activity, Image, Newspaper, HelpCircle, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Briefcase, MessageSquare, User, Baby, Palette, Activity, Image, Newspaper, HelpCircle, LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 const AdminLayout = () => {
@@ -18,6 +18,7 @@ const AdminLayout = () => {
     { name: 'ثبت‌نام‌ها', path: '/admin/registrations', icon: Users },
     { name: 'درخواست‌های همکاری', path: '/admin/job-applications', icon: Briefcase },
     { name: 'مربیان', path: '/admin/teachers', icon: User },
+    { name: 'کودکان', path: '/admin/children', icon: Baby },
     { name: 'خدمات', path: '/admin/services', icon: Palette },
     { name: 'فعالیت‌ها', path: '/admin/activities', icon: Activity },
     { name: 'گالری', path: '/admin/gallery', icon: Image },

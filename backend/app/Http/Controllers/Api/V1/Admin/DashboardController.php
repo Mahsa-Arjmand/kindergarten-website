@@ -7,6 +7,7 @@ use App\Models\Registration;
 use App\Models\JobApplication;
 use App\Models\ContactMessage;
 use App\Models\Teacher;
+use App\Models\Child;
 use App\Models\Service;
 use App\Models\Activity;
 use App\Models\Gallery;
@@ -37,6 +38,7 @@ class DashboardController extends Controller
                 'unread' => ContactMessage::where('is_read', false)->count(),
             ],
             'teachers' => Teacher::count(),
+            'children' => Child::count(),
             'services' => Service::count(),
             'activities' => Activity::count(),
             'gallery' => Gallery::count(),
