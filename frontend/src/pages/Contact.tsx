@@ -1,14 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import {
-  CheckCircle,
-  Mail,
-  MapPin,
-  Phone,
-  ArrowLeft,
-} from 'lucide-react';
+import { CheckCircle, Mail, MapPin, Phone, Sparkles } from 'lucide-react';
 import api from '../lib/axios';
 
 const contactSchema = z.object({
@@ -18,54 +12,35 @@ const contactSchema = z.object({
   subject: z.string().min(1, 'موضوع را انتخاب کنید'),
   message: z.string().min(10, 'پیام باید حداقل ۱۰ کاراکتر باشد'),
 });
-
 type ContactFormData = z.infer<typeof contactSchema>;
 
-const inputClass =
-  'w-full min-h-11 rounded-xl border border-border bg-white px-4 text-[14px] text-ink outline-none transition focus:border-brand-dark focus:ring-4 focus:ring-brand-light placeholder:text-subtle';
+const inputClass = 'w-full min-h-11 rounded-full border border-pink-100 bg-white px-4 text-[14px] text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-light placeholder:text-subtle';
+const textareaClass = 'w-full min-h-[120px] rounded-[1.5rem] border border-pink-100 bg-white px-4 py-3 text-[14px] text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-light placeholder:text-subtle';
+const labelClass = 'mb-1.5 block text-[13px] font-bold text-ink';
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
-  });
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ContactFormData>({ resolver: zodResolver(contactSchema) });
 
   useEffect(() => {
     document.title = 'تماس با ما - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute('content', 'اطلاعات تماس و فرم ارتباط با مهدکودک هدیه');
   }, []);
 
   const onSubmit = async (data: ContactFormData) => {
-    try {
-      await api.post('/contact-messages', data);
-      setSubmitted(true);
-      setError('');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'خطا در ارسال پیام');
-    }
+    setError('');
+    try { await api.post('/contacts', data); setSubmitted(true); } catch (e:any) { setError(e?.response?.data?.message || 'ارسال پیام با خطا مواجه شد.'); }
   };
 
   if (submitted) {
     return (
-      <main className="bg-cream">
-        <div className="container-hedieh flex min-h-[60vh] items-center justify-center py-12">
-          <div className="w-full max-w-[560px] rounded-2xl border border-border bg-white p-8 text-center shadow-sm sm:p-10">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage-light text-brand-dark">
-              <CheckCircle size={32} aria-hidden="true" />
-            </div>
-            <p className="mt-5 text-[13px] font-extrabold tracking-wide text-brand-dark">پیام شما دریافت شد</p>
-            <h1 className="mt-2 text-[22px] font-black text-ink sm:text-[26px]">پیام با موفقیت ارسال شد</h1>
-            <p className="mt-3 text-[14px] leading-7 text-muted">
-              از اینکه با مهدکودک هدیه در ارتباط هستید متشکریم. به‌زودی با شما تماس خواهیم گرفت.
-            </p>
+      <main className="bg-[#fff7fb] py-12">
+        <div className="container-hedieh">
+          <div className="mx-auto max-w-[560px] rounded-[1.75rem] border-2 border-white bg-white p-8 text-center shadow-[0_8px_24px_rgba(0,0,0,0.04)] sm:p-10">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage-light text-green-700"><CheckCircle size={32} /></div>
+            <h2 className="mt-4 text-[18px] font-extrabold text-ink">پیام شما دریافت شد</h2>
+            <p className="mt-2 text-[14px] leading-7 text-muted">به زودی با شما تماس می‌گیریم.</p>
+            <button onClick={()=>setSubmitted(false)} className="mt-6 inline-flex rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-dark">ارسال پیام دیگر</button>
           </div>
         </div>
       </main>
@@ -73,133 +48,53 @@ const Contact = () => {
   }
 
   return (
-    <main className="bg-cream">
-      <section className="border-b border-border-light bg-cream">
+    <main className="bg-[#fff7fb]">
+      <section className="bg-white">
         <div className="container-hedieh py-10 lg:py-12">
-          <p className="section-kicker">در ارتباط باشیم</p>
-          <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
-            با مهدکودک هدیه
-            <span className="text-brand-dark"> در تماس باشید.</span>
-          </h1>
-          <p className="mt-4 max-w-[520px] text-[15px] leading-8 text-muted">
-            اگر درباره ثبت‌نام، برنامه‌ها یا شرایط مهدکودک سؤالی دارید، خوشحال می‌شویم با شما صحبت کنیم.
-          </p>
+          <span className="section-kicker">ارتباط با هدیه</span>
+          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+            <h1 className="max-w-[560px] text-balance text-[30px] font-extrabold leading-[1.35] tracking-tight text-ink sm:text-[38px] lg:text-[42px]">
+              سؤالی دارید؟ <span className="text-brand">با ما حرف بزنید.</span>
+            </h1>
+            <p className="max-w-[520px] rounded-2xl border border-pink-100 bg-[#fff7fb] p-4 text-[14px] leading-7 text-muted">خوشحال می‌شویم صدای شما را بشنویم — با حوصله جواب می‌دهیم.</p>
+          </div>
         </div>
       </section>
 
-      <section className="bg-warm-white py-8 lg:py-10">
-        <div className="container-hedieh grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:gap-6">
-          {/* Contact info */}
-          <div className="rounded-2xl bg-sage-light p-6 sm:p-7">
-            <p className="text-[13px] font-extrabold tracking-wide text-brand-dark">اطلاعات تماس</p>
-            <h2 className="mt-2 text-[20px] font-black leading-7 text-ink">راه‌های ارتباط با ما</h2>
-
-            <div className="mt-6 space-y-5">
-              <div className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand-dark shadow-sm">
-                  <Phone size={18} aria-hidden="true" />
-                </div>
-                <div>
-                  <h3 className="text-[13px] font-extrabold text-ink">تلفن</h3>
-                  <p className="mt-1 text-[13.5px] leading-6 text-muted">۰۲۱-۱۲۳۴۵۶۷۸</p>
-                  <p className="text-[13.5px] leading-6 text-muted">۰۹۱۲-۱۲۳۴۵۶۷</p>
-                </div>
+      <section className="bg-[#fff7fb] py-8 lg:py-10">
+        <div className="container-hedieh grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="space-y-3">
+            <div className="rounded-[1.75rem] border-2 border-white bg-white p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
+              <h3 className="text-[11px] font-bold tracking-widest text-subtle">تماس مستقیم</h3>
+              <div className="mt-4 space-y-3 text-[14px]">
+                <a href="tel:+982100000000" className="flex items-center gap-3 rounded-full border border-pink-100 bg-[#fff7fb] px-4 py-3 font-bold text-ink hover:bg-brand-light"><Phone size={16} className="text-brand" /> <span dir="ltr">021-00000000</span></a>
+                <a href="mailto:info@hedieh-kindergarten.ir" className="flex items-center gap-3 rounded-full border border-pink-100 bg-white px-4 py-3 text-muted hover:text-ink"><Mail size={16} className="text-brand" /> <span dir="ltr">info@hedieh-kindergarten.ir</span></a>
+                <div className="flex gap-3 rounded-[1.5rem] border border-pink-100 bg-white px-4 py-3 text-muted"><MapPin size={16} className="mt-0.5 text-brand" /><span className="text-[13px] leading-6">آدرس مهدکودک در این بخش قرار می‌گیرد.</span></div>
               </div>
-
-              <div className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand-dark shadow-sm">
-                  <Mail size={18} aria-hidden="true" />
-                </div>
-                <div>
-                  <h3 className="text-[13px] font-extrabold text-ink">ایمیل</h3>
-                  <p className="mt-1 text-[13.5px] leading-6 text-muted">info@hedieh-kindergarten.ir</p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand-dark shadow-sm">
-                  <MapPin size={18} aria-hidden="true" />
-                </div>
-                <div>
-                  <h3 className="text-[13px] font-extrabold text-ink">آدرس</h3>
-                  <p className="mt-1 text-[13.5px] leading-6 text-muted">تهران، خیابان اصلی، کوچه آموزش</p>
-                </div>
-              </div>
-
-              <div className="rounded-xl bg-white/70 px-4 py-4">
-                <h3 className="text-[13px] font-extrabold text-ink">ساعات کاری</h3>
-                <p className="mt-1.5 text-[13.5px] leading-7 text-muted">
-                  شنبه تا پنجشنبه: ۷ صبح تا ۶ عصر<br />
-                  جمعه: تعطیل
-                </p>
-              </div>
+            </div>
+            <div className="rounded-[1.75rem] bg-blue-soft p-6">
+              <p className="text-[13px] font-bold text-ink">ساعت پاسخگویی</p>
+              <p className="mt-2 text-[13px] leading-6 text-muted">شنبه تا چهارشنبه ۸ تا ۱۶ — پنجشنبه ۸ تا ۱۲</p>
             </div>
           </div>
 
-          {/* Form */}
-          <div className="rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-7">
-            <p className="text-[13px] font-extrabold tracking-wide text-brand-dark">پیام شما</p>
-            <h2 className="mt-2 text-[20px] font-black text-ink">چطور می‌توانیم کمک کنیم؟</h2>
-
-            {error && (
-              <div className="mt-5 rounded-xl border border-error/20 bg-red-50 px-4 py-3 text-[13.5px] text-error">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
-              <div>
-                <label className="mb-1.5 block text-[13px] font-bold text-ink">نام و نام خانوادگی</label>
-                <input type="text" {...register('name')} className={inputClass} />
-                {errors.name && <p className="mt-1.5 text-xs font-medium text-error">{errors.name.message}</p>}
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1.5 block text-[13px] font-bold text-ink">شماره تماس</label>
-                  <input type="tel" {...register('phone')} className={inputClass} />
-                  {errors.phone && <p className="mt-1.5 text-xs font-medium text-error">{errors.phone.message}</p>}
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-[13px] font-bold text-ink">ایمیل (اختیاری)</label>
-                  <input type="email" {...register('email')} className={inputClass} />
-                  {errors.email && <p className="mt-1.5 text-xs font-medium text-error">{errors.email.message}</p>}
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-1.5 block text-[13px] font-bold text-ink">موضوع</label>
-                <select {...register('subject')} className={inputClass}>
-                  <option value="">انتخاب کنید</option>
-                  <option value="registration">ثبت‌نام</option>
-                  <option value="programs">برنامه‌ها</option>
-                  <option value="employment">استخدام</option>
-                  <option value="general">سایر موارد</option>
-                </select>
-                {errors.subject && <p className="mt-1.5 text-xs font-medium text-error">{errors.subject.message}</p>}
-              </div>
-
-              <div>
-                <label className="mb-1.5 block text-[13px] font-bold text-ink">پیام</label>
-                <textarea {...register('message')} rows={5} className={`${inputClass} py-3`} />
-                {errors.message && <p className="mt-1.5 text-xs font-medium text-error">{errors.message.message}</p>}
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                style={{ color: '#fff' }}
-                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 text-[14px] font-bold text-white shadow-sm transition hover:bg-brand-dark disabled:opacity-50"
-              >
-                {isSubmitting ? 'در حال ارسال...' : 'ارسال پیام'}
-                {!isSubmitting && <ArrowLeft size={17} aria-hidden="true" />}
-              </button>
-            </form>
-          </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="rounded-[1.75rem] border-2 border-white bg-white p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] sm:p-8">
+            <h2 className="flex items-center gap-2 text-[16px] font-extrabold text-ink"><Sparkles size={16} className="text-brand" /> فرم تماس</h2>
+            {error && <div className="mt-4 rounded-[1.25rem] border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700">{error}</div>}
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div><label className={labelClass}>نام *</label><input {...register('name')} placeholder="نام شما" className={inputClass} /><p className="mt-1 text-[12px] text-red-600">{errors.name?.message}</p></div>
+              <div><label className={labelClass}>شماره تماس *</label><input {...register('phone')} placeholder="09..." className={inputClass} dir="ltr" /><p className="mt-1 text-[12px] text-red-600">{errors.phone?.message}</p></div>
+              <div className="sm:col-span-2"><label className={labelClass}>ایمیل (اختیاری)</label><input {...register('email')} placeholder="email@example.com" className={inputClass} dir="ltr" /></div>
+              <div className="sm:col-span-2"><label className={labelClass}>موضوع *</label><select {...register('subject')} className={inputClass}><option value="">انتخاب کنید</option><option value="registration">ثبت‌نام</option><option value="visit">بازدید</option><option value="question">سؤال</option><option value="other">سایر</option></select><p className="mt-1 text-[12px] text-red-600">{errors.subject?.message}</p></div>
+              <div className="sm:col-span-2"><label className={labelClass}>پیام *</label><textarea {...register('message')} placeholder="پیام خود را بنویسید..." className={textareaClass} /><p className="mt-1 text-[12px] text-red-600">{errors.message?.message}</p></div>
+            </div>
+            <button type="submit" disabled={isSubmitting} className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand px-6 text-[14px] font-bold text-white shadow-[0_8px_20px_rgba(236,42,134,0.25)] transition hover:bg-brand-dark disabled:opacity-50">
+              {isSubmitting ? 'در حال ارسال...' : 'ارسال پیام'}
+            </button>
+          </form>
         </div>
       </section>
     </main>
   );
 };
-
 export default Contact;
