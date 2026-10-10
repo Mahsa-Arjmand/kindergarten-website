@@ -1,142 +1,86 @@
-import { useEffect, useState } from 'react';
-import { Image as ImageIcon } from 'lucide-react';
-import api from '../lib/axios';
-import { Gallery as GalleryType } from '../types';
+import { useState } from 'react';
+import { Sparkles } from 'lucide-react';
 
-const API_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
-
-const getStorageUrl = (path?: string | null) => {
-  if (!path) return '';
-  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
+type GalleryItem = {
+  id: number;
+  title: string;
+  category: string;
+  src: string;
+  pos?: string;
 };
 
+const galleryItems: GalleryItem[] = [
+  { id: 1, title: 'هدیه در دست‌های کوچک — آثار رنگارنگ', category: 'activities', src: '/gallery/photo_30321495691_x.jpg' },
+  { id: 2, title: 'پروانه‌های دست‌ساز — خلاقیت با سازه', category: 'activities', src: '/gallery/photo_24470815067_y.jpg', pos: 'center 22%' },
+  { id: 3, title: 'هم‌بازی و سازه‌های بلند', category: 'activities', src: '/gallery/photo_24282518452_y.jpg' },
+  { id: 4, title: 'کاردستی‌های رخت و ماشین لباسشویی', category: 'classes', src: '/gallery/photo_24493646207_y.jpg' },
+  { id: 5, title: 'بازی حسی — شن و آب', category: 'activities', src: '/gallery/photo_24066637599_y.jpg' },
+  { id: 6, title: 'خلبان‌های کوچک — نقش‌آفرینی', category: 'celebrations', src: '/gallery/photo_24470815638_y.jpg', pos: 'center 22%' },
+  { id: 7, title: 'پلیس کوچولوی هدیه', category: 'celebrations', src: '/gallery/photo_30321510530_x.jpg' },
+  { id: 8, title: 'پزشکان آینده — بازی نقش', category: 'activities', src: '/gallery/photo_23862252696_y.jpg', pos: 'center 22%' },
+  { id: 9, title: 'دعای کودکانه', category: 'celebrations', src: '/gallery/photo_23691628869_y.jpg' },
+];
+
+const categories = [
+  { value: 'all', label: 'همه' },
+  { value: 'activities', label: 'فعالیت‌ها' },
+  { value: 'classes', label: 'کلاس‌ها' },
+  { value: 'celebrations', label: 'جشن‌ها' },
+  { value: 'environment', label: 'محیط مهدکودک' },
+];
+
 const Gallery = () => {
-  const [gallery, setGallery] = useState<GalleryType[]>([]);
   const [filter, setFilter] = useState('all');
-  const [loading, setLoading] = useState(true);
-
-  const categories = [
-    { value: 'all', label: 'همه' },
-    { value: 'classroom', label: 'کلاس درس' },
-    { value: 'playground', label: 'محیط بازی' },
-    { value: 'activities', label: 'فعالیت‌ها' },
-    { value: 'events', label: 'رویدادها' },
-    { value: 'food', label: 'غذا' },
-  ];
-
-  useEffect(() => {
-    document.title = 'گالری تصاویر - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute(
-        'content',
-        'گالری تصاویر مهدکودک هدیه؛ نگاهی به محیط، کلاس‌ها، فعالیت‌ها و لحظه‌های کودکان'
-      );
-  }, []);
-
-  useEffect(() => {
-    const fetchGallery = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get('/gallery', {
-          params: filter !== 'all' ? { category: filter } : {},
-        });
-        console.log('Gallery data received:', response.data);
-        setGallery(response.data);
-      } catch (error) {
-        console.error('Error fetching gallery:', error);
-        setGallery([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchGallery();
-  }, [filter]);
+  const filtered = filter === 'all' ? galleryItems : galleryItems.filter(g => g.category === filter);
 
   return (
-    <main className="bg-cream">
-      {/* Header */}
-      <section className="border-b border-border-light bg-cream">
+    <main className="bg-[#fff7fb]">
+      <section className="bg-white">
         <div className="container-hedieh py-10 lg:py-12">
-          <p className="section-kicker">گالری هدیه</p>
-          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-10">
-            <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
-              گوشه‌ای از
-              <span className="text-brand-dark"> دنیای ما.</span>
-            </h1>
-            <p className="max-w-[520px] text-[15px] leading-8 text-muted">
-              از محیط مهدکودک تا فعالیت‌ها و جشن‌های کودکانه؛ اینجا می‌توانید بخشی از روزهای ما را ببینید.
-            </p>
+          <span className="section-kicker">لحظه‌های هدیه</span>
+          <h1 className="max-w-[560px] text-balance text-[30px] font-extrabold leading-[1.35] tracking-tight text-ink sm:text-[38px] lg:text-[42px]">
+            گوشه‌ای از <span className="text-brand">دنیای رنگارنگ ما.</span>
+          </h1>
+          <p className="mt-3 max-w-[520px] rounded-2xl border border-pink-100 bg-[#fff7fb] p-4 text-[14px] leading-7 text-muted">
+            هر تصویر یک خاطره شاد از بازی، یادگیری و دوستی‌های کودکانه در هدیه است.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {categories.map(c=>(
+              <button key={c.value} onClick={()=>setFilter(c.value)} className={`rounded-full border px-4 py-1.5 text-[13px] font-bold transition ${filter===c.value ? 'border-brand bg-brand text-white shadow-[0_8px_20px_rgba(236,42,134,0.25)]' : 'border-pink-100 bg-white text-muted hover:border-brand hover:text-brand'}`}>
+                {c.label}
+              </button>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Filters - pill style */}
-      <section className="border-b border-border-light bg-white">
-        <div className="container-hedieh py-4">
-          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
-            {categories.map((category) => {
-              const active = filter === category.value;
-              return (
-                <button
-                  key={category.value}
-                  type="button"
-                  onClick={() => setFilter(category.value)}
-                  className={[
-                    'shrink-0 rounded-full px-4 py-1.5 text-[13px] font-bold transition',
-                    active
-                      ? 'bg-ink text-white shadow-sm'
-                      : 'border border-border bg-white text-muted hover:border-ink/15 hover:bg-warm-white hover:text-ink',
-                  ].join(' ')}
-                >
-                  {category.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Gallery */}
-      <section className="py-8 lg:py-10">
+      <section className="bg-[#fff7fb] py-8 lg:py-10">
         <div className="container-hedieh">
-          {loading ? (
-            <div className="flex min-h-[280px] items-center justify-center">
-              <div className="h-9 w-9 animate-spin rounded-full border-2 border-brand-light border-t-brand-dark" />
-            </div>
-          ) : gallery.length === 0 ? (
-            <div className="flex min-h-[260px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-white px-4 py-10 text-center">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cream text-subtle">
-                <ImageIcon size={20} aria-hidden="true" />
-              </span>
-              <p className="mt-3 text-[13.5px] font-medium text-muted">تصویری در این دسته‌بندی وجود ندارد.</p>
+          {filtered.length===0 ? (
+            <div className="mx-auto max-w-xl rounded-[1.75rem] border-2 border-dashed border-pink-100 bg-white px-6 py-12 text-center">
+              <Sparkles className="mx-auto text-brand" size={24} /><p className="mt-3 text-[14px] text-muted">تصویری در این دسته یافت نشد.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-              {gallery.map((item) => (
-                <div
-                  key={item.id}
-                  className="group relative overflow-hidden rounded-2xl bg-sage-light shadow-sm aspect-square"
-                >
-                  <img
-                    src={getStorageUrl(item.image_path)}
-                    alt={item.caption}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
-                  />
-                  <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/15" />
-                  <div className="absolute bottom-2.5 right-2.5 max-w-[85%] translate-y-1 rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-bold text-ink opacity-0 shadow-sm transition group-hover:translate-y-0 group-hover:opacity-100">
-                    {item.caption}
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              {filtered.map(item=>(
+                <div key={item.id} className="group flex flex-col overflow-hidden rounded-[1.75rem] border-2 border-white bg-white shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
+                  <div className="relative overflow-hidden aspect-[4/3] bg-[#fff7fb]">
+                    <img src={item.src} alt={item.title} width={800} height={600} loading="lazy" decoding="async" style={{ objectPosition: item.pos || 'center' }} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                  </div>
+                  <div className="p-3">
+                    <p className="text-[13px] font-bold leading-5 text-ink">{item.title}</p>
+                    <p className="mt-1 text-[11px] font-medium text-subtle">{categories.find(c=>c.value===item.category)?.label}</p>
                   </div>
                 </div>
               ))}
             </div>
           )}
+          <div className="mt-8 rounded-[1.75rem] border-2 border-white bg-white p-6 text-center shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
+            <p className="text-[13px] leading-6 text-muted">این تصاویر واقعی از روزهای شاد هدیه هستند — هر روز یک تجربه تازه.</p>
+          </div>
         </div>
       </section>
     </main>
   );
 };
-
 export default Gallery;

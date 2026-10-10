@@ -179,11 +179,15 @@ const Home = () => {
         <div className="container-hedieh grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="relative order-2 lg:order-1">
             <div className="overflow-hidden rounded-[1.75rem] border-[6px] border-white bg-white shadow-[0_12px_32px_rgba(30,167,255,0.15)]">
-              {gallery[1]?.image_path ? (
-                <img src={getStorageUrl(gallery[1].image_path)} alt={gallery[1].title || 'محیط هدیه'} width={1200} height={900} loading="lazy" decoding="async" className="aspect-[4/3.1] w-full object-cover" />
-              ) : (
-                <div className="flex aspect-[4/3.1] items-center justify-center bg-blue-light text-sm text-muted">محیط شاد هدیه</div>
-              )}
+              <img
+                src="/home-about-animated.jpg"
+                alt="کودکی فقط مقدمه نیست؛ خودش یک دنیای ارزشمند است — اتاق بازی کارتونی رنگارنگ هدیه"
+                width={1000}
+                height={800}
+                loading="lazy"
+                decoding="async"
+                className="aspect-[4/3.1] w-full object-cover object-center"
+              />
             </div>
             <div className="absolute -bottom-4 -right-2 rotate-2 rounded-2xl border-2 border-white bg-yellow px-4 py-3 shadow-sm">
               <Palette size={18} className="text-amber-900" aria-hidden="true" />
@@ -410,28 +414,26 @@ const Home = () => {
             </Link>
           </div>
 
-          {galleryState.loading ? (
-            <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className={['animate-pulse rounded-[1.5rem] bg-pink-100', i === 1 ? 'col-span-2 row-span-2 min-h-[300px] md:min-h-[480px]' : 'min-h-[150px] md:min-h-[232px]'].join(' ')} />
-              ))}
-            </div>
-          ) : gallery.length > 0 ? (
-            <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-              {gallery.map((item, index) => (
-                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className={['group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm', index === 0 ? 'col-span-2 row-span-2' : index === 3 ? 'col-span-2' : ''].join(' ')}>
-                  <img src={getStorageUrl(item.image_path)} alt={item.title} width={1000} height={700} loading="lazy" decoding="async" className={['h-full w-full object-cover transition duration-500 group-hover:scale-105', index === 0 ? 'min-h-[300px] md:min-h-[480px]' : 'min-h-[150px] md:min-h-[232px]'].join(' ')} />
-                  <div className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
-                    {item.title}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-6 rounded-[1.5rem] border-2 border-dashed border-pink-100 bg-white px-6 py-10 text-center">
-              <p className="text-[13.5px] text-muted">{galleryState.error ? 'امکان دریافت تصاویر گالری وجود نداشت.' : 'هنوز تصویری ثبت نشده است.'}</p>
-            </div>
-          )}
+          {/* Clean uniform — no empty white bars, perfectly aligned */}
+          <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3">
+            {[
+              { src: '/gallery/photo_30321495691_x.jpg', title: 'هدیه در دست‌های کوچک' },
+              { src: '/gallery/photo_24470815067_y.jpg', title: 'پروانه‌های رنگارنگ', pos: 'center 22%' },
+              { src: '/gallery/photo_24282518452_y.jpg', title: 'سازه‌های بلند' },
+              { src: '/gallery/photo_24493646207_y.jpg', title: 'کاردستی‌ها' },
+              { src: '/gallery/photo_24066637599_y.jpg', title: 'بازی حسی' },
+              { src: '/gallery/photo_23691628869_y.jpg', title: 'دعای کودکانه' },
+            ].map((item: any) => (
+              <Link key={item.src} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className="group flex flex-col overflow-hidden rounded-[1.75rem] border-2 border-white bg-white shadow-[0_8px_24px_rgba(0,0,0,0.04)] transition hover:-translate-y-1 hover:shadow-[0_16px_32px_rgba(236,42,134,0.10)]">
+                <div className="relative overflow-hidden aspect-[4/3] bg-[#fff7fb]">
+                  <img src={item.src} alt={item.title} width={800} height={600} loading="lazy" decoding="async" style={{ objectPosition: item.pos || 'center' }} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                </div>
+                <div className="px-4 py-3">
+                  <p className="text-center text-[12px] font-bold leading-5 text-ink">{item.title}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
