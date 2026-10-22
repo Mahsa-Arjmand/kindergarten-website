@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../lib/axios';
 import { Plus, Edit, Trash2, Search, X, Upload } from 'lucide-react';
+import { toJalaliLocale } from '../../lib/dateUtils';
 
 interface News {
   id: number;
@@ -232,7 +233,7 @@ const AdminNews = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-800">{item.title}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{item.publish_date}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{toJalaliLocale(item.publish_date)}</td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
                       {getStatusText(item.status)}

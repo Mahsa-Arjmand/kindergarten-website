@@ -1,6 +1,15 @@
 import { ArrowLeft, BookOpen, Heart, ShieldCheck, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import api from '../lib/axios';
+import type { Gallery } from '../types';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const getStorageUrl = (path?: string | null) => {
+  if (!path) return '';
+  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
+  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
+};
 
 const values = [
   {
@@ -30,9 +39,22 @@ const values = [
 ];
 
 const About = () => {
+  const [gallery, setGallery] = useState<Gallery[]>([]);
+
   useEffect(() => {
-    document.title = 'درباره ما - مهدکودک هدیه';
-    document.querySelector('meta[name="description"]')?.setAttribute('content', 'آشنایی با مهدکودک هدیه - بیش از ۱۰ سال تجربه در آموزش کودکان با محیطی امن و شاد');
+    document.title = 'درباره مهدکودک هدیه | ۲۰ سال تجربه در منظریه زنجان | رویکرد آموزشی ما';
+    document.querySelector('meta[name="description"]')?.setAttribute('content', 'مهدکودک هدیه در منظریه زنجان با بیش از ۲۰ سال تجربه در آموزش کودکان. آشنایی با رویکرد آموزشی، تیم مربیان و ارزش‌های ما. ثبت‌نام آنلاین فرزندان شما.');
+
+    const fetchGallery = async () => {
+      try {
+        const response = await api.get('/gallery');
+        setGallery(Array.isArray(response.data) ? response.data.slice(0, 3) : []);
+      } catch (error) {
+        console.error('Error fetching gallery:', error);
+        setGallery([]);
+      }
+    };
+    fetchGallery();
   }, []);
 
   return (
@@ -42,7 +64,7 @@ const About = () => {
         <div className="container-hedieh grid items-center gap-10 py-10 lg:grid-cols-[1.05fr_0.85fr] lg:gap-14 lg:py-12">
           <div>
             <p className="section-kicker">درباره مهدکودک هدیه</p>
-            <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
+            <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
               جایی که
               <span className="text-brand-dark"> کودکی کردن</span> را جدی می‌گیریم.
             </h1>
@@ -61,7 +83,11 @@ const About = () => {
 
           <div className="mx-auto w-full max-w-[480px]">
             <div className="overflow-hidden rounded-[1.5rem] border border-border bg-white shadow-[0_16px_40px_rgba(31,26,23,0.07)]">
-              <div className="aspect-[4/3.2] w-full bg-sage-light" />
+              {gallery[0]?.image_path ? (
+                <img src={getStorageUrl(gallery[0].image_path)} alt="محیط مهدکودک هدیه" width={800} height={640} loading="lazy" decoding="async" className="aspect-[4/3.2] w-full object-cover" />
+              ) : (
+                <div className="aspect-[4/3.2] w-full bg-sage-light" />
+              )}
             </div>
             <div className="mx-auto -mt-6 flex w-fit items-center gap-3 rounded-full border border-border bg-white px-4 py-2 shadow-sm">
               <span className="text-[18px] font-black text-brand-dark">۱۰+</span>
@@ -76,7 +102,7 @@ const About = () => {
         <div className="container-hedieh grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
           <div>
             <p className="section-kicker">نگاه ما</p>
-            <h2 className="max-w-[380px] text-balance text-[26px] font-black leading-[1.45] tracking-tight text-ink sm:text-[30px]">
+            <h2 className="max-w-[380px] text-balance text-[22px] font-black leading-[1.45] tracking-tight text-ink sm:text-[26px]">
               کودکی، فقط آماده شدن برای آینده نیست.
             </h2>
           </div>
@@ -123,7 +149,7 @@ const About = () => {
         <div className="container-hedieh">
           <div className="mx-auto max-w-[720px] rounded-2xl border border-border bg-white px-6 py-8 text-center shadow-sm sm:px-10 sm:py-10">
             <p className="section-kicker justify-center">چشم‌انداز ما</p>
-            <h2 className="mx-auto mt-2 max-w-[600px] text-balance text-[22px] font-black leading-[1.6] text-ink sm:text-[26px]">
+            <h2 className="mx-auto mt-2 max-w-[600px] text-balance text-[20px] font-black leading-[1.6] text-ink sm:text-[24px]">
               محیطی که هر کودک احساس کند دیده می‌شود، شنیده می‌شود و فرصت رشد دارد.
             </h2>
             <p className="mx-auto mt-4 max-w-[560px] text-[14px] leading-7 text-muted">
@@ -140,7 +166,7 @@ const About = () => {
             <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-[13px] font-bold tracking-wide text-white/70">مهدکودک هدیه</p>
-                <h2 className="mt-2 text-[22px] font-black leading-[1.5] sm:text-[26px]">دوست دارید فضای هدیه را از نزدیک ببینید؟</h2>
+                <h2 className="mt-2 text-[20px] font-black leading-[1.5] sm:text-[24px]">دوست دارید فضای هدیه را از نزدیک ببینید؟</h2>
               </div>
               <Link
                 to="/contact"

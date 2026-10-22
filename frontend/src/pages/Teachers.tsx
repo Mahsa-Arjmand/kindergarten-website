@@ -44,9 +44,9 @@ const Teachers = () => {
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">تیم آموزشی</p>
           <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-10">
-            <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
-             افرادی که
-              <span className="text-brand-dark"> کنار کودک شما هستند.</span>
+            <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
+             تیم حرفه‌ای
+              <span className="text-brand-dark"> هدیه</span>
             </h1>
             <p className="max-w-[520px] text-[15px] leading-8 text-muted">
               مربیان بخش مهمی از تجربه کودک در مهدکودک هستند. تیم ما تلاش می‌کند با دانش، توجه و همراهی، محیطی قابل اعتماد برای کودکان ایجاد کند.

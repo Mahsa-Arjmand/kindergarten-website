@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, CalendarDays, Newspaper } from 'lucide-react';
 import api from '../lib/axios';
 import { News as NewsType } from '../types';
+import { toJalaliLocale } from '../lib/dateUtils';
 
 const API_URL =
   import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
@@ -15,6 +16,7 @@ const getStorageUrl = (path?: string | null) => {
 const News = () => {
   const [news, setNews] = useState<NewsType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedNews, setSelectedNews] = useState<NewsType | null>(null);
 
   useEffect(() => {
     document.title = 'اخبار و اطلاعیه‌ها - مهدکودک هدیه';
@@ -41,7 +43,7 @@ const News = () => {
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">اخبار و اطلاعیه‌ها</p>
-          <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
+          <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
             آنچه در
             <span className="text-brand-dark"> هدیه</span> می‌گذرد.
           </h1>
@@ -88,7 +90,7 @@ const News = () => {
                   <div className="p-5">
                     <div className="flex items-center gap-1.5 text-[12px] font-bold text-subtle">
                       <CalendarDays size={13} aria-hidden="true" />
-                      {new Date(item.publish_date).toLocaleDateString('fa-IR')}
+                      {toJalaliLocale(item.publish_date)}
                     </div>
                     <h2 className="mt-2 line-clamp-2 text-[16px] font-extrabold leading-7 text-ink">
                       {item.title}
@@ -96,6 +98,7 @@ const News = () => {
                     <p className="mt-2 line-clamp-3 text-[13.5px] leading-7 text-muted">{item.content}</p>
                     <button
                       type="button"
+                      onClick={() => setSelectedNews(item)}
                       className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-bold text-brand-dark transition hover:text-brand"
                     >
                       ادامه مطلب
@@ -108,6 +111,42 @@ const News = () => {
           )}
         </div>
       </section>
+
+      {/* News Detail Modal */}
+      {selectedNews && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-ink">{selectedNews.title}</h2>
+                <button
+                  onClick={() => setSelectedNews(null)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <ArrowLeft size={20} className="rotate-180" />
+                </button>
+              </div>
+
+              {selectedNews.image_path && (
+                <img
+                  src={getStorageUrl(selectedNews.image_path)}
+                  alt={selectedNews.title}
+                  className="w-full rounded-xl mb-6"
+                />
+              )}
+
+              <div className="flex items-center gap-2 text-sm text-muted mb-4">
+                <CalendarDays size={14} />
+                {toJalaliLocale(selectedNews.publish_date)}
+              </div>
+
+              <div className="prose prose-sm max-w-none text-ink whitespace-pre-wrap">
+                {selectedNews.content}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 };

@@ -18,12 +18,12 @@ const Services = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'خدمات - مهدکودک هدیه';
+    document.title = 'خدمات مهدکودک هدیه | شیرخوار، نوپا و پیش‌دبستانی در منظریه زنجان';
     document
       .querySelector('meta[name="description"]')
       ?.setAttribute(
         'content',
-        'خدمات و برنامه‌های آموزشی مهدکودک هدیه برای رشد، یادگیری و شکوفایی کودکان'
+        'خدمات مهدکودک هدیه در منظریه زنجان: برنامه شیرخوار نوزاد تا ۲ سال، نوپا ۲ تا ۴ سال، پیش‌دبستانی ۴ تا ۶ سال. با مربیان حرفه‌ای و محیطی امن. ثبت‌نام آنلاین.'
       );
 
     const fetchServices = async () => {
@@ -47,7 +47,7 @@ const Services = () => {
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">برنامه‌های مهدکودک</p>
           <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-10">
-            <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
+            <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
               برنامه‌هایی برای
               <span className="text-brand-dark"> رشد و تجربه کردن.</span>
             </h1>

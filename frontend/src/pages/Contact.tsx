@@ -37,10 +37,10 @@ const Contact = () => {
   });
 
   useEffect(() => {
-    document.title = 'تماس با ما - مهدکودک هدیه';
+    document.title = 'تماس با مهدکودک هدیه | آدرس و شماره تماس در منظریه زنجان | ثبت‌نام حضوری';
     document
       .querySelector('meta[name="description"]')
-      ?.setAttribute('content', 'اطلاعات تماس و فرم ارتباط با مهدکودک هدیه');
+      ?.setAttribute('content', 'تماس با مهدکودک هدیه در منظریه زنجان: آدرس دقیق، شماره تلفن و ساعات کاری. برای ثبت‌نام حضوری یا سوالات می‌توانید با ما تماس بگیرید یا به مهدکودک مراجعه کنید.');
   }, []);
 
   const onSubmit = async (data: ContactFormData) => {
@@ -62,7 +62,7 @@ const Contact = () => {
               <CheckCircle size={32} aria-hidden="true" />
             </div>
             <p className="mt-5 text-[13px] font-extrabold tracking-wide text-brand-dark">پیام شما دریافت شد</p>
-            <h1 className="mt-2 text-[22px] font-black text-ink sm:text-[26px]">پیام با موفقیت ارسال شد</h1>
+            <h1 className="mt-2 text-[20px] font-black text-ink sm:text-[24px]">پیام با موفقیت ارسال شد</h1>
             <p className="mt-3 text-[14px] leading-7 text-muted">
               از اینکه با مهدکودک هدیه در ارتباط هستید متشکریم. به‌زودی با شما تماس خواهیم گرفت.
             </p>
@@ -77,7 +77,7 @@ const Contact = () => {
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">در ارتباط باشیم</p>
-          <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
+          <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
             با مهدکودک هدیه
             <span className="text-brand-dark"> در تماس باشید.</span>
           </h1>
@@ -101,18 +101,8 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="text-[13px] font-extrabold text-ink">تلفن</h3>
-                  <p className="mt-1 text-[13.5px] leading-6 text-muted">۰۲۱-۱۲۳۴۵۶۷۸</p>
-                  <p className="text-[13.5px] leading-6 text-muted">۰۹۱۲-۱۲۳۴۵۶۷</p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand-dark shadow-sm">
-                  <Mail size={18} aria-hidden="true" />
-                </div>
-                <div>
-                  <h3 className="text-[13px] font-extrabold text-ink">ایمیل</h3>
-                  <p className="mt-1 text-[13.5px] leading-6 text-muted">info@hedieh-kindergarten.ir</p>
+                  <p className="mt-1 text-[13.5px] leading-6 text-muted">024-33784937</p>
+                  <p className="text-[13.5px] leading-6 text-muted">0912-7402532</p>
                 </div>
               </div>
 
@@ -122,7 +112,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="text-[13px] font-extrabold text-ink">آدرس</h3>
-                  <p className="mt-1 text-[13.5px] leading-6 text-muted">تهران، خیابان اصلی، کوچه آموزش</p>
+                  <p className="mt-1 text-[13.5px] leading-6 text-muted">زنجان، شهرک منظریه، نسیم ۱۰ غربی (خیابان شهید علیرضا حق وردی)، قطعه ۱۸۴، کودکستان هدیه</p>
                 </div>
               </div>
 
@@ -130,7 +120,7 @@ const Contact = () => {
                 <h3 className="text-[13px] font-extrabold text-ink">ساعات کاری</h3>
                 <p className="mt-1.5 text-[13.5px] leading-7 text-muted">
                   شنبه تا پنجشنبه: ۷ صبح تا ۶ عصر<br />
-                  جمعه: تعطیل
+                  جمعه و تعطیلات رسمی: تعطیل
                 </p>
               </div>
             </div>

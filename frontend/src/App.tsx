@@ -23,6 +23,7 @@ import AdminActivities from './pages/admin/AdminActivities';
 import AdminGallery from './pages/admin/AdminGallery';
 import AdminNews from './pages/admin/AdminNews';
 import AdminFaqs from './pages/admin/AdminFaqs';
+import AdminContactMessages from './pages/admin/AdminContactMessages';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="registrations" element={<AdminRegistrations />} />
           <Route path="job-applications" element={<AdminJobApplications />} />
+          <Route path="contact-messages" element={<AdminContactMessages />} />
           <Route path="teachers" element={<AdminTeachers />} />
           <Route path="children" element={<AdminChildren />} />
           <Route path="services" element={<AdminServices />} />

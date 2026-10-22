@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\V1\Admin\AdminGalleryController;
 use App\Http\Controllers\Api\V1\Admin\AdminNewsController;
 use App\Http\Controllers\Api\V1\Admin\AdminFaqController;
 use App\Http\Controllers\Api\V1\Admin\AdminChildController;
+use App\Http\Controllers\Api\V1\Admin\AdminContactMessageController;
 use App\Http\Controllers\Api\V1\AuthController;
 
 /*
@@ -122,5 +123,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/children/{child}', [AdminChildController::class, 'show']);
         Route::put('/children/{child}', [AdminChildController::class, 'update']);
         Route::delete('/children/{child}', [AdminChildController::class, 'destroy']);
+
+        // Contact Messages
+        Route::get('/contact-messages', [AdminContactMessageController::class, 'index']);
+        Route::get('/contact-messages/{contactMessage}', [AdminContactMessageController::class, 'show']);
+        Route::delete('/contact-messages/{contactMessage}', [AdminContactMessageController::class, 'destroy']);
     });
 });
