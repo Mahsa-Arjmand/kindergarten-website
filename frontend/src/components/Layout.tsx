@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowLeft, ChevronDown, Mail, MapPin, Menu, Phone, X } from 'lucide-react';
+import MapLocation from './MapLocation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -154,7 +155,7 @@ const Layout = ({ children }: LayoutProps) => {
             <div className="flex flex-1 justify-center px-2 xl:hidden">
               <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-pink-100 bg-white px-2.5 py-1 text-[10px] font-bold leading-none text-brand shadow-sm sm:px-3 sm:text-[11px]">
                 کودکستان و پیش‌دبستانی هدیه
-                <span className="hidden sm:inline font-medium text-subtle">• از ۱۳۹۲</span>
+                <span className="hidden sm:inline font-medium text-subtle">• از ۱۳۸۴</span>
               </span>
             </div>
 
@@ -383,17 +384,33 @@ const Layout = ({ children }: LayoutProps) => {
             <div>
               <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">ارتباط با ما</h2>
               <div className="mt-4 space-y-3 text-[13.5px] text-muted">
-                <a href="tel:+982100000000" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="تماس تلفنی با مهدکودک هدیه">
+                <a href="tel:+989127402532" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="تماس تلفنی با مهدکودک هدیه">
                   <Phone size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
-                  <span dir="ltr">021-00000000</span>
+                  <span dir="ltr">09127402532</span>
                 </a>
-                <a href="mailto:info@hedieh-kindergarten.ir" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="ارسال ایمیل به مهدکودک هدیه">
+                <a href="mailto:info@hediyeh-kd.ir" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="ایمیل مهدکودک هدیه">
                   <Mail size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
-                  <span dir="ltr">info@hedieh-kindergarten.ir</span>
+                  <span>info@hediyeh-kd.ir</span>
                 </a>
                 <div className="flex items-start gap-2.5">
-                  <MapPin size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>آدرس مهدکودک در این بخش قرار می‌گیرد.</span>
+                  <p className="text-[12px] leading-6 text-muted">ساعات کاری: شنبه تا پنجشنبه ۷ صبح تا ۶ عصر</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 border-t border-border-light pt-8">
+            <div className="grid gap-8 md:grid-cols-2">
+              <div>
+                <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">موقعیت ما</h2>
+                <div className="mt-4">
+                  <MapLocation height="180px" width="80%" />
+                  <div className="mt-3 flex items-start gap-2.5 text-[13.5px] text-muted">
+                    <MapPin size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
+                    <span className="text-[12px] leading-6">
+                      زنجان، شهرک منظریه، نسیم ۱۰ غربی (خیابان شهید علیرضا حق وردی)، قطعه ۱۸۴
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

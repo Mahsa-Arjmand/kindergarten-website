@@ -47,7 +47,7 @@ const Activities = () => {
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">روزهای کودکانه</p>
           <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-10">
-            <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
+            <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
               هر روز، فرصتی برای
               <span className="text-brand-dark"> کشف کردن.</span>
             </h1>

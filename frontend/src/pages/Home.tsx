@@ -36,13 +36,18 @@ const Home = () => {
   const [galleryState, setGalleryState] = useState<SectionState>(initialSectionState);
 
   useEffect(() => {
+    document.title = 'مهدکودک هدیه | بهترین مهدکودک و پیش‌دبستانی در منظریه زنجان | ثبت‌نام آنلاین';
+    document.querySelector('meta[name="description"]')?.setAttribute('content', 'مهدکودک هدیه در منظریه زنجان: خدمات شیرخوار، نوپا و پیش‌دبستانی با مربیان متخصص. محیطی امن و شاد برای کودکان ۲ تا ۶ سال. ثبت‌نام آنلاین و مشاهده برنامه‌ها.');
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     const fetchData = async () => {
       const requests = [
         { request: api.get('/services'), onSuccess: (data: unknown) => { if (!cancelled) { setServices(Array.isArray(data) ? (data as Service[]).slice(0, 3) : []); setServiceState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setServices([]); setServiceState({ loading: false, error: true }); } } },
         { request: api.get('/activities'), onSuccess: (data: unknown) => { if (!cancelled) { setActivities(Array.isArray(data) ? (data as Activity[]).slice(0, 4) : []); setActivityState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setActivities([]); setActivityState({ loading: false, error: true }); } } },
         { request: api.get('/teachers'), onSuccess: (data: unknown) => { if (!cancelled) { setTeachers(Array.isArray(data) ? (data as Teacher[]).slice(0, 3) : []); setTeacherState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setTeachers([]); setTeacherState({ loading: false, error: true }); } } },
-        { request: api.get('/gallery'), onSuccess: (data: unknown) => { if (!cancelled) { setGallery(Array.isArray(data) ? (data as Gallery[]).slice(0, 6) : []); setGalleryState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setGallery([]); setGalleryState({ loading: false, error: true }); } } },
+        { request: api.get('/gallery'), onSuccess: (data: unknown) => { if (!cancelled) { setGallery(Array.isArray(data) ? (data as Gallery[]).slice(0, 4) : []); setGalleryState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setGallery([]); setGalleryState({ loading: false, error: true }); } } },
       ];
       await Promise.all(requests.map(async ({ request, onSuccess, onError }) => { try { const r = await request; onSuccess(r.data); } catch { onError(); } }));
     };
@@ -71,10 +76,10 @@ const Home = () => {
             <div className="mb-4 hidden items-center gap-2 rounded-full border border-pink-100 bg-white px-3 py-1.5 text-[12px] font-bold text-brand shadow-sm xl:inline-flex">
               <Star size={14} className="fill-brand text-brand" aria-hidden="true" />
               کودکستان و پیش‌دبستانی هدیه
-              <span className="text-subtle font-medium">• از ۱۳۹۲</span>
+              <span className="text-subtle font-medium">• از ۱۳۸۴</span>
             </div>
 
-            <h1 id="hero-title" className="max-w-[560px] text-balance text-[32px] font-extrabold leading-[1.25] tracking-tight text-ink sm:text-[38px] lg:text-[44px]">
+            <h1 id="hero-title" className="max-w-[560px] text-balance text-[26px] font-extrabold leading-[1.25] tracking-tight text-ink sm:text-[30px] lg:text-[34px]">
               مکانی برای
               <span className="relative mx-1.5 inline-block">
                 <span className="relative z-10 text-brand">یاد گرفتن</span>
@@ -194,7 +199,7 @@ const Home = () => {
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold tracking-widest text-blue border border-sky-100">
               <Sparkles size={12} aria-hidden="true" /> درباره هدیه
             </span>
-            <h2 id="about-title" className="mt-3 max-w-[520px] text-balance text-[26px] font-extrabold leading-[1.4] text-ink sm:text-[30px]">
+            <h2 id="about-title" className="mt-3 max-w-[520px] text-balance text-[22px] font-extrabold leading-[1.4] text-ink sm:text-[26px]">
               کودکی فقط مقدمه نیست؛
               <span className="text-blue"> خودش یک دنیای ارزشمند است.</span>
             </h2>
@@ -213,7 +218,7 @@ const Home = () => {
         <div className="container-hedieh">
           <div className="mx-auto max-w-2xl text-center">
             <span className="section-kicker mx-auto">● آنچه ارائه می‌دهیم</span>
-            <h2 id="services-title" className="mx-auto text-[26px] font-extrabold tracking-tight text-ink sm:text-[30px]">برنامه‌هایی برای یک کودکی پربار</h2>
+            <h2 id="services-title" className="mx-auto text-[22px] font-extrabold tracking-tight text-ink sm:text-[26px]">برنامه‌هایی برای یک کودکی پربار</h2>
             <p className="mx-auto mt-2 max-w-[520px] text-[14px] leading-7 text-muted">هر روز با قصه، هنر، موسیقی و بازی — متناسب با دنیای کودک</p>
           </div>
 
@@ -277,7 +282,7 @@ const Home = () => {
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <span className="section-kicker">روزهای کودکانه</span>
-              <h2 id="activities-title" className="text-[24px] font-extrabold text-ink sm:text-[28px]">هر روز، فرصتی برای کشف کردن</h2>
+              <h2 id="activities-title" className="text-[20px] font-extrabold text-ink sm:text-[24px]">هر روز، فرصتی برای کشف کردن</h2>
             </div>
             <Link to="/activities" className="inline-flex items-center gap-1.5 rounded-full bg-yellow px-5 py-2 text-[13px] font-bold text-ink shadow-sm hover:bg-yellow-400">
               همه فعالیت‌ها <ArrowLeft size={14} aria-hidden="true" />
@@ -322,7 +327,7 @@ const Home = () => {
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-amber-700 border border-amber-100">
               <Star size={12} fill="currentColor" aria-hidden="true" /> چرا هدیه؟
             </span>
-            <h2 id="why-title" className="mt-3 max-w-[400px] text-[26px] font-extrabold leading-[1.4] text-ink sm:text-[30px]">
+            <h2 id="why-title" className="mt-3 max-w-[400px] text-[22px] font-extrabold leading-[1.4] text-ink sm:text-[26px]">
               فضایی که در آن کودک
               <span className="text-brand"> دیده می‌شود.</span>
             </h2>
@@ -353,7 +358,7 @@ const Home = () => {
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
               <span className="section-kicker">تیم مهربان</span>
-              <h2 id="teachers-title" className="text-[24px] font-extrabold text-ink sm:text-[28px]">آدم‌هایی که کنار کودک هستند</h2>
+              <h2 id="teachers-title" className="text-[20px] font-extrabold text-ink sm:text-[24px]">تیم حرفه‌ای هدیه</h2>
             </div>
             <Link to="/teachers" className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white px-5 py-2 text-[13px] font-bold text-ink hover:bg-ink hover:text-white">
               آشنایی با تیم <ArrowLeft size={14} aria-hidden="true" />
@@ -403,7 +408,7 @@ const Home = () => {
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
               <span className="section-kicker">لحظه‌های هدیه</span>
-              <h2 id="gallery-title" className="text-[24px] font-extrabold text-ink sm:text-[28px]">گوشه‌ای از دنیای رنگارنگ ما</h2>
+              <h2 id="gallery-title" className="text-[20px] font-extrabold text-ink sm:text-[24px]">گوشه‌ای از دنیای رنگارنگ ما</h2>
             </div>
             <Link to="/gallery" className="inline-flex items-center gap-1.5 rounded-full bg-blue px-5 py-2 text-[13px] font-bold text-white hover:bg-blue-600">
               مشاهده گالری <ArrowLeft size={14} aria-hidden="true" />
@@ -412,15 +417,15 @@ const Home = () => {
 
           {galleryState.loading ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className={['animate-pulse rounded-[1.5rem] bg-pink-100', i === 1 ? 'col-span-2 row-span-2 min-h-[300px] md:min-h-[480px]' : 'min-h-[150px] md:min-h-[232px]'].join(' ')} />
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="animate-pulse rounded-[1.5rem] bg-pink-100 aspect-square" />
               ))}
             </div>
           ) : gallery.length > 0 ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-              {gallery.map((item, index) => (
-                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className={['group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm', index === 0 ? 'col-span-2 row-span-2' : index === 3 ? 'col-span-2' : ''].join(' ')}>
-                  <img src={getStorageUrl(item.image_path)} alt={item.title} width={1000} height={700} loading="lazy" decoding="async" className={['h-full w-full object-cover transition duration-500 group-hover:scale-105', index === 0 ? 'min-h-[300px] md:min-h-[480px]' : 'min-h-[150px] md:min-h-[232px]'].join(' ')} />
+              {gallery.map((item) => (
+                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className="group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm aspect-square">
+                  <img src={getStorageUrl(item.image_path)} alt={item.title} width={500} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                   <div className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
                     {item.title}
                   </div>
@@ -447,7 +452,7 @@ const Home = () => {
                 <p className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-[12px] font-bold tracking-wide text-white">
                   <Star size={12} fill="white" aria-hidden="true" /> قدم بعدی
                 </p>
-                <h2 id="registration-title" className="mt-3 max-w-xl text-[24px] font-extrabold leading-[1.35] sm:text-[28px]">آماده‌اید دنیای هدیه را از نزدیک ببینید؟</h2>
+                <h2 id="registration-title" className="mt-3 max-w-xl text-[20px] font-extrabold leading-[1.35] sm:text-[24px]">آماده‌اید دنیای هدیه را از نزدیک ببینید؟</h2>
                 <p className="mt-2 max-w-xl text-[14px] leading-7 text-white/90">فرم ثبت‌نام را پر کنید — همین هفته با شما تماس می‌گیریم.</p>
               </div>
               <Link to="/registration" style={{ color: '#ec2a86' }} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-8 text-[15px] font-bold !text-brand shadow-sm transition hover:bg-yellow hover:!text-ink">

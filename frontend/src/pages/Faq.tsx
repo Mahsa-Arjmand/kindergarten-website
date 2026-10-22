@@ -28,6 +28,32 @@ const Faq = () => {
     fetchFaqs();
   }, []);
 
+  useEffect(() => {
+    if (faqs.length > 0) {
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(faq => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer
+          }
+        }))
+      });
+      document.head.appendChild(script);
+
+      return () => {
+        if (document.head.contains(script)) {
+          document.head.removeChild(script);
+        }
+      };
+    }
+  }, [faqs]);
+
   const toggleFaq = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
@@ -37,7 +63,7 @@ const Faq = () => {
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">راهنمای والدین</p>
-          <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
+          <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
             سؤالاتی که
             <span className="text-brand-dark"> بیشتر پرسیده می‌شوند.</span>
           </h1>

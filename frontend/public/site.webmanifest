@@ -1,0 +1,21 @@
+{
+  "name": "مهدکودک هدیه",
+  "short_name": "هدیه",
+  "description": "مهدکودک و پیش‌دبستانی در منظریه زنجان",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff7fb",
+  "theme_color": "#ec2a86",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

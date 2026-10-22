@@ -86,7 +86,7 @@ const Careers = () => {
               <CheckCircle size={32} aria-hidden="true" />
             </div>
             <p className="mt-5 text-[13px] font-extrabold tracking-wide text-brand-dark">درخواست شما ثبت شد</p>
-            <h1 className="mt-2 text-[22px] font-black leading-8 text-ink sm:text-[26px]">
+            <h1 className="mt-2 text-[20px] font-black leading-8 text-ink sm:text-[24px]">
               درخواست همکاری با موفقیت ارسال شد
             </h1>
             <p className="mt-3 text-[14px] leading-7 text-muted">
@@ -103,7 +103,7 @@ const Careers = () => {
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">فرصت همکاری</p>
-          <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
+          <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
             بخشی از
             <span className="text-brand-dark"> تیم هدیه</span> شوید.
           </h1>

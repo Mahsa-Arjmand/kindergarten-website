@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CheckCircle, ArrowLeft, UserRound, Users, ClipboardList } from 'lucide-react';
 import api from '../lib/axios';
+import JalaliDatePicker from '../components/JalaliDatePicker';
 
 const registrationSchema = z.object({
   child_first_name: z.string().min(2, 'نام کودک باید حداقل ۲ کاراکتر باشد'),
   child_last_name: z.string().min(2, 'نام خانوادگی کودک باید حداقل ۲ کاراکتر باشد'),
-  child_birth_date: z.string().min(1, 'تاریخ تولد الزامی است'),
   child_gender: z.enum(['male', 'female'], {
     required_error: 'جنسیت را انتخاب کنید',
   }),
@@ -39,6 +39,7 @@ const Registration = () => {
   const [submitted, setSubmitted] = useState(false);
   const [registrationId, setRegistrationId] = useState('');
   const [error, setError] = useState('');
+  const [birthDate, setBirthDate] = useState('');
 
   const {
     register,
@@ -56,12 +57,24 @@ const Registration = () => {
   }, []);
 
   const onSubmit = async (data: RegistrationFormData) => {
+    console.log('Birth date:', birthDate);
+    if (!birthDate) {
+      setError('لطفاً تاریخ تولد را انتخاب کنید');
+      return;
+    }
+
     try {
-      const response = await api.post('/registrations', data);
+      const formData = {
+        ...data,
+        child_birth_date: birthDate
+      };
+      console.log('Form data:', formData);
+      const response = await api.post('/registrations', formData);
       setRegistrationId(response.data.registration_id);
       setSubmitted(true);
       setError('');
     } catch (err: any) {
+      console.error('Error:', err);
       setError(err.response?.data?.message || 'خطا در ثبت اطلاعات');
     }
   };
@@ -75,7 +88,7 @@ const Registration = () => {
               <CheckCircle size={32} aria-hidden="true" />
             </div>
             <p className="mt-5 text-[13px] font-extrabold tracking-wide text-brand-dark">درخواست شما ثبت شد</p>
-            <h1 className="mt-2 text-[22px] font-black leading-8 text-ink sm:text-[26px]">ثبت‌نام با موفقیت ارسال شد</h1>
+            <h1 className="mt-2 text-[20px] font-black leading-8 text-ink sm:text-[24px]">ثبت‌نام با موفقیت ارسال شد</h1>
             <p className="mt-3 text-[14px] leading-7 text-muted">
               اطلاعات شما با موفقیت دریافت شد و کارشناسان مهدکودک برای ادامه مراحل با شما تماس خواهند گرفت.
             </p>
@@ -83,7 +96,7 @@ const Registration = () => {
               <p className="text-[13px] font-medium text-muted">کد پیگیری درخواست</p>
               <p className="mt-1 text-[22px] font-black tracking-wider text-brand-dark">{registrationId}</p>
             </div>
-            <p className="mt-4 text-[13px] leading-6 text-muted">برای پیگیری می‌توانید با شماره ۰۲۱-۱۲۳۴۵۶۷۸ تماس بگیرید.</p>
+            <p className="mt-4 text-[13px] leading-6 text-muted">برای پیگیری می‌توانید با شماره 09127402532 تماس بگیرید.</p>
           </div>
         </div>
       </main>
@@ -95,7 +108,7 @@ const Registration = () => {
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">ثبت‌نام</p>
-          <h1 className="max-w-[560px] text-balance text-[30px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[38px] lg:text-[42px]">
+          <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
             شروع یک
             <span className="text-brand-dark"> مسیر تازه.</span>
           </h1>
@@ -138,10 +151,13 @@ const Registration = () => {
                     <input type="text" {...register('child_last_name')} className={inputClass} />
                     {errors.child_last_name && <p className="mt-1.5 text-xs font-medium text-error">{errors.child_last_name.message}</p>}
                   </div>
-                  <div>
-                    <label className={labelClass}>تاریخ تولد</label>
-                    <input type="date" {...register('child_birth_date')} className={inputClass} />
-                    {errors.child_birth_date && <p className="mt-1.5 text-xs font-medium text-error">{errors.child_birth_date.message}</p>}
+                  <div className="md:col-span-2">
+                    <label className={labelClass}>تاریخ تولد (شمسی)</label>
+                    <JalaliDatePicker
+                      value={birthDate}
+                      onChange={setBirthDate}
+                      error={errors.child_birth_date?.message}
+                    />
                   </div>
                   <div>
                     <label className={labelClass}>جنسیت</label>
@@ -163,7 +179,7 @@ const Registration = () => {
                     </select>
                     {errors.age_group && <p className="mt-1.5 text-xs font-medium text-error">{errors.age_group.message}</p>}
                   </div>
-                  <div>
+                  <div className="md:col-span-2">
                     <label className={labelClass}>توضیحات کودک (اختیاری)</label>
                     <textarea {...register('child_notes')} rows={3} className={`${inputClass} py-3`} />
                   </div>
