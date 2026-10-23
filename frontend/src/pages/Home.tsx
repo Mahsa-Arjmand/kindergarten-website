@@ -3,7 +3,10 @@ import {
   ArrowLeft,
   BookOpen,
   Heart,
+  MapPin,
+  Navigation,
   Palette,
+  Phone,
   ShieldCheck,
   Sparkles,
   Users,
@@ -13,13 +16,36 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import api from '../lib/axios';
+import MapLocation, { HEDIYEH_LOCATION } from '../components/MapLocation';
 import type { Service, Activity, Teacher, Gallery } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
-  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
+  if (/^https?:\/\//i.test(path)) return path;
+  const baseUrl = API_URL.replace(/\/api(\/v\d+)?\/?$/, '');
+  const cleanPath = path
+    .replace(/^\/+/, '')
+    .replace(/^public\//, '')
+    .replace(/^storage\//, '');
+  return `${baseUrl}/storage/${cleanPath}`;
+};
+
+const extractArray = <T,>(payload: unknown): T[] => {
+  if (Array.isArray(payload)) return payload as T[];
+  if (payload && typeof payload === 'object') {
+    const record = payload as Record<string, unknown>;
+    if (Array.isArray(record.data)) return record.data as T[];
+    if (record.data && typeof record.data === 'object') {
+      const nested = record.data as Record<string, unknown>;
+      if (Array.isArray(nested.data)) return nested.data as T[];
+    }
+    for (const value of Object.values(record)) {
+      if (Array.isArray(value)) return value as T[];
+    }
+  }
+  return [];
 };
 
 type SectionState = { loading: boolean; error: boolean };
@@ -37,23 +63,97 @@ const Home = () => {
 
   useEffect(() => {
     document.title = 'مهدکودک هدیه | بهترین مهدکودک و پیش‌دبستانی در منظریه زنجان | ثبت‌نام آنلاین';
-    document.querySelector('meta[name="description"]')?.setAttribute('content', 'مهدکودک هدیه در منظریه زنجان: خدمات شیرخوار، نوپا و پیش‌دبستانی با مربیان متخصص. محیطی امن و شاد برای کودکان ۲ تا ۶ سال. ثبت‌نام آنلاین و مشاهده برنامه‌ها.');
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute(
+        'content',
+        'مهدکودک هدیه در منظریه زنجان: خدمات شیرخوار، نوپا و پیش‌دبستانی با مربیان متخصص. محیطی امن و شاد برای کودکان ۲ تا ۶ سال. ثبت‌نام آنلاین و مشاهده برنامه‌ها.'
+      );
   }, []);
 
   useEffect(() => {
     let cancelled = false;
     const fetchData = async () => {
       const requests = [
-        { request: api.get('/services'), onSuccess: (data: unknown) => { if (!cancelled) { setServices(Array.isArray(data) ? (data as Service[]).slice(0, 3) : []); setServiceState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setServices([]); setServiceState({ loading: false, error: true }); } } },
-        { request: api.get('/activities'), onSuccess: (data: unknown) => { if (!cancelled) { setActivities(Array.isArray(data) ? (data as Activity[]).slice(0, 4) : []); setActivityState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setActivities([]); setActivityState({ loading: false, error: true }); } } },
-        { request: api.get('/teachers'), onSuccess: (data: unknown) => { if (!cancelled) { setTeachers(Array.isArray(data) ? (data as Teacher[]).slice(0, 3) : []); setTeacherState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setTeachers([]); setTeacherState({ loading: false, error: true }); } } },
-        { request: api.get('/gallery'), onSuccess: (data: unknown) => { if (!cancelled) { setGallery(Array.isArray(data) ? (data as Gallery[]).slice(0, 4) : []); setGalleryState({ loading: false, error: false }); } }, onError: () => { if (!cancelled) { setGallery([]); setGalleryState({ loading: false, error: true }); } } },
+        {
+          request: api.get('/services'),
+          onSuccess: (data: unknown) => {
+            if (!cancelled) {
+              setServices(extractArray<Service>(data).slice(0, 3));
+              setServiceState({ loading: false, error: false });
+            }
+          },
+          onError: () => {
+            if (!cancelled) {
+              setServices([]);
+              setServiceState({ loading: false, error: true });
+            }
+          },
+        },
+        {
+          request: api.get('/activities'),
+          onSuccess: (data: unknown) => {
+            if (!cancelled) {
+              setActivities(extractArray<Activity>(data).slice(0, 4));
+              setActivityState({ loading: false, error: false });
+            }
+          },
+          onError: () => {
+            if (!cancelled) {
+              setActivities([]);
+              setActivityState({ loading: false, error: true });
+            }
+          },
+        },
+        {
+          request: api.get('/teachers'),
+          onSuccess: (data: unknown) => {
+            if (!cancelled) {
+              setTeachers(extractArray<Teacher>(data).slice(0, 3));
+              setTeacherState({ loading: false, error: false });
+            }
+          },
+          onError: () => {
+            if (!cancelled) {
+              setTeachers([]);
+              setTeacherState({ loading: false, error: true });
+            }
+          },
+        },
+        {
+          request: api.get('/gallery'),
+          onSuccess: (data: unknown) => {
+            if (!cancelled) {
+              setGallery(extractArray<Gallery>(data).slice(0, 4));
+              setGalleryState({ loading: false, error: false });
+            }
+          },
+          onError: () => {
+            if (!cancelled) {
+              setGallery([]);
+              setGalleryState({ loading: false, error: true });
+            }
+          },
+        },
       ];
-      await Promise.all(requests.map(async ({ request, onSuccess, onError }) => { try { const r = await request; onSuccess(r.data); } catch { onError(); } }));
+      await Promise.all(
+        requests.map(async ({ request, onSuccess, onError }) => {
+          try {
+            const r = await request;
+            onSuccess(r.data);
+          } catch {
+            onError();
+          }
+        })
+      );
     };
     fetchData();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  const aboutImage = gallery[1] ?? gallery[0];
 
   const values = [
     { number: '۰۱', icon: ShieldCheck, title: 'امنیت و آرامش', description: 'محیطی امن که کودک احساس تعلق کند.', color: 'bg-brand-light text-brand border-pink-100' },
@@ -64,9 +164,8 @@ const Home = () => {
 
   return (
     <>
-      {/* Hero — KINDERGARTEN BUBBLY - longer, fits viewport before scroll */}
+      {/* Hero — KINDERGARTEN BUBBLY */}
       <section aria-labelledby="hero-title" className="relative overflow-hidden bg-[#fff7fb]">
-        {/* playful blobs */}
         <div aria-hidden="true" className="pointer-events-none absolute -left-10 top-10 h-32 w-32 rounded-full bg-brand-light/70 blur-2xl" />
         <div aria-hidden="true" className="pointer-events-none absolute -right-10 bottom-10 h-40 w-40 rounded-full bg-blue-light/60 blur-2xl" />
         <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-yellow-light/40 blur-3xl" />
@@ -125,7 +224,6 @@ const Home = () => {
 
           <div className="order-1 lg:order-2">
             <div className="relative mx-auto max-w-[520px]">
-              {/* cloud shape behind */}
               <div aria-hidden="true" className="absolute -right-4 -top-4 hidden h-20 w-20 items-center justify-center rounded-[2rem] bg-blue-light text-blue sm:flex">
                 <Cloud size={28} aria-hidden="true" />
               </div>
@@ -140,7 +238,6 @@ const Home = () => {
                   className="aspect-square w-full object-contain"
                 />
               </div>
-              {/* floating happy card */}
               <div className="absolute -bottom-5 -left-3 flex items-center gap-3 rounded-2xl border border-pink-100 bg-white px-4 py-3 shadow-[0_12px_32px_rgba(236,42,134,0.15)] sm:-left-4">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white">
                   <Heart size={18} fill="white" aria-hidden="true" />
@@ -156,8 +253,16 @@ const Home = () => {
             </div>
           </div>
         </div>
-        {/* wavy divider */}
-        <div aria-hidden="true" className="h-6 w-full bg-white" style={{ maskImage: 'radial-gradient(circle at 10px -5px, transparent 12px, black 13px)', WebkitMaskImage: 'radial-gradient(circle at 10px -5px, transparent 12px, black 13px)', maskSize: '20px 20px', WebkitMaskSize: '20px 20px' }} />
+        <div
+          aria-hidden="true"
+          className="h-6 w-full bg-white"
+          style={{
+            maskImage: 'radial-gradient(circle at 10px -5px, transparent 12px, black 13px)',
+            WebkitMaskImage: 'radial-gradient(circle at 10px -5px, transparent 12px, black 13px)',
+            maskSize: '20px 20px',
+            WebkitMaskSize: '20px 20px',
+          }}
+        />
       </section>
 
       {/* Values — bubbly pastel strip */}
@@ -184,26 +289,38 @@ const Home = () => {
         <div className="container-hedieh grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="relative order-2 lg:order-1">
             <div className="overflow-hidden rounded-[1.75rem] border-[6px] border-white bg-white shadow-[0_12px_32px_rgba(30,167,255,0.15)]">
-              {gallery[1]?.image_path ? (
-                <img src={getStorageUrl(gallery[1].image_path)} alt={gallery[1].title || 'محیط هدیه'} width={1200} height={900} loading="lazy" decoding="async" className="aspect-[4/3.1] w-full object-cover" />
+              {aboutImage?.image_path ? (
+                <img
+                  src={getStorageUrl(aboutImage.image_path)}
+                  alt={aboutImage.title || 'محیط هدیه'}
+                  width={1200}
+                  height={900}
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-[4/3.1] w-full object-cover"
+                />
               ) : (
                 <div className="flex aspect-[4/3.1] items-center justify-center bg-blue-light text-sm text-muted">محیط شاد هدیه</div>
               )}
             </div>
             <div className="absolute -bottom-4 -right-2 rotate-2 rounded-2xl border-2 border-white bg-yellow px-4 py-3 shadow-sm">
               <Palette size={18} className="text-amber-900" aria-hidden="true" />
-              <p className="mt-1 text-[12px] font-bold leading-4 text-ink">یادگیری با<br />بازی و خلاقیت</p>
+              <p className="mt-1 text-[12px] font-bold leading-4 text-ink">
+                یادگیری با
+                <br />
+                بازی و خلاقیت
+              </p>
             </div>
           </div>
           <div className="order-1 lg:order-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold tracking-widest text-blue border border-sky-100">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-100 bg-white px-3 py-1 text-[11px] font-bold tracking-widest text-blue">
               <Sparkles size={12} aria-hidden="true" /> درباره هدیه
             </span>
             <h2 id="about-title" className="mt-3 max-w-[520px] text-balance text-[22px] font-extrabold leading-[1.4] text-ink sm:text-[26px]">
               کودکی فقط مقدمه نیست؛
               <span className="text-blue"> خودش یک دنیای ارزشمند است.</span>
             </h2>
-            <p className="mt-4 max-w-[520px] rounded-2xl bg-white p-4 text-[14px] leading-7 text-muted shadow-sm border border-sky-100">
+            <p className="mt-4 max-w-[520px] rounded-2xl border border-sky-100 bg-white p-4 text-[14px] leading-7 text-muted shadow-sm">
               با بیش از ۱۰ سال تجربه، خانه‌ای امن و رنگارنگ ساخته‌ایم که هر کودک با آرامش، بازی و دوستی رشد کند و تفاوت‌های قشنگش دیده شود.
             </p>
             <Link to="/about" className="mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-2.5 text-[13px] font-bold text-white transition hover:bg-black">
@@ -227,7 +344,7 @@ const Home = () => {
               {[1, 2, 3].map((i) => (
                 <div key={i} className="overflow-hidden rounded-[1.5rem] border-2 border-white bg-white shadow-sm">
                   <div className="aspect-[4/3] animate-pulse bg-brand-light" />
-                  <div className="p-5 space-y-3">
+                  <div className="space-y-3 p-5">
                     <div className="h-5 w-2/3 animate-pulse rounded-full bg-pink-100" />
                     <div className="h-4 w-full animate-pulse rounded-full bg-gray-100" />
                   </div>
@@ -244,7 +361,15 @@ const Home = () => {
                     <div className={`h-1.5 w-full ${topColor}`} />
                     <div className="relative overflow-hidden">
                       {service.image_path ? (
-                        <img src={getStorageUrl(service.image_path)} alt={service.title} width={800} height={600} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105" />
+                        <img
+                          src={getStorageUrl(service.image_path)}
+                          alt={service.title}
+                          width={800}
+                          height={600}
+                          loading="lazy"
+                          decoding="async"
+                          className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105"
+                        />
                       ) : (
                         <div className="flex aspect-[4/3] items-center justify-center bg-brand-soft text-sm text-muted">تصویر خدمت</div>
                       )}
@@ -276,7 +401,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Activities — playful dark cards with rounded */}
+      {/* Activities — playful dark cards */}
       <section aria-labelledby="activities-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -300,7 +425,15 @@ const Home = () => {
               {activities.map((activity) => (
                 <article key={activity.id} className="group relative overflow-hidden rounded-[1.75rem] bg-ink shadow-sm">
                   {activity.image_path ? (
-                    <img src={getStorageUrl(activity.image_path)} alt={activity.title} width={750} height={1000} loading="lazy" decoding="async" className="aspect-[3/4] w-full object-cover opacity-90 transition duration-500 group-hover:scale-105 group-hover:opacity-100" />
+                    <img
+                      src={getStorageUrl(activity.image_path)}
+                      alt={activity.title}
+                      width={750}
+                      height={1000}
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-[3/4] w-full object-cover opacity-90 transition duration-500 group-hover:scale-105 group-hover:opacity-100"
+                    />
                   ) : (
                     <div className="aspect-[3/4] bg-pink-100" />
                   )}
@@ -324,7 +457,7 @@ const Home = () => {
       <section aria-labelledby="why-title" className="bg-yellow-soft py-10 lg:py-12">
         <div className="container-hedieh grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-amber-700 border border-amber-100">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-100 bg-white px-3 py-1 text-[11px] font-bold text-amber-700">
               <Star size={12} fill="currentColor" aria-hidden="true" /> چرا هدیه؟
             </span>
             <h2 id="why-title" className="mt-3 max-w-[400px] text-[22px] font-extrabold leading-[1.4] text-ink sm:text-[26px]">
@@ -370,7 +503,7 @@ const Home = () => {
               {[1, 2, 3].map((i) => (
                 <div key={i} className="overflow-hidden rounded-[1.5rem] border-2 border-white bg-cream">
                   <div className="aspect-[4/3] animate-pulse bg-pink-100" />
-                  <div className="p-5 space-y-3">
+                  <div className="space-y-3 p-5">
                     <div className="h-5 w-1/2 animate-pulse rounded-full bg-pink-100" />
                     <div className="h-4 w-1/3 animate-pulse rounded-full bg-gray-100" />
                   </div>
@@ -382,7 +515,15 @@ const Home = () => {
               {teachers.map((teacher) => (
                 <article key={teacher.id} className="overflow-hidden rounded-[1.75rem] border-2 border-white bg-cream shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 hover:shadow-[0_16px_32px_rgba(0,0,0,0.08)]">
                   {teacher.image_path ? (
-                    <img src={getStorageUrl(teacher.image_path)} alt={teacher.name} width={800} height={600} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover" />
+                    <img
+                      src={getStorageUrl(teacher.image_path)}
+                      alt={teacher.name}
+                      width={800}
+                      height={600}
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-[4/3] w-full object-cover"
+                    />
                   ) : (
                     <div className="flex aspect-[4/3] items-center justify-center bg-brand-soft text-sm text-muted">تصویر مربی</div>
                   )}
@@ -418,14 +559,22 @@ const Home = () => {
           {galleryState.loading ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="animate-pulse rounded-[1.5rem] bg-pink-100 aspect-square" />
+                <div key={i} className="aspect-square animate-pulse rounded-[1.5rem] bg-pink-100" />
               ))}
             </div>
           ) : gallery.length > 0 ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
               {gallery.map((item) => (
-                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className="group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm aspect-square">
-                  <img src={getStorageUrl(item.image_path)} alt={item.title} width={500} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className="group relative aspect-square overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm">
+                  <img
+                    src={getStorageUrl(item.image_path)}
+                    alt={item.title}
+                    width={500}
+                    height={500}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
                   <div className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
                     {item.title}
                   </div>
@@ -437,6 +586,63 @@ const Home = () => {
               <p className="text-[13.5px] text-muted">{galleryState.error ? 'امکان دریافت تصاویر گالری وجود نداشت.' : 'هنوز تصویری ثبت نشده است.'}</p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Location & Google Map Section on Home */}
+      <section aria-labelledby="location-title" className="bg-blue-soft py-10 lg:py-12">
+        <div className="container-hedieh grid items-center gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-100 bg-white px-3 py-1 text-[11px] font-bold text-blue">
+              <MapPin size={12} aria-hidden="true" /> آدرس و موقعیت ما
+            </span>
+            <h2 id="location-title" className="mt-3 text-[22px] font-extrabold leading-[1.4] text-ink sm:text-[26px]">
+              از نزدیک مهمان
+              <span className="text-brand"> کودکستان هدیه </span>
+              باشید
+            </h2>
+            <p className="mt-3 rounded-2xl border border-sky-100 bg-white p-4 text-[14px] leading-7 text-muted shadow-sm">
+              {HEDIYEH_LOCATION.fullAddress}
+            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-[13px] font-bold text-ink">
+              <a
+                href="tel:02433784937"
+                dir="ltr"
+                className="inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white px-4 py-2 shadow-sm transition hover:border-brand hover:text-brand"
+              >
+                <Phone size={15} className="text-brand" aria-hidden="true" />
+                024-33784937
+              </a>
+              <span className="inline-flex items-center rounded-full border border-amber-100 bg-yellow-soft px-4 py-2 text-[12px] text-ink">
+                شنبه تا پنجشنبه • ۷ صبح تا ۶ عصر
+              </span>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                href={HEDIYEH_LOCATION.directionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#fff' }}
+                className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-brand px-6 text-[13.5px] font-bold text-white shadow-[0_8px_20px_rgba(236,42,134,0.22)] transition hover:bg-brand-dark"
+              >
+                <Navigation size={16} aria-hidden="true" />
+                مسیریابی در گوگل مپ
+              </a>
+              <a
+                href={HEDIYEH_LOCATION.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#2e2230' }}
+                className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full border-2 border-ink bg-white px-6 text-[13.5px] font-bold !text-ink transition hover:bg-ink hover:!text-white"
+              >
+                باز کردن نقشه بزرگ
+              </a>
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border-[6px] border-white bg-white shadow-[0_16px_40px_rgba(30,167,255,0.14)]">
+            <MapLocation height="320px" width="100%" className="!border-0" />
+          </div>
         </div>
       </section>
 
@@ -475,7 +681,7 @@ const Home = () => {
             </Link>
           </div>
           <div className="rounded-[1.75rem] border-2 border-white bg-blue-soft p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
-            <span className="inline-flex rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-blue border border-sky-100">پشتیبانی</span>
+            <span className="inline-flex rounded-full border border-sky-100 bg-white px-2.5 py-1 text-[11px] font-bold text-blue">پشتیبانی</span>
             <h2 className="mt-2 text-[17px] font-bold leading-7 text-ink">سؤالی دارید؟</h2>
             <p className="mt-1 text-[13px] leading-6 text-muted">با ما تماس بگیرید — با حوصله جواب می‌دهیم.</p>
             <Link to="/contact" className="mt-4 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-[13px] font-bold text-white transition hover:bg-black">

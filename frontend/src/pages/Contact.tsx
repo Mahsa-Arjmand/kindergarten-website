@@ -4,12 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   CheckCircle,
-  Mail,
   MapPin,
+  Navigation,
   Phone,
   ArrowLeft,
 } from 'lucide-react';
 import api from '../lib/axios';
+import MapLocation, { HEDIYEH_LOCATION } from '../components/MapLocation';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'نام باید حداقل ۲ کاراکتر باشد'),
@@ -40,7 +41,10 @@ const Contact = () => {
     document.title = 'تماس با مهدکودک هدیه | آدرس و شماره تماس در منظریه زنجان | ثبت‌نام حضوری';
     document
       .querySelector('meta[name="description"]')
-      ?.setAttribute('content', 'تماس با مهدکودک هدیه در منظریه زنجان: آدرس دقیق، شماره تلفن و ساعات کاری. برای ثبت‌نام حضوری یا سوالات می‌توانید با ما تماس بگیرید یا به مهدکودک مراجعه کنید.');
+      ?.setAttribute(
+        'content',
+        'تماس با مهدکودک هدیه در منظریه زنجان: آدرس دقیق، شماره تلفن و ساعات کاری. برای ثبت‌نام حضوری یا سوالات می‌توانید با ما تماس بگیرید یا به مهدکودک مراجعه کنید.'
+      );
   }, []);
 
   const onSubmit = async (data: ContactFormData) => {
@@ -89,7 +93,7 @@ const Contact = () => {
 
       <section className="bg-warm-white py-8 lg:py-10">
         <div className="container-hedieh grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:gap-6">
-          {/* Contact info */}
+          {/* Contact info + Map */}
           <div className="rounded-2xl bg-sage-light p-6 sm:p-7">
             <p className="text-[13px] font-extrabold tracking-wide text-brand-dark">اطلاعات تماس</p>
             <h2 className="mt-2 text-[20px] font-black leading-7 text-ink">راه‌های ارتباط با ما</h2>
@@ -101,8 +105,12 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="text-[13px] font-extrabold text-ink">تلفن</h3>
-                  <p className="mt-1 text-[13.5px] leading-6 text-muted">024-33784937</p>
-                  <p className="text-[13.5px] leading-6 text-muted">0912-7402532</p>
+                  <a href="tel:02433784937" dir="ltr" className="mt-1 block w-fit text-[13.5px] leading-6 text-muted transition hover:text-ink">
+                    024-33784937
+                  </a>
+                  <a href="tel:09127402532" dir="ltr" className="block w-fit text-[13.5px] leading-6 text-muted transition hover:text-ink">
+                    0912-7402532
+                  </a>
                 </div>
               </div>
 
@@ -112,16 +120,39 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="text-[13px] font-extrabold text-ink">آدرس</h3>
-                  <p className="mt-1 text-[13.5px] leading-6 text-muted">زنجان، شهرک منظریه، نسیم ۱۰ غربی (خیابان شهید علیرضا حق وردی)، قطعه ۱۸۴، کودکستان هدیه</p>
+                  <a
+                    href={HEDIYEH_LOCATION.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 block text-[13.5px] leading-6 text-muted transition hover:text-brand"
+                  >
+                    {HEDIYEH_LOCATION.fullAddress}
+                  </a>
                 </div>
               </div>
 
               <div className="rounded-xl bg-white/70 px-4 py-4">
                 <h3 className="text-[13px] font-extrabold text-ink">ساعات کاری</h3>
                 <p className="mt-1.5 text-[13.5px] leading-7 text-muted">
-                  شنبه تا پنجشنبه: ۷ صبح تا ۶ عصر<br />
+                  شنبه تا پنجشنبه: ۷ صبح تا ۶ عصر
+                  <br />
                   جمعه و تعطیلات رسمی: تعطیل
                 </p>
+              </div>
+
+              {/* Embedded Google Map + Direct Navigation Button */}
+              <div className="space-y-3 pt-1">
+                <MapLocation height="220px" width="100%" />
+                <a
+                  href={HEDIYEH_LOCATION.directionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#fff' }}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand px-5 text-[13.5px] font-bold text-white shadow-sm transition hover:bg-brand-dark"
+                >
+                  <Navigation size={16} aria-hidden="true" />
+                  مسیریابی مستقیم در گوگل مپ
+                </a>
               </div>
             </div>
           </div>

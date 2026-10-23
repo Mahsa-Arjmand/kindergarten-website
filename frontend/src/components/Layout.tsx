@@ -1,15 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowLeft, ChevronDown, Mail, MapPin, Menu, Phone, X } from 'lucide-react';
-import MapLocation from './MapLocation';
+import MapLocation, { HEDIYEH_LOCATION } from './MapLocation';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-// ——— Grouped navigation ———
-// Fewer top-level items, like hbsmartfactory: 5 visible + 1 CTA
-// Keeps orange, but calm & spacious
 type NavChild = { label: string; path: string; desc?: string };
 type NavGroup = { label: string; path?: string; children?: NavChild[] };
 
@@ -129,12 +126,10 @@ const Layout = ({ children }: LayoutProps) => {
         رفتن به محتوای اصلی
       </a>
 
-      {/* Header — CLEAN, SPACIOUS, like hbsmartfactory but warm orange */}
+      {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border-light bg-white">
         <div className="container-hedieh">
           <div className="flex h-[68px] items-center justify-between gap-6">
-            {/* Logo */}
-            {/* Logo — real happy logo, compatible with colorful theme */}
             <Link to="/" aria-label="صفحه اصلی مهدکودک هدیه" className="flex shrink-0 items-center gap-2.5">
               <img
                 src="/logo-hediyeh.jpg"
@@ -151,7 +146,6 @@ const Layout = ({ children }: LayoutProps) => {
               </span>
             </Link>
 
-            {/* Mobile center — move kicker to navbar center on mobile */}
             <div className="flex flex-1 justify-center px-2 xl:hidden">
               <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-pink-100 bg-white px-2.5 py-1 text-[10px] font-bold leading-none text-brand shadow-sm sm:px-3 sm:text-[11px]">
                 کودکستان و پیش‌دبستانی هدیه
@@ -159,7 +153,6 @@ const Layout = ({ children }: LayoutProps) => {
               </span>
             </div>
 
-            {/* Desktop Nav — grouped, calm */}
             <nav aria-label="منوی اصلی" className="hidden items-center gap-1 xl:flex">
               {navGroups.map((group) => {
                 const hasChildren = !!group.children?.length;
@@ -205,7 +198,6 @@ const Layout = ({ children }: LayoutProps) => {
                       <ChevronDown size={14} className={['transition-transform duration-200', isOpen ? 'rotate-180' : ''].join(' ')} aria-hidden="true" />
                     </button>
 
-                    {/* Dropdown — lightweight, friendly, NOT enterprise mega */}
                     <div
                       className={[
                         'absolute right-0 top-full z-20 w-[300px] pt-2 transition-all duration-200',
@@ -244,7 +236,6 @@ const Layout = ({ children }: LayoutProps) => {
               })}
             </nav>
 
-            {/* CTA */}
             <div className="flex items-center gap-3">
               <Link
                 to="/registration"
@@ -268,7 +259,6 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
           </div>
 
-          {/* Mobile — hierarchical, not wall of links */}
           {menuOpen && (
             <div id="mobile-navigation" className="border-t border-border-light py-3 xl:hidden">
               <nav aria-label="منوی موبایل" className="flex flex-col">
@@ -404,13 +394,18 @@ const Layout = ({ children }: LayoutProps) => {
               <div>
                 <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">موقعیت ما</h2>
                 <div className="mt-4">
-                  <MapLocation height="180px" width="80%" />
-                  <div className="mt-3 flex items-start gap-2.5 text-[13.5px] text-muted">
-                    <MapPin size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
+                  <MapLocation height="190px" width="100%" className="max-w-[400px]" />
+                  <a
+                    href={HEDIYEH_LOCATION.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-flex items-start gap-2.5 text-[13.5px] text-muted transition hover:text-brand"
+                  >
+                    <MapPin size={15} className="mt-1 shrink-0 text-brand" aria-hidden="true" />
                     <span className="text-[12px] leading-6">
-                      زنجان، شهرک منظریه، نسیم ۱۰ غربی (خیابان شهید علیرضا حق وردی)، قطعه ۱۸۴
+                      {HEDIYEH_LOCATION.fullAddress}
                     </span>
-                  </div>
+                  </a>
                 </div>
               </div>
             </div>
