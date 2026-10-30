@@ -1,35 +1,43 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import Home from './pages/Home';
-import About from './pages/About';
-import Services from './pages/Services';
-import Activities from './pages/Activities';
-import Teachers from './pages/Teachers';
-import Gallery from './pages/Gallery';
-import Registration from './pages/Registration';
-import Careers from './pages/Careers';
-import Faq from './pages/Faq';
-import Contact from './pages/Contact';
-import News from './pages/News';
-import AdminLogin from './pages/admin/AdminLogin';
-import AdminDashboard from './pages/admin/AdminDashboard';
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Services = lazy(() => import('./pages/Services'));
+const Activities = lazy(() => import('./pages/Activities'));
+const Teachers = lazy(() => import('./pages/Teachers'));
+const Gallery = lazy(() => import('./pages/Gallery'));
+const Registration = lazy(() => import('./pages/Registration'));
+const Careers = lazy(() => import('./pages/Careers'));
+const Faq = lazy(() => import('./pages/Faq'));
+const Contact = lazy(() => import('./pages/Contact'));
+const News = lazy(() => import('./pages/News'));
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 import AdminLayout from './components/admin/AdminLayout';
-import AdminRegistrations from './pages/admin/AdminRegistrations';
-import AdminJobApplications from './pages/admin/AdminJobApplications';
-import AdminTeachers from './pages/admin/AdminTeachers';
-import AdminChildren from './pages/admin/AdminChildren';
-import AdminServices from './pages/admin/AdminServices';
-import AdminActivities from './pages/admin/AdminActivities';
-import AdminGallery from './pages/admin/AdminGallery';
-import AdminNews from './pages/admin/AdminNews';
-import AdminFaqs from './pages/admin/AdminFaqs';
-import AdminContactMessages from './pages/admin/AdminContactMessages';
+const AdminRegistrations = lazy(() => import('./pages/admin/AdminRegistrations'));
+const AdminJobApplications = lazy(() => import('./pages/admin/AdminJobApplications'));
+const AdminTeachers = lazy(() => import('./pages/admin/AdminTeachers'));
+const AdminChildren = lazy(() => import('./pages/admin/AdminChildren'));
+const AdminServices = lazy(() => import('./pages/admin/AdminServices'));
+const AdminActivities = lazy(() => import('./pages/admin/AdminActivities'));
+const AdminGallery = lazy(() => import('./pages/admin/AdminGallery'));
+const AdminNews = lazy(() => import('./pages/admin/AdminNews'));
+const AdminFaqs = lazy(() => import('./pages/admin/AdminFaqs'));
+const AdminContactMessages = lazy(() => import('./pages/admin/AdminContactMessages'));
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
     <Router>
-      <Routes>
+      <Suspense
+        fallback={
+          <div className="flex min-h-[40vh] items-center justify-center bg-white text-sm text-muted" role="status">
+            در حال بارگذاری صفحه…
+          </div>
+        }
+      >
+        <Routes>
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/about" element={<Layout><About /></Layout>} />
         <Route path="/services" element={<Layout><Services /></Layout>} />
@@ -65,6 +73,7 @@ function App() {
           <Route path="faqs" element={<AdminFaqs />} />
         </Route>
       </Routes>
+      </Suspense>
     </Router>
   );
 }

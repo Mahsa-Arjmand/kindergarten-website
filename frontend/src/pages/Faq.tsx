@@ -59,8 +59,8 @@ const Faq = () => {
   };
 
   return (
-    <main className="bg-cream">
-      <section className="border-b border-border-light bg-cream">
+    <main className="bg-white">
+      <section className="border-b border-border-light bg-white">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">راهنمای والدین</p>
           <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">

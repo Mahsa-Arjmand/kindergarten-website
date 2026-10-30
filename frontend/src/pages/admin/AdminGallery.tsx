@@ -1,386 +1,164 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../../lib/axios';
-import { Plus, Trash2, Search, X, Upload, Edit, Image as ImageIcon } from 'lucide-react';
+import { getStorageUrl } from '../../lib/media';
+import { Plus, Trash2, Search, X, Edit, Image as ImageIcon, Video } from 'lucide-react';
 
+type MediaType = 'image' | 'video';
+type Category = 'classroom' | 'playground' | 'activities' | 'events' | 'food';
 interface GalleryItem {
   id: number;
-  image_path: string;
-  category: 'classroom' | 'playground' | 'activities' | 'events' | 'food';
+  image_path: string | null;
+  video_path: string | null;
+  is_hero: boolean;
+  category: Category;
   caption: string;
   created_at: string;
 }
+interface FormDataState {
+  mediaType: MediaType;
+  image: File | null;
+  video: File | null;
+  category: Category;
+  caption: string;
+  isHero: boolean;
+}
+const emptyForm: FormDataState = { mediaType: 'image', image: null, video: null, category: 'classroom', caption: '', isHero: false };
+const categories: { value: Category; label: string }[] = [
+  { value: 'classroom', label: 'کلاس درس' }, { value: 'playground', label: 'محیط بازی' },
+  { value: 'activities', label: 'فعالیت‌ها' }, { value: 'events', label: 'رویدادها' }, { value: 'food', label: 'غذا' },
+];
 
 const AdminGallery = () => {
-  const navigate = useNavigate();
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    image: null as File | null,
-    category: 'classroom' as const,
-    caption: '',
-  });
-
-  useEffect(() => {
-    fetchGallery();
-  }, []);
+  const [formData, setFormData] = useState<FormDataState>(emptyForm);
 
   const fetchGallery = async () => {
     try {
-      console.log('Fetching gallery...');
-      const response = await api.get('/admin/gallery');
-      console.log('Gallery data received:', response.data);
-      setGallery(response.data);
+      const { data } = await api.get('/admin/gallery');
+      setGallery(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching gallery:', error);
     } finally {
       setLoading(false);
     }
   };
+  useEffect(() => { void fetchGallery(); }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (isSubmitting) {
-      console.log('Already submitting, ignoring duplicate request');
-      return;
-    }
-    
+  const openModal = (item?: GalleryItem) => {
+    setEditingItem(item ?? null);
+    setFormData(item ? {
+      mediaType: item.video_path ? 'video' : 'image', image: null, video: null,
+      category: item.category, caption: item.caption ?? '', isHero: item.is_hero,
+    } : emptyForm);
+    setShowModal(true);
+  };
+  const closeModal = () => { setShowModal(false); setEditingItem(null); setFormData(emptyForm); };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
-    
+    const data = new FormData();
+    data.append('media_type', formData.mediaType);
+    data.append('category', formData.category);
+    data.append('caption', formData.caption);
+    data.append('is_hero', String(formData.mediaType === 'video' && formData.isHero ? 1 : 0));
+    if (formData.image) data.append('image', formData.image);
+    if (formData.video) data.append('video', formData.video);
+
     try {
-      const data = new FormData();
-      data.append('category', formData.category);
-      data.append('caption', formData.caption);
-      if (formData.image) {
-        data.append('image', formData.image);
-      }
-
-      console.log('Submitting gallery item:', editingItem ? 'UPDATE' : 'CREATE', editingItem?.id);
-      console.log('Editing item:', editingItem);
-      console.log('FormData keys:', Array.from(data.keys()));
-      console.log('FormData values:', Array.from(data.entries()));
-      console.log('FormData:', { category: formData.category, caption: formData.caption, hasImage: !!formData.image });
-
       if (editingItem) {
-        console.log('=== UPDATE MODE ===');
-        console.log('Editing item ID:', editingItem.id);
-        
-        if (formData.image) {
-          // If there's a new image, use POST with _method=PUT
-          data.append('_method', 'PUT');
-          console.log('Sending FormData POST+PUT update to:', `/admin/gallery/${editingItem.id}`);
-          const response = await api.post(`/admin/gallery/${editingItem.id}`, data);
-          console.log('Update response:', response.data);
-        } else {
-          // If no new image, use JSON
-          console.log('Sending JSON update to:', `/admin/gallery/${editingItem.id}`);
-          const response = await api.put(`/admin/gallery/${editingItem.id}`, {
-            category: formData.category,
-            caption: formData.caption
-          });
-          console.log('Update response:', response.data);
-        }
-        
-        closeModal();
-        fetchGallery();
+        data.append('_method', 'PUT');
+        await api.post(`/admin/gallery/${editingItem.id}`, data);
       } else {
-        console.log('=== CREATE MODE ===');
-        console.log('Sending POST to:', '/admin/gallery');
-        const response = await api.post('/admin/gallery', data);
-        console.log('Create response:', response.data);
-        
-        closeModal();
-        fetchGallery();
+        await api.post('/admin/gallery', data);
       }
+      closeModal();
+      await fetchGallery();
     } catch (error: any) {
-      console.error('Error adding gallery item:', error);
-      if (error.response?.data?.errors) {
-        const errors = error.response.data.errors;
-        const errorMessages = Object.values(errors).flat();
-        alert('خطا در ذخیره تصویر: ' + errorMessages.join(', '));
-      } else if (error.response?.data?.message) {
-        alert('خطا در ذخیره تصویر: ' + error.response.data.message);
-      } else {
-        alert('خطا در ذخیره تصویر: ' + error.message);
-      }
+      const errors = error.response?.data?.errors;
+      const message = errors ? Object.values(errors).flat().join(', ') : error.response?.data?.message || error.message;
+      alert('خطا در ذخیره رسانه: ' + message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm('آیا مطمئن هستید که می‌خواهید این تصویر را حذف کنید؟')) {
-      try {
-        console.log('Deleting gallery item:', id);
-        const response = await api.delete(`/admin/gallery/${id}`);
-        console.log('Delete response:', response.data);
-        
-        // Optimistic update - remove from UI immediately
-        setGallery(prev => prev.filter(item => item.id !== id));
-      } catch (error: any) {
-        console.error('Error deleting gallery item:', error);
-        if (error.response?.data?.message) {
-          alert('خطا در حذف تصویر: ' + error.response.data.message);
-        } else {
-          alert('خطا در حذف تصویر: ' + error.message);
-        }
-        // Revert optimistic update on error
-        fetchGallery();
-      }
+  const handleDelete = async (item: GalleryItem) => {
+    if (!window.confirm('آیا مطمئن هستید که می‌خواهید این رسانه را حذف کنید؟')) return;
+    try {
+      await api.delete(`/admin/gallery/${item.id}`);
+      setGallery((items) => items.filter(({ id }) => id !== item.id));
+    } catch (error: any) {
+      alert('خطا در حذف رسانه: ' + (error.response?.data?.message || error.message));
+      void fetchGallery();
     }
   };
 
-  const openModal = (item?: GalleryItem) => {
-    console.log('Opening modal with item:', item);
-    if (item) {
-      setEditingItem(item);
-      setFormData({
-        image: null,
-        category: item.category,
-        caption: item.caption,
-      });
-    } else {
-      setEditingItem(null);
-      setFormData({
-        image: null,
-        category: 'classroom',
-        caption: '',
-      });
-    }
-    setShowModal(true);
-  };
+  const filteredGallery = gallery.filter((item) =>
+    item.caption?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (filterCategory === 'all' || item.category === filterCategory)
+  );
 
-  const closeModal = () => {
-    setShowModal(false);
-    setEditingItem(null);
-    setFormData({
-      image: null,
-      category: 'classroom',
-      caption: '',
-    });
-  };
-
-  const filteredGallery = gallery.filter(item => {
-    const matchesSearch = item.caption.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterCategory === 'all' || item.category === filterCategory;
-    return matchesSearch && matchesFilter;
-  });
-
-  const getCategoryText = (category: string) => {
-    switch (category) {
-      case 'classroom': return 'کلاس درس';
-      case 'playground': return 'محیط بازی';
-      case 'activities': return 'فعالیت‌ها';
-      case 'events': return 'رویدادها';
-      case 'food': return 'غذا';
-      default: return category;
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'classroom': return 'bg-blue-100 text-blue-700';
-      case 'playground': return 'bg-green-100 text-green-700';
-      case 'activities': return 'bg-purple-100 text-purple-700';
-      case 'events': return 'bg-pink-100 text-pink-700';
-      case 'food': return 'bg-orange-100 text-orange-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
-    );
-  }
+  if (loading) return <div className="flex h-64 items-center justify-center"><div className="h-12 w-12 animate-spin rounded-full border-b-2 border-orange-500" /></div>;
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-gray-800">مدیریت گالری</h1>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <div className="relative">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="جستجو..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input aria-label="جستجوی گالری" placeholder="جستجو..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="rounded-lg border border-gray-300 py-2 pl-4 pr-10" />
           </div>
-          <select
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          >
+          <select aria-label="فیلتر دسته‌بندی" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className="rounded-lg border border-gray-300 px-4 py-2">
             <option value="all">همه دسته‌بندی‌ها</option>
-            <option value="classroom">کلاس درس</option>
-            <option value="playground">محیط بازی</option>
-            <option value="activities">فعالیت‌ها</option>
-            <option value="events">رویدادها</option>
-            <option value="food">غذا</option>
+            {categories.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}
           </select>
-          <button
-            onClick={() => openModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
-          >
-            <Plus size={16} />
-            افزودن تصویر
+          <button onClick={() => openModal()} className="flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-white transition-colors hover:bg-orange-600">
+            <Plus size={16} /> افزودن تصویر یا ویدیو
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filteredGallery.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">
-            هیچ تصویری یافت نشد
-          </div>
-        ) : (
-          filteredGallery.map((item) => (
-            <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group">
-              <div className="relative aspect-square">
-                {item.image_path ? (
-                  <img
-                    src={`http://localhost:8000/storage/${item.image_path}`}
-                    alt={item.caption}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <ImageIcon size={48} className="text-gray-400" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  <button
-                    onClick={() => openModal(item)}
-                    className="p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
-                    title="ویرایش"
-                  >
-                    <Edit size={20} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                    title="حذف"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </div>
-              </div>
-              <div className="p-3">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(item.category)}`}>
-                  {getCategoryText(item.category)}
-                </span>
-                {item.caption && (
-                  <p className="text-sm text-gray-600 mt-2 truncate">{item.caption}</p>
-                )}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {filteredGallery.length === 0 ? <div className="col-span-full rounded-xl border border-gray-100 bg-white py-12 text-center text-gray-500">رسانه‌ای یافت نشد</div> : filteredGallery.map((item) => (
+          <article key={item.id} className="group overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+            <div className="relative aspect-square bg-gray-100">
+              {item.video_path ? <video src={getStorageUrl(item.video_path)} controls preload="none" className="h-full w-full object-contain" aria-label={item.caption || 'ویدیوی گالری'} /> : item.image_path ? <img src={getStorageUrl(item.image_path)} alt={item.caption || ''} loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center"><ImageIcon size={48} className="text-gray-400" /></div>}
+              <div className="absolute left-2 top-2 flex gap-1 rounded-full bg-white/90 px-2 py-1 text-xs font-bold text-gray-700">{item.video_path ? <Video size={14} /> : <ImageIcon size={14} />}{item.is_hero && <span>ویدیوی اول صفحه</span>}</div>
+              <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                <button onClick={() => openModal(item)} aria-label="ویرایش" className="rounded-full bg-blue-500 p-3 text-white hover:bg-blue-600"><Edit size={20} /></button>
+                <button onClick={() => void handleDelete(item)} aria-label="حذف" className="rounded-full bg-red-500 p-3 text-white hover:bg-red-600"><Trash2 size={20} /></button>
               </div>
             </div>
-          ))
-        )}
+            <div className="p-3"><span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">{categories.find(({ value }) => value === item.category)?.label ?? item.category}</span>{item.caption && <p className="mt-2 truncate text-sm text-gray-600">{item.caption}</p>}</div>
+          </article>
+        ))}
       </div>
 
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-800">
-                  {editingItem ? 'ویرایش تصویر' : 'افزودن تصویر جدید'}
-                </h2>
-                <button
-                  onClick={closeModal}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4" key={editingItem?.id || 'new'}>
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">تصویر</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
-                      className="hidden"
-                      id="gallery-image"
-                      required={!editingItem}
-                    />
-                    <label
-                      htmlFor="gallery-image"
-                      className="cursor-pointer flex flex-col items-center"
-                    >
-                      <Upload size={40} className="text-gray-400 mb-2" />
-                      <span className="text-sm text-gray-600">
-                        {formData.image ? formData.image.name : (editingItem ? 'تغییر تصویر (اختیاری)' : 'انتخاب تصویر')}
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">دسته‌بندی</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  >
-                    <option value="classroom">کلاس درس</option>
-                    <option value="playground">محیط بازی</option>
-                    <option value="activities">فعالیت‌ها</option>
-                    <option value="events">رویدادها</option>
-                    <option value="food">غذا</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">توضیحات</label>
-                  <input
-                    type="text"
-                    value={formData.caption}
-                    onChange={(e) => setFormData({ ...formData, caption: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="توضیحات تصویر"
-                  />
-                </div>
-
-                <div className="flex gap-2 justify-end pt-4">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    disabled={isSubmitting}
-                    className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
-                  >
-                    انصراف
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
-                  >
-                    {isSubmitting ? 'در حال ذخیره...' : (editingItem ? 'ذخیره تغییرات' : 'افزودن')}
-                  </button>
-                </div>
-              </form>
-            </div>
+      {showModal && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-2xl">
+          <div className="p-6">
+            <div className="mb-6 flex items-center justify-between"><h2 className="text-xl font-bold text-gray-800">{editingItem ? 'ویرایش رسانه' : 'افزودن رسانه'}</h2><button type="button" onClick={closeModal} aria-label="بستن" className="rounded-lg p-2 hover:bg-gray-100"><X size={20} /></button></div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div><label htmlFor="media-type" className="mb-1 block text-sm font-medium text-gray-600">نوع رسانه</label><select id="media-type" value={formData.mediaType} onChange={(e) => setFormData({ ...formData, mediaType: e.target.value as MediaType, isHero: e.target.value === 'video' && formData.isHero })} className="w-full rounded-lg border border-gray-300 px-4 py-2"><option value="image">تصویر</option><option value="video">ویدیو</option></select></div>
+              <div><label htmlFor="media-file" className="mb-1 block text-sm font-medium text-gray-600">{formData.mediaType === 'image' ? 'فایل تصویر' : 'فایل ویدیو'}</label><div className="rounded-lg border-2 border-dashed border-gray-300 p-5 text-center"><input id="media-file" type="file" accept={formData.mediaType === 'image' ? 'image/jpeg,image/png,image/webp' : 'video/mp4,video/webm,video/ogg'} onChange={(e) => setFormData({ ...formData, image: formData.mediaType === 'image' ? e.target.files?.[0] ?? null : null, video: formData.mediaType === 'video' ? e.target.files?.[0] ?? null : null })} className="w-full text-sm" required={!editingItem || formData.mediaType !== (editingItem.video_path ? 'video' : 'image')} /><p className="mt-2 text-xs text-gray-500">{formData.mediaType === 'image' ? 'JPEG، PNG یا WebP (حداکثر ۲ مگابایت)' : 'MP4، WebM یا OGG (حداکثر ۵۰ مگابایت)'}</p></div></div>
+              {formData.mediaType === 'video' && <label className="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" checked={formData.isHero} onChange={(e) => setFormData({ ...formData, isHero: e.target.checked })} /> نمایش این ویدیو در بخش اصلی صفحه اول</label>}
+              <div><label htmlFor="gallery-category" className="mb-1 block text-sm font-medium text-gray-600">دسته‌بندی</label><select id="gallery-category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })} className="w-full rounded-lg border border-gray-300 px-4 py-2">{categories.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}</select></div>
+              <div><label htmlFor="gallery-caption" className="mb-1 block text-sm font-medium text-gray-600">توضیحات</label><input id="gallery-caption" type="text" value={formData.caption} onChange={(e) => setFormData({ ...formData, caption: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" placeholder="توضیحات رسانه" /></div>
+              <div className="flex justify-end gap-2 pt-4"><button type="button" onClick={closeModal} disabled={isSubmitting} className="rounded-lg bg-gray-100 px-6 py-2 text-gray-700 hover:bg-gray-200">انصراف</button><button type="submit" disabled={isSubmitting} className="rounded-lg bg-orange-500 px-6 py-2 text-white hover:bg-orange-600 disabled:opacity-50">{isSubmitting ? 'در حال ذخیره...' : 'ذخیره'}</button></div>
+            </form>
           </div>
         </div>
-      )}
+      </div>}
     </div>
   );
 };
-
 export default AdminGallery;

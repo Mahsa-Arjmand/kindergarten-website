@@ -1,3 +1,4 @@
+import { getStorageUrl } from '../../lib/media';
 import { useEffect, useState } from 'react';
 import api from '../../lib/axios';
 import { Eye, Check, X, Search, Filter, Download } from 'lucide-react';
@@ -58,7 +59,7 @@ const AdminJobApplications = () => {
 
   const downloadCV = (cvPath: string) => {
     if (cvPath) {
-      window.open(`http://localhost:8000/storage/${cvPath}`, '_blank');
+      window.open(getStorageUrl(cvPath), '_blank', 'noopener,noreferrer');
     }
   };
 

@@ -5,7 +5,7 @@ import { News as NewsType } from '../types';
 import { toJalaliLocale } from '../lib/dateUtils';
 
 const API_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  import.meta.env.VITE_API_URL || '/api/v1';
 
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
@@ -39,8 +39,8 @@ const News = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
-      <section className="border-b border-border-light bg-cream">
+    <main className="bg-white">
+      <section className="border-b border-border-light bg-white">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">اخبار و اطلاعیه‌ها</p>
           <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">
@@ -73,6 +73,8 @@ const News = () => {
                   <div className="relative overflow-hidden">
                     {item.image_path ? (
                       <img
+                        loading="lazy"
+                        decoding="async"
                         src={getStorageUrl(item.image_path)}
                         alt={item.title}
                         className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
@@ -129,6 +131,8 @@ const News = () => {
 
               {selectedNews.image_path && (
                 <img
+                        loading="lazy"
+                        decoding="async"
                   src={getStorageUrl(selectedNews.image_path)}
                   alt={selectedNews.title}
                   className="w-full rounded-xl mb-6"

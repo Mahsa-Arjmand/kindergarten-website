@@ -1,3 +1,4 @@
+import { getStorageUrl } from '../../lib/media';
 import { useEffect, useState } from 'react';
 import api from '../../lib/axios';
 import { Plus, Edit, Trash2, Search, X, Upload } from 'lucide-react';
@@ -244,7 +245,9 @@ const AdminTeachers = () => {
                   <td className="px-6 py-4">
                     {teacher.image_path ? (
                       <img
-                        src={`http://localhost:8000/storage/${teacher.image_path}`}
+                        loading="lazy"
+                        decoding="async"
+                        src={getStorageUrl(teacher.image_path)}
                         alt={teacher.name}
                         className="w-12 h-12 rounded-lg object-cover"
                       />

@@ -1,3 +1,4 @@
+import { getStorageUrl } from '../../lib/media';
 import { useEffect, useState } from 'react';
 import api from '../../lib/axios';
 import { Plus, Edit, Trash2, Search, X, Upload } from 'lucide-react';
@@ -25,7 +26,7 @@ const AdminNews = () => {
     content: '',
     image: null as File | null,
     publish_date: '',
-    status: 'draft' as const,
+    status: 'draft' as 'draft' | 'published' | 'archived',
   });
 
   useEffect(() => {
@@ -222,7 +223,9 @@ const AdminNews = () => {
                   <td className="px-6 py-4">
                     {item.image_path ? (
                       <img
-                        src={`http://localhost:8000/storage/${item.image_path}`}
+                        loading="lazy"
+                        decoding="async"
+                        src={getStorageUrl(item.image_path)}
                         alt={item.title}
                         className="w-16 h-12 rounded-lg object-cover"
                       />

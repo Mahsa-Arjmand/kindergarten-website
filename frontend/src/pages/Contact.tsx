@@ -59,7 +59,7 @@ const Contact = () => {
 
   if (submitted) {
     return (
-      <main className="bg-cream">
+      <main className="bg-white">
         <div className="container-hedieh flex min-h-[60vh] items-center justify-center py-12">
           <div className="w-full max-w-[560px] rounded-2xl border border-border bg-white p-8 text-center shadow-sm sm:p-10">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage-light text-brand-dark">
@@ -77,8 +77,8 @@ const Contact = () => {
   }
 
   return (
-    <main className="bg-cream">
-      <section className="border-b border-border-light bg-cream">
+    <main className="bg-white">
+      <section className="border-b border-border-light bg-white">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">در ارتباط باشیم</p>
           <h1 className="max-w-[560px] text-balance text-[24px] font-black leading-[1.35] tracking-[-0.03em] text-ink sm:text-[28px] lg:text-[32px]">

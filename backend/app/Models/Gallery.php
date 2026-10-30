@@ -13,6 +13,8 @@ class Gallery extends Model
 
     protected $fillable = [
         'image_path',
+        'video_path',
+        'is_hero',
         'category',
         'caption',
         'is_visible',
@@ -20,6 +22,8 @@ class Gallery extends Model
 
     protected $casts = [
         'category' => 'string',
+        'is_visible' => 'boolean',
+        'is_hero' => 'boolean',
     ];
 
     public function scopeVisible($query)

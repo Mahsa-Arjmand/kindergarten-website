@@ -5,7 +5,7 @@ import api from '../lib/axios';
 import { Teacher } from '../types';
 
 const API_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  import.meta.env.VITE_API_URL || '/api/v1';
 
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
@@ -38,9 +38,9 @@ const Teachers = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <main className="bg-white">
       {/* Header */}
-      <section className="border-b border-border-light bg-cream">
+      <section className="border-b border-border-light bg-white">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">تیم آموزشی</p>
           <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-10">
@@ -72,6 +72,8 @@ const Teachers = () => {
                   <div className="relative overflow-hidden">
                     {teacher.image_path ? (
                       <img
+                        loading="lazy"
+                        decoding="async"
                         src={getStorageUrl(teacher.image_path)}
                         alt={teacher.name}
                         className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
@@ -129,7 +131,7 @@ const Teachers = () => {
       </section>
 
       {/* CTA - compact */}
-      <section className="bg-sage-light/40 py-6">
+      <section className="bg-white py-6">
         <div className="container-hedieh">
           <div className="flex flex-col gap-4 rounded-2xl border border-border bg-white px-6 py-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-7">
             <div>

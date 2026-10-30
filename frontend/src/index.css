@@ -38,7 +38,7 @@
 :root {
   font-family: "Vazirmatn", "IRANSans", Tahoma, Arial, sans-serif;
   color: #2e2230;
-  background: #fff7fb;
+  background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -48,14 +48,14 @@
 html {
   direction: rtl;
   scroll-behavior: smooth;
-  background: #fff7fb;
+  background: #ffffff;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #fff7fb;
+  background: #ffffff;
   color: #2e2230;
 }
 
@@ -109,7 +109,7 @@ img {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #fff7fb;
+  background: #ffffff;
 }
 ::-webkit-scrollbar-thumb {
   background: #f0d0df;

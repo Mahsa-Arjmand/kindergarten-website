@@ -5,7 +5,7 @@ import api from '../lib/axios';
 import { Activity } from '../types';
 
 const API_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  import.meta.env.VITE_API_URL || '/api/v1';
 
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
@@ -41,7 +41,7 @@ const Activities = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <main className="bg-white">
       {/* Header - compact */}
       <section className="border-b border-border-light bg-white">
         <div className="container-hedieh py-10 lg:py-12">
@@ -75,6 +75,8 @@ const Activities = () => {
                   <div className="relative overflow-hidden">
                     {activity.image_path ? (
                       <img
+                        loading="lazy"
+                        decoding="async"
                         src={getStorageUrl(activity.image_path)}
                         alt={activity.title}
                         className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"

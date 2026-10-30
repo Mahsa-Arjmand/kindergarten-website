@@ -38,10 +38,11 @@ export interface Teacher {
 
 export interface Gallery {
   id: number;
-  image_path: string;
+  image_path: string | null;
+  video_path: string | null;
+  is_hero: boolean;
   category: 'classroom' | 'playground' | 'activities' | 'events' | 'food';
-  caption: string;
-  is_visible: boolean;
+  caption: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -140,6 +141,7 @@ export interface DashboardStats {
     unread: number;
   };
   teachers: number;
+  children: number;
   services: number;
   activities: number;
   gallery: number;

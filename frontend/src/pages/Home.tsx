@@ -19,7 +19,7 @@ import api from '../lib/axios';
 import MapLocation, { HEDIYEH_LOCATION } from '../components/MapLocation';
 import type { Service, Activity, Teacher, Gallery } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
@@ -121,10 +121,10 @@ const Home = () => {
           },
         },
         {
-          request: api.get('/gallery'),
+          request: api.get('/gallery', { params: { home: true } }),
           onSuccess: (data: unknown) => {
             if (!cancelled) {
-              setGallery(extractArray<Gallery>(data).slice(0, 4));
+              setGallery(extractArray<Gallery>(data));
               setGalleryState({ loading: false, error: false });
             }
           },
@@ -153,7 +153,9 @@ const Home = () => {
     };
   }, []);
 
-  const aboutImage = gallery[1] ?? gallery[0];
+  const heroVideo = gallery.find((item) => item.is_hero && item.video_path);
+  const galleryImages = gallery.filter((item) => item.image_path);
+  const aboutImage = galleryImages[1] ?? galleryImages[0];
 
   const values = [
     { number: '۰۱', icon: ShieldCheck, title: 'امنیت و آرامش', description: 'محیطی امن که کودک احساس تعلق کند.', color: 'bg-brand-light text-brand border-pink-100' },
@@ -228,15 +230,28 @@ const Home = () => {
                 <Cloud size={28} aria-hidden="true" />
               </div>
               <div className="relative overflow-hidden rounded-[2.5rem] border-[8px] border-white bg-white shadow-[0_20px_60px_rgba(236,42,134,0.12)]">
-                <img
-                  src="/logo-hediyeh.jpg"
-                  alt="مهدکودک هدیه - کودکستان و پیش‌دبستانی"
-                  width={800}
-                  height={800}
-                  fetchPriority="high"
-                  decoding="async"
-                  className="aspect-square w-full object-contain"
-                />
+                {heroVideo?.video_path ? (
+                  <video
+                    key={heroVideo.id}
+                    src={getStorageUrl(heroVideo.video_path)}
+                    poster={galleryImages[0]?.image_path ? getStorageUrl(galleryImages[0].image_path) : '/logo-hediyeh.jpg'}
+                    controls
+                    playsInline
+                    preload="none"
+                    aria-label={heroVideo.caption || 'ویدیوی مهدکودک هدیه'}
+                    className="aspect-square w-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src="/logo-hediyeh.jpg"
+                    alt="مهدکودک هدیه - کودکستان و پیش‌دبستانی"
+                    width={800}
+                    height={800}
+                    fetchPriority="high"
+                    decoding="async"
+                    className="aspect-square w-full object-contain"
+                  />
+                )}
               </div>
               <div className="absolute -bottom-5 -left-3 flex items-center gap-3 rounded-2xl border border-pink-100 bg-white px-4 py-3 shadow-[0_12px_32px_rgba(236,42,134,0.15)] sm:-left-4">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white">
@@ -285,14 +300,14 @@ const Home = () => {
       </section>
 
       {/* About — pastel blue */}
-      <section aria-labelledby="about-title" className="bg-blue-soft py-10 lg:py-12">
+      <section aria-labelledby="about-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="relative order-2 lg:order-1">
             <div className="overflow-hidden rounded-[1.75rem] border-[6px] border-white bg-white shadow-[0_12px_32px_rgba(30,167,255,0.15)]">
               {aboutImage?.image_path ? (
                 <img
                   src={getStorageUrl(aboutImage.image_path)}
-                  alt={aboutImage.title || 'محیط هدیه'}
+                  alt={aboutImage.caption || 'محیط هدیه'}
                   width={1200}
                   height={900}
                   loading="lazy"
@@ -331,7 +346,7 @@ const Home = () => {
       </section>
 
       {/* Services — happy pastel cards with top color bar */}
-      <section aria-labelledby="services-title" className="bg-[#fff7fb] py-10 lg:py-12">
+      <section aria-labelledby="services-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
           <div className="mx-auto max-w-2xl text-center">
             <span className="section-kicker mx-auto">● آنچه ارائه می‌دهیم</span>
@@ -454,7 +469,7 @@ const Home = () => {
       </section>
 
       {/* Why — 4 colorful bubbly */}
-      <section aria-labelledby="why-title" className="bg-yellow-soft py-10 lg:py-12">
+      <section aria-labelledby="why-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-100 bg-white px-3 py-1 text-[11px] font-bold text-amber-700">
@@ -544,7 +559,7 @@ const Home = () => {
       </section>
 
       {/* Gallery — playful */}
-      <section aria-labelledby="gallery-title" className="bg-cream py-10 lg:py-12">
+      <section aria-labelledby="gallery-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
@@ -562,13 +577,13 @@ const Home = () => {
                 <div key={i} className="aspect-square animate-pulse rounded-[1.5rem] bg-pink-100" />
               ))}
             </div>
-          ) : gallery.length > 0 ? (
+          ) : galleryImages.length > 0 ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-              {gallery.map((item) => (
-                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className="group relative aspect-square overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm">
+              {galleryImages.slice(0, 4).map((item) => (
+                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.caption || 'تصویر مهدکودک هدیه'}`} className="group relative aspect-square overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm">
                   <img
                     src={getStorageUrl(item.image_path)}
-                    alt={item.title}
+                    alt={item.caption || 'لحظه‌ای از مهدکودک هدیه'}
                     width={500}
                     height={500}
                     loading="lazy"
@@ -576,7 +591,7 @@ const Home = () => {
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
                   <div className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
-                    {item.title}
+                    {item.caption}
                   </div>
                 </Link>
               ))}
@@ -590,7 +605,7 @@ const Home = () => {
       </section>
 
       {/* Location & Google Map Section on Home */}
-      <section aria-labelledby="location-title" className="bg-blue-soft py-10 lg:py-12">
+      <section aria-labelledby="location-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh grid items-center gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10">
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-100 bg-white px-3 py-1 text-[11px] font-bold text-blue">
@@ -670,7 +685,7 @@ const Home = () => {
       </section>
 
       {/* Bottom — two bubbly cards */}
-      <section className="bg-[#fff7fb] py-6">
+      <section className="bg-white py-6">
         <div className="container-hedieh grid gap-4 md:grid-cols-2">
           <div className="rounded-[1.75rem] border-2 border-white bg-white p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
             <span className="inline-flex rounded-full bg-yellow-light px-2.5 py-1 text-[11px] font-bold text-amber-700">فرصت همکاری</span>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import api from '../lib/axios';
 import type { Gallery } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 const getStorageUrl = (path?: string | null) => {
   if (!path) return '';
   const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
@@ -48,7 +48,7 @@ const About = () => {
     const fetchGallery = async () => {
       try {
         const response = await api.get('/gallery');
-        setGallery(Array.isArray(response.data) ? response.data.slice(0, 3) : []);
+        setGallery(Array.isArray(response.data) ? response.data.filter((item: Gallery) => item.image_path).slice(0, 3) : []);
       } catch (error) {
         console.error('Error fetching gallery:', error);
         setGallery([]);
@@ -58,9 +58,9 @@ const About = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <main className="bg-white">
       {/* Intro - exactly like Home hero, no blobs */}
-      <section className="bg-cream">
+      <section className="bg-white">
         <div className="container-hedieh grid items-center gap-10 py-10 lg:grid-cols-[1.05fr_0.85fr] lg:gap-14 lg:py-12">
           <div>
             <p className="section-kicker">درباره مهدکودک هدیه</p>
@@ -118,7 +118,7 @@ const About = () => {
       </section>
 
       {/* Values - same cards as Home Why */}
-      <section className="bg-sage-light/60 py-10 lg:py-12">
+      <section className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
           <div className="mb-5 max-w-[520px]">
             <p className="section-kicker">ارزش‌های ما</p>
@@ -145,7 +145,7 @@ const About = () => {
       </section>
 
       {/* Vision - centered, no border-y gap mess */}
-      <section className="bg-cream py-10 lg:py-12">
+      <section className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
           <div className="mx-auto max-w-[720px] rounded-2xl border border-border bg-white px-6 py-8 text-center shadow-sm sm:px-10 sm:py-10">
             <p className="section-kicker justify-center">چشم‌انداز ما</p>
