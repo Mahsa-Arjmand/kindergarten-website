@@ -39,6 +39,7 @@ const AdminGallery = () => {
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [waitingForRateLimit, setWaitingForRateLimit] = useState(false);
   const [formData, setFormData] = useState<FormDataState>(emptyForm);
+  const [previewItem, setPreviewItem] = useState<GalleryItem | null>(null);
 
   const fetchGallery = async () => {
     try {
@@ -61,6 +62,8 @@ const AdminGallery = () => {
     setShowModal(true);
   };
   const closeModal = () => { setShowModal(false); setEditingItem(null); setFormData(emptyForm); setUploadProgress(null); setWaitingForRateLimit(false); };
+  const openPreview = (item: GalleryItem) => { setPreviewItem(item); };
+  const closePreview = () => { setPreviewItem(null); };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -164,7 +167,7 @@ const AdminGallery = () => {
   };
 
   const filteredGallery = gallery.filter((item) =>
-    item.caption?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (item.caption?.toLowerCase().includes(searchTerm.toLowerCase()) ?? true) &&
     (filterCategory === 'all' || item.category === filterCategory)
   );
 
@@ -193,7 +196,7 @@ const AdminGallery = () => {
         {filteredGallery.length === 0 ? <div className="col-span-full rounded-xl border border-gray-100 bg-white py-12 text-center text-gray-500">رسانه‌ای یافت نشد</div> : filteredGallery.map((item) => (
           <article key={item.id} className="group overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
             <div className="relative aspect-square bg-gray-100">
-              {item.video_path ? <video src={getStorageUrl(item.video_path)} controls preload="none" className="h-full w-full object-contain" aria-label={item.caption || 'ویدیوی گالری'} /> : item.image_path ? <img src={getStorageUrl(item.image_path)} alt={item.caption || ''} loading="lazy" decoding="async" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center"><ImageIcon size={48} className="text-gray-400" /></div>}
+              {item.video_path ? <video src={getStorageUrl(item.video_path)} controls preload="none" className="h-full w-full object-contain" aria-label={item.caption || 'ویدیوی گالری'} /> : item.image_path ? <img src={getStorageUrl(item.image_path)} alt={item.caption || ''} loading="lazy" decoding="async" className="h-full w-full object-cover cursor-pointer" onClick={() => openPreview(item)} /> : <div className="flex h-full items-center justify-center"><ImageIcon size={48} className="text-gray-400" /></div>}
               <div className="absolute left-2 top-2 flex gap-1 rounded-full bg-white/90 px-2 py-1 text-xs font-bold text-gray-700">{item.video_path ? <Video size={14} /> : <ImageIcon size={14} />}{item.is_hero && <span>ویدیوی اول صفحه</span>}</div>
               <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                 <button onClick={() => openModal(item)} aria-label="ویرایش" className="rounded-full bg-blue-500 p-3 text-white hover:bg-blue-600"><Edit size={20} /></button>
@@ -218,6 +221,14 @@ const AdminGallery = () => {
               <div className="flex justify-end gap-2 pt-4"><button type="button" onClick={closeModal} disabled={isSubmitting} className="rounded-lg bg-gray-100 px-6 py-2 text-gray-700 hover:bg-gray-200">انصراف</button><button type="submit" disabled={isSubmitting} className="rounded-lg bg-orange-500 px-6 py-2 text-white hover:bg-orange-600 disabled:opacity-50">{isSubmitting ? (waitingForRateLimit ? 'در انتظار محدودیت سرور...' : uploadProgress === null ? 'در حال ذخیره...' : `بارگذاری ویدیو ${uploadProgress}٪`) : 'ذخیره'}</button></div>
             </form>
           </div>
+        </div>
+      </div>}
+
+      {previewItem && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4" onClick={closePreview}>
+        <div className="relative max-h-[90vh] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
+          <button onClick={closePreview} className="absolute -right-12 top-0 rounded-full bg-white/20 p-2 text-white hover:bg-white/30"><X size={24} /></button>
+          {previewItem.video_path ? <video src={getStorageUrl(previewItem.video_path)} controls autoPlay className="max-h-[90vh] max-w-[90vw]" /> : previewItem.image_path ? <img src={getStorageUrl(previewItem.image_path)} alt={previewItem.caption || ''} className="max-h-[90vh] max-w-[90vw] object-contain" /> : null}
+          {previewItem.caption && <p className="mt-4 text-center text-white">{previewItem.caption}</p>}
         </div>
       </div>}
     </div>

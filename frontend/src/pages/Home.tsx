@@ -14,7 +14,7 @@ import {
   Cloud,
   Sun,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import api from '../lib/axios';
 import { getStorageUrl } from '../lib/media';
 import MapLocation, { HEDIYEH_LOCATION } from '../components/MapLocation';
@@ -48,6 +48,7 @@ const Home = () => {
   const [activityState, setActivityState] = useState<SectionState>(initialSectionState);
   const [teacherState, setTeacherState] = useState<SectionState>(initialSectionState);
   const [galleryState, setGalleryState] = useState<SectionState>(initialSectionState);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     document.title = 'مهدکودک هدیه | بهترین مهدکودک و پیش‌دبستانی در منظریه زنجان | ثبت‌نام آنلاین';
@@ -145,6 +146,30 @@ const Home = () => {
   const galleryImages = gallery.filter((item) => item.image_path);
   const aboutImage = galleryImages[1] ?? galleryImages[0];
 
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(video);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [heroVideo]);
+
   const values = [
     { number: '۰۱', icon: ShieldCheck, title: 'امنیت و آرامش', description: 'محیطی امن که کودک احساس تعلق کند.', color: 'bg-brand-light text-brand border-pink-100' },
     { number: '۰۲', icon: Heart, title: 'رشد همه‌جانبه', description: 'توجه به قلب، ذهن و خلاقیت کودک.', color: 'bg-blue-light text-blue border-sky-100' },
@@ -220,12 +245,17 @@ const Home = () => {
               <div className="relative overflow-hidden rounded-[2.5rem] border-[8px] border-white bg-white shadow-[0_20px_60px_rgba(236,42,134,0.12)]">
                 {heroVideo?.video_path ? (
                   <video
+                    ref={heroVideoRef}
                     key={heroVideo.id}
                     src={getStorageUrl(heroVideo.video_path)}
-                    poster={galleryImages[0]?.image_path ? getStorageUrl(galleryImages[0].image_path) : '/logo-hediyeh.jpg'}
-                    controls
+                    poster={heroVideo.thumbnail_path ? getStorageUrl(heroVideo.thumbnail_path) : (galleryImages[0]?.image_path ? getStorageUrl(galleryImages[0].image_path) : '/logo-hediyeh.jpg')}
+                    autoPlay
+                    muted
+                    loop
                     playsInline
-                    preload="none"
+                    webkit-playsinline="true"
+                    x-webkit-airplay="allow"
+                    preload="metadata"
                     aria-label={heroVideo.caption || 'ویدیوی مهدکودک هدیه'}
                     className="aspect-square w-full object-cover"
                   />

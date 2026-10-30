@@ -105,7 +105,7 @@ Route::prefix('v1')->group(function () {
             ->middleware('throttle:300,1');
         Route::post('/gallery/video-chunks/complete', [AdminGalleryController::class, 'completeVideoUpload'])
             ->withoutMiddleware(ThrottleRequests::class)
-            ->middleware('throttle:30,1');
+            ->middleware('throttle:1000,1');
         Route::delete('/gallery/video-chunks/{uploadId}', [AdminGalleryController::class, 'cancelVideoUpload']);
         Route::post('/gallery', [AdminGalleryController::class, 'store']);
         Route::put('/gallery/{gallery}', [AdminGalleryController::class, 'update']);

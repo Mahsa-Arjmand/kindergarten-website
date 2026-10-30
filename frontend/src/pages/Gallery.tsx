@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
+import { Image as ImageIcon, Video as VideoIcon, X } from 'lucide-react';
 import api from '../lib/axios';
 import { getStorageUrl } from '../lib/media';
 import type { Gallery as GalleryType } from '../types';
@@ -15,6 +15,7 @@ const Gallery = () => {
   const [gallery, setGallery] = useState<GalleryType[]>([]);
   const [filter, setFilter] = useState<GalleryCategory>('all');
   const [loading, setLoading] = useState(true);
+  const [previewItem, setPreviewItem] = useState<GalleryType | null>(null);
 
   useEffect(() => {
     document.title = 'گالری تصاویر و ویدیوها - مهدکودک هدیه';
@@ -34,6 +35,9 @@ const Gallery = () => {
 
   const images = gallery.filter((item) => item.image_path);
   const videos = gallery.filter((item) => item.video_path);
+
+  const openPreview = (item: GalleryType) => { setPreviewItem(item); };
+  const closePreview = () => { setPreviewItem(null); };
 
   return (
     <main className="bg-white">
@@ -57,7 +61,7 @@ const Gallery = () => {
         <section aria-labelledby="gallery-photos-title">
           <div className="mb-4 flex items-center gap-2"><ImageIcon size={19} className="text-brand" /><h2 id="gallery-photos-title" className="text-xl font-extrabold text-ink">تصاویر</h2></div>
           {images.length === 0 ? <EmptyGallery label="تصویری در این دسته‌بندی وجود ندارد." icon="image" /> : <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {images.map((item) => <figure key={item.id} className="group relative aspect-square overflow-hidden rounded-2xl bg-white shadow-sm">
+            {images.map((item) => <figure key={item.id} className="group relative aspect-square overflow-hidden rounded-2xl bg-white shadow-sm cursor-pointer" onClick={() => openPreview(item)}>
               <img src={getStorageUrl(item.image_path)} alt={item.caption || 'تصویر مهدکودک هدیه'} width={600} height={600} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]" />
               {item.caption && <figcaption className="absolute inset-x-2 bottom-2 rounded-xl bg-white/95 px-3 py-2 text-[12px] font-bold text-ink opacity-0 shadow-sm transition group-hover:opacity-100">{item.caption}</figcaption>}
             </figure>)}
@@ -68,11 +72,19 @@ const Gallery = () => {
           <div className="mb-4 flex items-center gap-2"><VideoIcon size={19} className="text-brand" /><h2 id="gallery-videos-title" className="text-xl font-extrabold text-ink">ویدیوها</h2></div>
           {videos.length === 0 ? <EmptyGallery label="هنوز ویدیویی برای نمایش وجود ندارد." icon="video" /> : <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {videos.map((item) => <article key={item.id} className="overflow-hidden rounded-2xl border border-border-light bg-white shadow-sm">
-              <video src={getStorageUrl(item.video_path)} controls playsInline preload="none" aria-label={item.caption || 'ویدیوی مهدکودک هدیه'} className="aspect-video w-full bg-black" />
+              <video src={getStorageUrl(item.video_path)} controls playsInline preload="metadata" aria-label={item.caption || 'ویدیوی مهدکودک هدیه'} className="aspect-video w-full bg-gray-100 object-cover" />
               {item.caption && <p className="px-4 py-3 text-sm font-semibold text-ink">{item.caption}</p>}
             </article>)}
           </div>}
         </section>
+      </div>}
+
+      {previewItem && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4" onClick={closePreview}>
+        <div className="relative max-h-[90vh] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
+          <button onClick={closePreview} className="absolute -right-12 top-0 rounded-full bg-white/20 p-2 text-white hover:bg-white/30"><X size={24} /></button>
+          {previewItem.video_path ? <video src={getStorageUrl(previewItem.video_path)} controls autoPlay className="max-h-[90vh] max-w-[90vw]" /> : previewItem.image_path ? <img src={getStorageUrl(previewItem.image_path)} alt={previewItem.caption || ''} className="max-h-[90vh] max-w-[90vw] object-contain" /> : null}
+          {previewItem.caption && <p className="mt-4 text-center text-white">{previewItem.caption}</p>}
+        </div>
       </div>}
     </main>
   );
