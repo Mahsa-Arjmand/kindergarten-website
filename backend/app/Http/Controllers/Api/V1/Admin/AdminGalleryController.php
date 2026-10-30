@@ -22,7 +22,7 @@ class AdminGalleryController extends Controller
         $validator = Validator::make($request->all(), [
             'media_type' => 'sometimes|in:image,video',
             'image' => 'required_if:media_type,image|nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'video' => 'required_if:media_type,video|nullable|mimes:mp4,webm,ogg|max:51200',
+            'video' => 'required_if:media_type,video|nullable|mimes:mp4,webm,ogg|max:256000',
             'category' => 'required|in:classroom,playground,activities,events,food',
             'caption' => 'nullable|string|max:255',
             'is_hero' => 'nullable|boolean',
@@ -55,7 +55,7 @@ class AdminGalleryController extends Controller
         $validator = Validator::make($request->all(), [
             'media_type' => 'sometimes|in:image,video',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'video' => 'nullable|mimes:mp4,webm,ogg|max:51200',
+            'video' => 'nullable|mimes:mp4,webm,ogg|max:256000',
             'category' => 'required|in:classroom,playground,activities,events,food',
             'caption' => 'nullable|string|max:255',
             'is_hero' => 'nullable|boolean',
