@@ -37,6 +37,7 @@ const AdminGallery = () => {
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [waitingForRateLimit, setWaitingForRateLimit] = useState(false);
   const [formData, setFormData] = useState<FormDataState>(emptyForm);
 
   const fetchGallery = async () => {
@@ -59,7 +60,7 @@ const AdminGallery = () => {
     } : emptyForm);
     setShowModal(true);
   };
-  const closeModal = () => { setShowModal(false); setEditingItem(null); setFormData(emptyForm); setUploadProgress(null); };
+  const closeModal = () => { setShowModal(false); setEditingItem(null); setFormData(emptyForm); setUploadProgress(null); setWaitingForRateLimit(false); };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -86,7 +87,22 @@ const AdminGallery = () => {
           chunkForm.append('chunk_index', String(index));
           chunkForm.append('total_chunks', String(totalChunks));
           chunkForm.append('chunk', video.slice(index * chunkSize, Math.min((index + 1) * chunkSize, video.size)), video.name);
-          await api.post('/admin/gallery/video-chunks', chunkForm);
+          let uploaded = false;
+          for (let attempt = 0; attempt < 4 && !uploaded; attempt++) {
+            try {
+              await api.post('/admin/gallery/video-chunks', chunkForm);
+              uploaded = true;
+            } catch (chunkError: any) {
+              if (chunkError.response?.status !== 429 || attempt === 3) throw chunkError;
+              setWaitingForRateLimit(true);
+              const retryAfter = Number(chunkError.response.headers?.['retry-after']);
+              const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
+                ? Math.min(retryAfter * 1000, 120_000)
+                : 60_000;
+              await new Promise((resolve) => window.setTimeout(resolve, waitMs));
+              setWaitingForRateLimit(false);
+            }
+          }
           setUploadProgress(Math.round(((index + 1) / totalChunks) * 100));
         }
 
@@ -130,6 +146,7 @@ const AdminGallery = () => {
           : errors ? Object.values(errors).flat().join(', ') : error.response?.data?.message || error.message;
       alert('خطا در ذخیره رسانه: ' + message);
       setUploadProgress(null);
+      setWaitingForRateLimit(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -198,7 +215,7 @@ const AdminGallery = () => {
               {formData.mediaType === 'video' && <label className="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" checked={formData.isHero} onChange={(e) => setFormData({ ...formData, isHero: e.target.checked })} /> نمایش این ویدیو در بخش اصلی صفحه اول</label>}
               <div><label htmlFor="gallery-category" className="mb-1 block text-sm font-medium text-gray-600">دسته‌بندی</label><select id="gallery-category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })} className="w-full rounded-lg border border-gray-300 px-4 py-2">{categories.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}</select></div>
               <div><label htmlFor="gallery-caption" className="mb-1 block text-sm font-medium text-gray-600">توضیحات</label><input id="gallery-caption" type="text" value={formData.caption} onChange={(e) => setFormData({ ...formData, caption: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" placeholder="توضیحات رسانه" /></div>
-              <div className="flex justify-end gap-2 pt-4"><button type="button" onClick={closeModal} disabled={isSubmitting} className="rounded-lg bg-gray-100 px-6 py-2 text-gray-700 hover:bg-gray-200">انصراف</button><button type="submit" disabled={isSubmitting} className="rounded-lg bg-orange-500 px-6 py-2 text-white hover:bg-orange-600 disabled:opacity-50">{isSubmitting ? (uploadProgress === null ? 'در حال ذخیره...' : `بارگذاری ویدیو ${uploadProgress}٪`) : 'ذخیره'}</button></div>
+              <div className="flex justify-end gap-2 pt-4"><button type="button" onClick={closeModal} disabled={isSubmitting} className="rounded-lg bg-gray-100 px-6 py-2 text-gray-700 hover:bg-gray-200">انصراف</button><button type="submit" disabled={isSubmitting} className="rounded-lg bg-orange-500 px-6 py-2 text-white hover:bg-orange-600 disabled:opacity-50">{isSubmitting ? (waitingForRateLimit ? 'در انتظار محدودیت سرور...' : uploadProgress === null ? 'در حال ذخیره...' : `بارگذاری ویدیو ${uploadProgress}٪`) : 'ذخیره'}</button></div>
             </form>
           </div>
         </div>
