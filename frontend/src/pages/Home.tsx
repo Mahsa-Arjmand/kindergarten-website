@@ -150,23 +150,44 @@ const Home = () => {
     const video = heroVideoRef.current;
     if (!video) return;
 
+    // Muted, inline playback is required for reliable autoplay on mobile Safari/Chrome.
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    let isInViewport = true;
+    const tryPlay = () => {
+      if (isInViewport && document.visibilityState === 'visible') {
+        video.play().catch(() => {
+          // Browsers may defer autoplay until enough video data is buffered.
+        });
+      }
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') tryPlay();
+      else video.pause();
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-          }
+          isInViewport = entry.isIntersecting;
+          if (isInViewport) tryPlay();
+          else video.pause();
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.15 }
     );
 
+    video.addEventListener('canplay', tryPlay);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     observer.observe(video);
+    tryPlay();
 
     return () => {
       observer.disconnect();
+      video.removeEventListener('canplay', tryPlay);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [heroVideo]);
 
@@ -272,7 +293,7 @@ const Home = () => {
                   />
                 )}
               </div>
-              <div className={`flex items-center gap-3 rounded-2xl border border-pink-100 bg-white px-4 py-3 shadow-[0_12px_32px_rgba(236,42,134,0.15)] ${heroVideo?.video_path ? 'relative mx-auto mt-3 w-fit' : 'absolute -bottom-5 -left-3 sm:-left-4'}`}>
+              <div className={`flex items-center gap-3 rounded-2xl border border-pink-100 bg-white px-4 py-3 shadow-[0_12px_32px_rgba(236,42,134,0.15)] ${heroVideo?.video_path ? 'absolute bottom-16 left-3 z-10 sm:bottom-4 sm:left-4' : 'absolute -bottom-5 -left-3 sm:-left-4'}`}>
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white">
                   <Heart size={18} fill="white" aria-hidden="true" />
                 </span>
