@@ -40,6 +40,7 @@ export interface Gallery {
   id: number;
   image_path: string | null;
   video_path: string | null;
+  thumbnail_path?: string | null;
   is_hero: boolean;
   category: 'classroom' | 'playground' | 'activities' | 'events' | 'food';
   caption: string | null;

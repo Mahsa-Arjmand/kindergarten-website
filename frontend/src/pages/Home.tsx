@@ -185,7 +185,7 @@ const Home = () => {
         <div aria-hidden="true" className="pointer-events-none absolute -right-10 bottom-10 h-40 w-40 rounded-full bg-blue-light/60 blur-2xl" />
         <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-yellow-light/40 blur-3xl" />
 
-        <div className="container-hedieh relative grid items-center gap-8 py-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:py-16">
+        <div className="container-hedieh relative grid min-w-0 grid-cols-1 items-center gap-6 py-8 sm:gap-8 sm:py-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:py-16">
           <div className="order-2 lg:order-1">
             <div className="mb-4 hidden items-center gap-2 rounded-full border border-pink-100 bg-white px-3 py-1.5 text-[12px] font-bold text-brand shadow-sm xl:inline-flex">
               <Star size={14} className="fill-brand text-brand" aria-hidden="true" />
@@ -237,12 +237,12 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="order-1 lg:order-2">
-            <div className="relative mx-auto max-w-[520px]">
+          <div className="order-1 min-w-0 lg:order-2">
+            <div className="relative mx-auto w-full max-w-[520px] min-w-0">
               <div aria-hidden="true" className="absolute -right-4 -top-4 hidden h-20 w-20 items-center justify-center rounded-[2rem] bg-blue-light text-blue sm:flex">
                 <Cloud size={28} aria-hidden="true" />
               </div>
-              <div className="relative overflow-hidden rounded-[2.5rem] border-[8px] border-white bg-white shadow-[0_20px_60px_rgba(236,42,134,0.12)]">
+              <div className="relative aspect-square w-full overflow-hidden rounded-[2rem] border-[6px] border-white bg-white shadow-[0_20px_60px_rgba(236,42,134,0.12)] sm:rounded-[2.5rem] sm:border-[8px]">
                 {heroVideo?.video_path ? (
                   <video
                     ref={heroVideoRef}
@@ -255,9 +255,10 @@ const Home = () => {
                     playsInline
                     webkit-playsinline="true"
                     x-webkit-airplay="allow"
+                    controls
                     preload="metadata"
                     aria-label={heroVideo.caption || 'ویدیوی مهدکودک هدیه'}
-                    className="aspect-square w-full object-cover"
+                    className="absolute inset-0 block h-full w-full bg-black object-cover"
                   />
                 ) : (
                   <img
@@ -267,11 +268,11 @@ const Home = () => {
                     height={800}
                     fetchPriority="high"
                     decoding="async"
-                    className="aspect-square w-full object-contain"
+                    className="absolute inset-0 h-full w-full object-contain"
                   />
                 )}
               </div>
-              <div className="absolute -bottom-5 -left-3 flex items-center gap-3 rounded-2xl border border-pink-100 bg-white px-4 py-3 shadow-[0_12px_32px_rgba(236,42,134,0.15)] sm:-left-4">
+              <div className={`flex items-center gap-3 rounded-2xl border border-pink-100 bg-white px-4 py-3 shadow-[0_12px_32px_rgba(236,42,134,0.15)] ${heroVideo?.video_path ? 'relative mx-auto mt-3 w-fit' : 'absolute -bottom-5 -left-3 sm:-left-4'}`}>
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white">
                   <Heart size={18} fill="white" aria-hidden="true" />
                 </span>
