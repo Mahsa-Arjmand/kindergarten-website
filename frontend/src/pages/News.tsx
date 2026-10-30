@@ -1,17 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, CalendarDays, Newspaper } from 'lucide-react';
 import api from '../lib/axios';
+import { getStorageUrl } from '../lib/media';
 import { News as NewsType } from '../types';
 import { toJalaliLocale } from '../lib/dateUtils';
-
-const API_URL =
-  import.meta.env.VITE_API_URL || '/api/v1';
-
-const getStorageUrl = (path?: string | null) => {
-  if (!path) return '';
-  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
-};
 
 const News = () => {
   const [news, setNews] = useState<NewsType[]>([]);

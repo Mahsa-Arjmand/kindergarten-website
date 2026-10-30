@@ -16,21 +16,9 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import api from '../lib/axios';
+import { getStorageUrl } from '../lib/media';
 import MapLocation, { HEDIYEH_LOCATION } from '../components/MapLocation';
 import type { Service, Activity, Teacher, Gallery } from '../types';
-
-const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
-
-const getStorageUrl = (path?: string | null) => {
-  if (!path) return '';
-  if (/^https?:\/\//i.test(path)) return path;
-  const baseUrl = API_URL.replace(/\/api(\/v\d+)?\/?$/, '');
-  const cleanPath = path
-    .replace(/^\/+/, '')
-    .replace(/^public\//, '')
-    .replace(/^storage\//, '');
-  return `${baseUrl}/storage/${cleanPath}`;
-};
 
 const extractArray = <T,>(payload: unknown): T[] => {
   if (Array.isArray(payload)) return payload as T[];

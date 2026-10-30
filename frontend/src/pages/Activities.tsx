@@ -2,16 +2,8 @@ import { ArrowLeft, CalendarDays, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/axios';
+import { getStorageUrl } from '../lib/media';
 import { Activity } from '../types';
-
-const API_URL =
-  import.meta.env.VITE_API_URL || '/api/v1';
-
-const getStorageUrl = (path?: string | null) => {
-  if (!path) return '';
-  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
-};
 
 const Activities = () => {
   const [activities, setActivities] = useState<Activity[]>([]);

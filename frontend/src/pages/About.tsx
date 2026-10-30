@@ -2,14 +2,8 @@ import { ArrowLeft, BookOpen, Heart, ShieldCheck, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../lib/axios';
+import { getStorageUrl } from '../lib/media';
 import type { Gallery } from '../types';
-
-const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
-const getStorageUrl = (path?: string | null) => {
-  if (!path) return '';
-  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
-};
 
 const values = [
   {

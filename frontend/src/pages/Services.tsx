@@ -2,16 +2,8 @@ import { ArrowLeft, Check, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/axios';
+import { getStorageUrl } from '../lib/media';
 import { Service } from '../types';
-
-const API_URL =
-  import.meta.env.VITE_API_URL || '/api/v1';
-
-const getStorageUrl = (path?: string | null) => {
-  if (!path) return '';
-  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
-  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
-};
 
 const Services = () => {
   const [services, setServices] = useState<Service[]>([]);
