@@ -116,6 +116,10 @@ php artisan storage:link
 
 This creates a symbolic link for file uploads.
 
+#### Gallery video upload limits
+
+The gallery accepts videos up to 50 MB. `public/.user.ini` sets PHP upload and request limits for CGI/FastCGI hosting. If uploads still return HTTP 413, the web server or hosting proxy also needs a request-body limit of at least 55 MB. For Nginx, add `client_max_body_size 55m;` inside the site's `server` block and reload Nginx. With PHP's built-in development server, update `upload_max_filesize` and `post_max_size` in the active `php.ini`, then restart the backend.
+
 ### 9. Start the Laravel Server
 ```bash
 php artisan serve
@@ -172,7 +176,7 @@ Then update `APP_URL` in `.env` to: `http://localhost:8080`
 
 Once backend is running:
 1. Update frontend `.env` with: `VITE_API_URL=http://localhost:8000/api/v1`
-2. Start frontend: `cd frontend && npm run dev`
+2. Start frontend from the repository root with `npm run dev` (or run `npm run install:frontend` once if dependencies are not installed).
 3. Visit: http://localhost:5173
 
 ## Database Reset (if needed)

@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ArrowLeft, ChevronDown, MapPin, Menu, Phone, X } from 'lucide-react';
-import MapLocation, { HEDIYEH_LOCATION } from './MapLocation';
+import { ArrowLeft, ChevronDown, Menu, Phone, X } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -340,7 +339,7 @@ const Layout = ({ children }: LayoutProps) => {
 
       <footer className="border-t border-border bg-white">
         <div className="container-hedieh py-10">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <Link to="/" aria-label="صفحه اصلی مهدکودک هدیه" className="inline-flex items-center gap-3">
                 <img src="/logo-hediyeh.jpg" alt="مهدکودک هدیه" className="h-12 w-auto object-contain" width={160} height={64} loading="lazy" decoding="async" />
@@ -373,15 +372,6 @@ const Layout = ({ children }: LayoutProps) => {
               </div>
             </div>
 
-            <div>
-              <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">موقعیت ما</h2>
-              <div className="mt-4">
-                <MapLocation height="160px" width="100%" />
-                <a href={HEDIYEH_LOCATION.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-start gap-2 text-[12px] leading-6 text-muted transition hover:text-brand">
-                  <MapPin size={15} className="mt-1 shrink-0 text-brand" aria-hidden="true" /><span>{HEDIYEH_LOCATION.shortAddress}</span>
-                </a>
-              </div>
-            </div>
           </div>
         </div>
 

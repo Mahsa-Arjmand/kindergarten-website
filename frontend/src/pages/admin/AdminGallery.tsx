@@ -83,7 +83,9 @@ const AdminGallery = () => {
       await fetchGallery();
     } catch (error: any) {
       const errors = error.response?.data?.errors;
-      const message = errors ? Object.values(errors).flat().join(', ') : error.response?.data?.message || error.message;
+      const message = error.response?.status === 413
+        ? 'حجم فایل از محدودیت سرور بیشتر است. لطفاً ویدیوی کم‌حجم‌تری بارگذاری کنید یا محدودیت آپلود PHP و وب‌سرور را افزایش دهید.'
+        : errors ? Object.values(errors).flat().join(', ') : error.response?.data?.message || error.message;
       alert('خطا در ذخیره رسانه: ' + message);
     } finally {
       setIsSubmitting(false);
