@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\ServiceController;
 use App\Http\Controllers\Api\V1\ActivityController;
@@ -99,8 +100,12 @@ Route::prefix('v1')->group(function () {
 
         // Gallery
         Route::get('/gallery', [AdminGalleryController::class, 'index']);
-        Route::post('/gallery/video-chunks', [AdminGalleryController::class, 'storeVideoChunk'])->middleware('throttle:300,1');
-        Route::post('/gallery/video-chunks/complete', [AdminGalleryController::class, 'completeVideoUpload'])->middleware('throttle:30,1');
+        Route::post('/gallery/video-chunks', [AdminGalleryController::class, 'storeVideoChunk'])
+            ->withoutMiddleware(ThrottleRequests::class)
+            ->middleware('throttle:300,1');
+        Route::post('/gallery/video-chunks/complete', [AdminGalleryController::class, 'completeVideoUpload'])
+            ->withoutMiddleware(ThrottleRequests::class)
+            ->middleware('throttle:30,1');
         Route::delete('/gallery/video-chunks/{uploadId}', [AdminGalleryController::class, 'cancelVideoUpload']);
         Route::post('/gallery', [AdminGalleryController::class, 'store']);
         Route::put('/gallery/{gallery}', [AdminGalleryController::class, 'update']);
