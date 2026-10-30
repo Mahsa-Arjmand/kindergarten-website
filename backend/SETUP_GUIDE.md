@@ -118,7 +118,7 @@ This creates a symbolic link for file uploads.
 
 #### Gallery video upload limits
 
-The gallery accepts videos up to 250 MB. `public/.user.ini` sets PHP upload and request limits for CGI/FastCGI hosting. If uploads still return HTTP 413, the web server or hosting proxy also needs a request-body limit of at least 260 MB. For Nginx, add `client_max_body_size 260m;` inside the site's `server` block and reload Nginx. With PHP's built-in development server, set `upload_max_filesize=250M` and `post_max_size=260M` in the active `php.ini`, then restart the backend. Some shared hosts enforce a lower hard limit that only the hosting provider can raise.
+The gallery accepts videos up to 250 MB. `public/.user.ini` sets PHP upload and request limits for CGI/FastCGI hosting. If uploads still return HTTP 413, the web server or hosting proxy also needs a request-body limit of at least 260 MB. For Nginx, add `client_max_body_size 260m;` inside the site's `server` block and reload Nginx. On Windows, start the development backend with `start-server.bat` (from the `backend` folder) instead of `php artisan serve`; it launches PHP with the required upload limits. Alternatively, set `upload_max_filesize=250M` and `post_max_size=260M` in the active `php.ini` (`php --ini` shows its location), then restart the backend. Some shared hosts enforce a lower hard limit that only the hosting provider can raise.
 
 ### 9. Start the Laravel Server
 ```bash
