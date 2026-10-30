@@ -36,6 +36,7 @@ const AdminGallery = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormDataState>(emptyForm);
 
   const fetchGallery = async () => {
@@ -58,35 +59,77 @@ const AdminGallery = () => {
     } : emptyForm);
     setShowModal(true);
   };
-  const closeModal = () => { setShowModal(false); setEditingItem(null); setFormData(emptyForm); };
+  const closeModal = () => { setShowModal(false); setEditingItem(null); setFormData(emptyForm); setUploadProgress(null); };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isSubmitting) return;
     setIsSubmitting(true);
-    const data = new FormData();
-    data.append('media_type', formData.mediaType);
-    data.append('category', formData.category);
-    data.append('caption', formData.caption);
-    data.append('is_hero', String(formData.mediaType === 'video' && formData.isHero ? 1 : 0));
-    if (formData.image) data.append('image', formData.image);
-    if (formData.video) data.append('video', formData.video);
+    let chunkUploadId: string | null = null;
 
     try {
-      if (editingItem) {
-        data.append('_method', 'PUT');
-        await api.post(`/admin/gallery/${editingItem.id}`, data);
+      if (formData.mediaType === 'video' && formData.video) {
+        const video = formData.video;
+        const chunkSize = 900 * 1024;
+        const totalChunks = Math.ceil(video.size / chunkSize);
+        chunkUploadId = typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+              const random = Math.random() * 16 | 0;
+              return (char === 'x' ? random : (random & 0x3 | 0x8)).toString(16);
+            });
+        setUploadProgress(0);
+
+        for (let index = 0; index < totalChunks; index++) {
+          const chunkForm = new FormData();
+          chunkForm.append('upload_id', chunkUploadId);
+          chunkForm.append('chunk_index', String(index));
+          chunkForm.append('total_chunks', String(totalChunks));
+          chunkForm.append('chunk', video.slice(index * chunkSize, Math.min((index + 1) * chunkSize, video.size)), video.name);
+          await api.post('/admin/gallery/video-chunks', chunkForm);
+          setUploadProgress(Math.round(((index + 1) / totalChunks) * 100));
+        }
+
+        const completeForm = new FormData();
+        completeForm.append('upload_id', chunkUploadId);
+        completeForm.append('total_chunks', String(totalChunks));
+        completeForm.append('original_name', video.name);
+        completeForm.append('category', formData.category);
+        completeForm.append('caption', formData.caption);
+        completeForm.append('is_hero', String(formData.isHero ? 1 : 0));
+        if (editingItem) completeForm.append('gallery_id', String(editingItem.id));
+        await api.post('/admin/gallery/video-chunks/complete', completeForm);
+        chunkUploadId = null;
       } else {
-        await api.post('/admin/gallery', data);
+        const data = new FormData();
+        data.append('media_type', formData.mediaType);
+        data.append('category', formData.category);
+        data.append('caption', formData.caption);
+        data.append('is_hero', String(formData.mediaType === 'video' && formData.isHero ? 1 : 0));
+        if (formData.image) data.append('image', formData.image);
+
+        if (editingItem) {
+          data.append('_method', 'PUT');
+          await api.post(`/admin/gallery/${editingItem.id}`, data);
+        } else {
+          await api.post('/admin/gallery', data);
+        }
       }
+
       closeModal();
       await fetchGallery();
     } catch (error: any) {
+      if (chunkUploadId) {
+        void api.delete(`/admin/gallery/video-chunks/${chunkUploadId}`).catch(() => undefined);
+      }
       const errors = error.response?.data?.errors;
       const message = error.response?.status === 413
-        ? 'حجم فایل از محدودیت فعلی سرور بیشتر است (محدودیت برنامه برای ویدیو ۲۵۰ مگابایت است). لطفاً ویدیوی کم‌حجم‌تری بارگذاری کنید یا محدودیت آپلود PHP و وب‌سرور را افزایش دهید.'
-        : errors ? Object.values(errors).flat().join(', ') : error.response?.data?.message || error.message;
+        ? 'سرور حتی بخش کوچک ویدیو را رد کرد. بک‌اند را restart کنید؛ اگر خطا ماند، محدودیت درخواست وب‌سرور را دست‌کم ۲ مگابایت قرار دهید.'
+        : error.response?.status === 404 && String(error.config?.url ?? '').includes('video-chunks')
+          ? 'مسیر آپلود تکه‌ای در بک‌اند پیدا نشد. آخرین تغییرات را دریافت و سرور بک‌اند را restart کنید.'
+          : errors ? Object.values(errors).flat().join(', ') : error.response?.data?.message || error.message;
       alert('خطا در ذخیره رسانه: ' + message);
+      setUploadProgress(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -155,7 +198,7 @@ const AdminGallery = () => {
               {formData.mediaType === 'video' && <label className="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" checked={formData.isHero} onChange={(e) => setFormData({ ...formData, isHero: e.target.checked })} /> نمایش این ویدیو در بخش اصلی صفحه اول</label>}
               <div><label htmlFor="gallery-category" className="mb-1 block text-sm font-medium text-gray-600">دسته‌بندی</label><select id="gallery-category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })} className="w-full rounded-lg border border-gray-300 px-4 py-2">{categories.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}</select></div>
               <div><label htmlFor="gallery-caption" className="mb-1 block text-sm font-medium text-gray-600">توضیحات</label><input id="gallery-caption" type="text" value={formData.caption} onChange={(e) => setFormData({ ...formData, caption: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2" placeholder="توضیحات رسانه" /></div>
-              <div className="flex justify-end gap-2 pt-4"><button type="button" onClick={closeModal} disabled={isSubmitting} className="rounded-lg bg-gray-100 px-6 py-2 text-gray-700 hover:bg-gray-200">انصراف</button><button type="submit" disabled={isSubmitting} className="rounded-lg bg-orange-500 px-6 py-2 text-white hover:bg-orange-600 disabled:opacity-50">{isSubmitting ? 'در حال ذخیره...' : 'ذخیره'}</button></div>
+              <div className="flex justify-end gap-2 pt-4"><button type="button" onClick={closeModal} disabled={isSubmitting} className="rounded-lg bg-gray-100 px-6 py-2 text-gray-700 hover:bg-gray-200">انصراف</button><button type="submit" disabled={isSubmitting} className="rounded-lg bg-orange-500 px-6 py-2 text-white hover:bg-orange-600 disabled:opacity-50">{isSubmitting ? (uploadProgress === null ? 'در حال ذخیره...' : `بارگذاری ویدیو ${uploadProgress}٪`) : 'ذخیره'}</button></div>
             </form>
           </div>
         </div>

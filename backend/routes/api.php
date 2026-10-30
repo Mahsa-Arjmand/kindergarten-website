@@ -99,6 +99,9 @@ Route::prefix('v1')->group(function () {
 
         // Gallery
         Route::get('/gallery', [AdminGalleryController::class, 'index']);
+        Route::post('/gallery/video-chunks', [AdminGalleryController::class, 'storeVideoChunk'])->middleware('throttle:300,1');
+        Route::post('/gallery/video-chunks/complete', [AdminGalleryController::class, 'completeVideoUpload'])->middleware('throttle:30,1');
+        Route::delete('/gallery/video-chunks/{uploadId}', [AdminGalleryController::class, 'cancelVideoUpload']);
         Route::post('/gallery', [AdminGalleryController::class, 'store']);
         Route::put('/gallery/{gallery}', [AdminGalleryController::class, 'update']);
         Route::delete('/gallery/{gallery}', [AdminGalleryController::class, 'destroy']);
