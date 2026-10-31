@@ -176,17 +176,24 @@ const Home = () => {
           else video.pause();
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
 
+    // Try to play immediately when the video element is ready
+    video.addEventListener('loadeddata', tryPlay);
     video.addEventListener('canplay', tryPlay);
+    video.addEventListener('canplaythrough', tryPlay);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     observer.observe(video);
+    
+    // Immediate attempt
     tryPlay();
 
     return () => {
       observer.disconnect();
+      video.removeEventListener('loadeddata', tryPlay);
       video.removeEventListener('canplay', tryPlay);
+      video.removeEventListener('canplaythrough', tryPlay);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [heroVideo]);
@@ -276,8 +283,8 @@ const Home = () => {
                     playsInline
                     webkit-playsinline="true"
                     x-webkit-airplay="allow"
-                    controls
-                    preload="metadata"
+                    controls={false}
+                    preload="auto"
                     aria-label={heroVideo.caption || 'ویدیوی مهدکودک هدیه'}
                     className="absolute inset-0 block h-full w-full bg-black object-cover"
                   />
