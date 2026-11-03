@@ -2,14 +2,12 @@ import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowLeft, ChevronDown, Mail, MapPin, Menu, Phone, X } from 'lucide-react';
 const MapLocation = lazy(() => import('./MapLocation'));
+import { HEDIYEH_LOCATION } from './MapLocation';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-// ——— Grouped navigation ———
-// Fewer top-level items, like hbsmartfactory: 5 visible + 1 CTA
-// Keeps orange, but calm & spacious
 type NavChild = { label: string; path: string; desc?: string };
 type NavGroup = { label: string; path?: string; children?: NavChild[] };
 
@@ -129,12 +127,10 @@ const Layout = ({ children }: LayoutProps) => {
         رفتن به محتوای اصلی
       </a>
 
-      {/* Header — CLEAN, SPACIOUS, like hbsmartfactory but warm orange */}
+      {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border-light bg-white">
         <div className="container-hedieh">
           <div className="flex h-[68px] items-center justify-between gap-6">
-            {/* Logo */}
-            {/* Logo — real happy logo, compatible with colorful theme */}
             <Link to="/" aria-label="صفحه اصلی مهدکودک هدیه" className="flex shrink-0 items-center gap-2.5">
               <img
                 src="/logo-hediyeh.jpg"
@@ -151,7 +147,6 @@ const Layout = ({ children }: LayoutProps) => {
               </span>
             </Link>
 
-            {/* Mobile center — move kicker to navbar center on mobile */}
             <div className="flex flex-1 justify-center px-2 xl:hidden">
               <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-pink-100 bg-white px-2.5 py-1 text-[10px] font-bold leading-none text-brand shadow-sm sm:px-3 sm:text-[11px]">
                 کودکستان و پیش‌دبستانی هدیه
@@ -159,7 +154,6 @@ const Layout = ({ children }: LayoutProps) => {
               </span>
             </div>
 
-            {/* Desktop Nav — grouped, calm */}
             <nav aria-label="منوی اصلی" className="hidden items-center gap-1 xl:flex">
               {navGroups.map((group) => {
                 const hasChildren = !!group.children?.length;
@@ -205,7 +199,6 @@ const Layout = ({ children }: LayoutProps) => {
                       <ChevronDown size={14} className={['transition-transform duration-200', isOpen ? 'rotate-180' : ''].join(' ')} aria-hidden="true" />
                     </button>
 
-                    {/* Dropdown — lightweight, friendly, NOT enterprise mega */}
                     <div
                       className={[
                         'absolute right-0 top-full z-20 w-[300px] pt-2 transition-all duration-200',
@@ -244,7 +237,6 @@ const Layout = ({ children }: LayoutProps) => {
               })}
             </nav>
 
-            {/* CTA */}
             <div className="flex items-center gap-3">
               <Link
                 to="/registration"
@@ -268,7 +260,6 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
           </div>
 
-          {/* Mobile — hierarchical, not wall of links */}
           {menuOpen && (
             <div id="mobile-navigation" className="border-t border-border-light py-3 xl:hidden">
               <nav aria-label="منوی موبایل" className="flex flex-col">
@@ -348,13 +339,8 @@ const Layout = ({ children }: LayoutProps) => {
 
       <main id="main-content">{children}</main>
 
-      <footer className="relative overflow-hidden border-t border-border-light bg-gradient-to-br from-brand-light/70 via-brand-light/30 to-pink-200/50">
-        {/* Decorative blobs */}
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 top-20 h-40 w-40 rounded-full bg-brand/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -left-20 bottom-20 h-48 w-48 rounded-full bg-pink-300/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/25 blur-3xl" />
-
-        <div className="container-hedieh relative py-10">
+      <footer className="border-t border-border bg-white">
+        <div className="container-hedieh py-10">
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             <div className="lg:col-span-2">
               <Link to="/" aria-label="صفحه اصلی مهدکودک هدیه" className="inline-flex items-center gap-3">
@@ -367,17 +353,6 @@ const Layout = ({ children }: LayoutProps) => {
               <p className="mt-4 max-w-md text-[13.5px] leading-7 text-muted">
                 فضایی گرم و امن برای تجربه‌های تازه، بازی، یادگیری و رشد همه‌جانبه کودکان.
               </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {[
-                  { color: 'bg-brand', label: 'عشق' },
-                  { color: 'bg-blue', label: 'یادگیری' },
-                  { color: 'bg-yellow', label: 'خلاقیت' },
-                ].map((tag) => (
-                  <span key={tag.label} className={`inline-flex items-center gap-1.5 rounded-full ${tag.color} px-3 py-1.5 text-[11px] font-bold text-white shadow-sm`}>
-                    {tag.label}
-                  </span>
-                ))}
-              </div>
             </div>
 
             <div>
@@ -398,40 +373,47 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
 
             <div>
-              <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">موقعیت ما</h2>
-              <div className="mt-4 lg:-mx-4">
-                <div className="h-[180px] lg:h-[280px]">
-                  <Suspense fallback={<div className="h-full w-full rounded-xl bg-pink-50 animate-pulse" />}>
-                    <MapLocation height="100%" width="100%" className="lg:w-[110%]" />
-                  </Suspense>
-                </div>
-                <div className="mt-3 flex items-start gap-2.5 text-[13.5px] text-muted">
-                  <MapPin size={15} className="mt-0.5 shrink-0 text-yellow" aria-hidden="true" />
-                  <span className="text-[12px] leading-6">
-                    زنجان، شهرک منظریه، نسیم ۱۰ غربی (خیابان شهید علیرضا حق وردی)، قطعه ۱۸۴
-                  </span>
+              <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">ارتباط با ما</h2>
+              <div className="mt-4 space-y-3 text-[13.5px] text-muted">
+                <a href="tel:+989127402532" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="تماس تلفنی با مهدکودک هدیه">
+                  <Phone size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
+                  <span dir="ltr">09127402532</span>
+                </a>
+                <a href="mailto:info@hediyeh-kd.ir" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="ایمیل مهدکودک هدیه">
+                  <Mail size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
+                  <span>info@hediyeh-kd.ir</span>
+                </a>
+                <div className="flex items-start gap-2.5">
+                  <p className="text-[12px] leading-6 text-muted">ساعات کاری: شنبه تا پنجشنبه ۷ صبح تا ۶ عصر</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-10 border-t border-border-light/50 pt-8">
-            <div>
-              <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">ارتباط با ما</h2>
-              <div className="mt-4 grid gap-4 md:grid-cols-3">
-                <a href="tel:+989127402532" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="تماس تلفنی با مهدکودک هدیه">
-                  <Phone size={15} className="mt-0.5 shrink-0 text-brand" aria-hidden="true" />
-                  <span dir="ltr">09127402532</span>
-                </a>
-                <div className="flex items-start gap-2.5">
-                  <p className="text-[12px] leading-6 text-muted">ساعات کاری: شنبه تا پنجشنبه ۷ صبح تا ۳ عصر</p>
+          <div className="mt-10 border-t border-border-light pt-8">
+            <div className="grid gap-8 md:grid-cols-2">
+              <div>
+                <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">موقعیت ما</h2>
+                <div className="mt-4">
+                  <MapLocation height="190px" width="100%" className="max-w-[400px]" />
+                  <a
+                    href={HEDIYEH_LOCATION.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 inline-flex items-start gap-2.5 text-[13.5px] text-muted transition hover:text-brand"
+                  >
+                    <MapPin size={15} className="mt-1 shrink-0 text-brand" aria-hidden="true" />
+                    <span className="text-[12px] leading-6">
+                      {HEDIYEH_LOCATION.fullAddress}
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-border-light/50 bg-white/80 backdrop-blur-sm">
+        <div className="border-t border-border-light">
           <div className="container-hedieh flex min-h-14 flex-col items-center justify-between gap-2 py-4 text-center text-[11px] tracking-wide text-subtle sm:flex-row sm:text-right">
             <p>© {new Date().getFullYear()} مهدکودک هدیه. تمامی حقوق محفوظ است.</p>
             <div className="flex items-center gap-6">
