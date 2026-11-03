@@ -565,10 +565,10 @@ const Home = () => {
           ) : gallery.length > 0 ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
               {gallery.map((item) => (
-                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className="group relative aspect-square overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm">
+                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.caption}`} className="group relative aspect-square overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm">
                   <img
                     src={getStorageUrl(item.image_path)}
-                    alt={item.title}
+                    alt={item.caption}
                     width={500}
                     height={500}
                     loading="lazy"
@@ -576,7 +576,7 @@ const Home = () => {
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
                   <div className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
-                    {item.title}
+                    {item.caption}
                   </div>
                 </Link>
               ))}

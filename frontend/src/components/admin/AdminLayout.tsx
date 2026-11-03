@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Briefcase, MessageSquare, User, Baby, Palette, Activity, Image, Newspaper, HelpCircle, LogOut, Menu, X, Mail } from 'lucide-react';
+import { LayoutDashboard, Users, Briefcase, User, Baby, Palette, Activity, Image, Newspaper, HelpCircle, LogOut, Menu, X, Mail } from 'lucide-react';
 import { useState } from 'react';
 
 const AdminLayout = () => {

@@ -9,6 +9,7 @@ import JalaliDatePicker from '../components/JalaliDatePicker';
 const registrationSchema = z.object({
   child_first_name: z.string().min(2, 'نام کودک باید حداقل ۲ کاراکتر باشد'),
   child_last_name: z.string().min(2, 'نام خانوادگی کودک باید حداقل ۲ کاراکتر باشد'),
+  child_birth_date: z.string().optional(),
   child_gender: z.enum(['male', 'female'], {
     required_error: 'جنسیت را انتخاب کنید',
   }),
@@ -57,7 +58,6 @@ const Registration = () => {
   }, []);
 
   const onSubmit = async (data: RegistrationFormData) => {
-    console.log('Birth date:', birthDate);
     if (!birthDate) {
       setError('لطفاً تاریخ تولد را انتخاب کنید');
       return;
@@ -156,7 +156,6 @@ const Registration = () => {
                     <JalaliDatePicker
                       value={birthDate}
                       onChange={setBirthDate}
-                      error={errors.child_birth_date?.message}
                     />
                   </div>
                   <div>

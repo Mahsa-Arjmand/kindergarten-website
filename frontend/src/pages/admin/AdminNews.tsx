@@ -14,7 +14,7 @@ interface News {
   id: number;
   title: string;
   content: string;
-  image_path: string;
+  image_path: string | null;
   publish_date: string;
   status: 'draft' | 'published' | 'archived';
   created_at: string;
@@ -32,7 +32,7 @@ const AdminNews = () => {
     content: '',
     image: null as File | null,
     publish_date: '',
-    status: 'draft' as const,
+    status: 'draft' as 'draft' | 'published' | 'archived',
   });
 
   useEffect(() => {

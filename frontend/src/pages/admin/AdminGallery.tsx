@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../../lib/axios';
 import { Plus, Trash2, Search, X, Upload, Edit, Image as ImageIcon } from 'lucide-react';
 
@@ -19,18 +18,16 @@ interface GalleryItem {
 }
 
 const AdminGallery = () => {
-  const navigate = useNavigate();
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     image: null as File | null,
-    category: 'classroom' as const,
+    category: 'classroom' as 'classroom' | 'playground' | 'activities' | 'events' | 'food',
     caption: '',
   });
 

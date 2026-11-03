@@ -41,6 +41,7 @@ export interface Gallery {
   image_path: string;
   category: 'classroom' | 'playground' | 'activities' | 'events' | 'food';
   caption: string;
+  title?: string;
   is_visible: boolean;
   created_at: string;
   updated_at: string;
@@ -140,6 +141,7 @@ export interface DashboardStats {
     unread: number;
   };
   teachers: number;
+  children?: number;
   services: number;
   activities: number;
   gallery: number;
