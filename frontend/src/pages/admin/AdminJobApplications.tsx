@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import api from '../../lib/axios';
 import { Eye, Check, X, Search, Filter, Download } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const getStorageUrl = (path?: string | null) => {
+  if (!path) return '';
+  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
+  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
+};
+
 interface JobApplication {
   id: number;
   first_name: string;
@@ -58,7 +65,7 @@ const AdminJobApplications = () => {
 
   const downloadCV = (cvPath: string) => {
     if (cvPath) {
-      window.open(`http://localhost:8000/storage/${cvPath}`, '_blank');
+      window.open(getStorageUrl(cvPath), '_blank');
     }
   };
 
@@ -105,9 +112,9 @@ const AdminJobApplications = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">مدیریت درخواست‌های همکاری</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">مدیریت درخواست‌های همکاری</h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -115,13 +122,13 @@ const AdminJobApplications = () => {
               placeholder="جستجو..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent w-full sm:w-auto"
             />
           </div>
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent w-full sm:w-auto"
           >
             <option value="all">همه وضعیت‌ها</option>
             <option value="new">جدید</option>
@@ -134,100 +141,178 @@ const AdminJobApplications = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام و نام خانوادگی</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">سن</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تحصیلات</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تلفن</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">وضعیت</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">عملیات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredApplications.length === 0 ? (
+        {/* Mobile: Card Layout */}
+        <div className="md:hidden space-y-4 p-4">
+          {filteredApplications.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              هیچ درخواستی یافت نشد
+            </div>
+          ) : (
+            filteredApplications.map((app) => (
+              <div key={app.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="font-bold text-gray-800">{app.first_name} {app.last_name}</h3>
+                    <p className="text-sm text-gray-500">{app.age} سال</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
+                    {getStatusText(app.status)}
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <p><span className="font-medium">تحصیلات:</span> {app.education} - {app.field_of_study}</p>
+                  <p><span className="font-medium">تلفن:</span> {app.phone}</p>
+                  <p><span className="font-medium">سابقه کار:</span> {app.work_experience}</p>
+                  <p><span className="font-medium">مهارت‌ها:</span> {app.skills}</p>
+                </div>
+                <div className="flex gap-2 mt-4 justify-end flex-wrap">
+                  <button
+                    onClick={() => setSelectedApplication(app)}
+                    className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                    title="مشاهده جزئیات"
+                  >
+                    <Eye size={16} />
+                  </button>
+                  {app.cv_path && (
+                    <button
+                      onClick={() => downloadCV(app.cv_path)}
+                      className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
+                      title="دانلود رزومه"
+                    >
+                      <Download size={16} />
+                    </button>
+                  )}
+                  <button
+                    onClick={async () => await updateStatus(app.id, 'reviewing')}
+                    className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                    title="شروع بررسی"
+                  >
+                    <Filter size={16} />
+                  </button>
+                  <button
+                    onClick={async () => await updateStatus(app.id, 'interview')}
+                    className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
+                    title="دعوت به مصاحبه"
+                  >
+                    <Filter size={16} />
+                  </button>
+                  <button
+                    onClick={async () => await updateStatus(app.id, 'accepted')}
+                    className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
+                    title="تایید"
+                  >
+                    <Check size={16} />
+                  </button>
+                  <button
+                    onClick={async () => await updateStatus(app.id, 'rejected')}
+                    className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                    title="رد"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop: Table Layout */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
-                  هیچ درخواستی یافت نشد
-                </td>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام و نام خانوادگی</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">سن</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تحصیلات</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تلفن</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">وضعیت</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">عملیات</th>
               </tr>
-            ) : (
-              filteredApplications.map((app) => (
-                <tr key={app.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-800">
-                    {app.first_name} {app.last_name}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{app.age} سال</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{app.education} - {app.field_of_study}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{app.phone}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
-                      {getStatusText(app.status)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2 justify-end">
-                      <button
-                        onClick={() => setSelectedApplication(app)}
-                        className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
-                        title="مشاهده جزئیات"
-                      >
-                        <Eye size={16} />
-                      </button>
-                      {app.cv_path && (
-                        <button
-                          onClick={() => downloadCV(app.cv_path)}
-                          className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
-                          title="دانلود رزومه"
-                        >
-                          <Download size={16} />
-                        </button>
-                      )}
-                      <button
-                        onClick={async () => await updateStatus(app.id, 'reviewing')}
-                        className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
-                        title="شروع بررسی"
-                      >
-                        <Filter size={16} />
-                      </button>
-                      <button
-                        onClick={async () => await updateStatus(app.id, 'interview')}
-                        className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
-                        title="دعوت به مصاحبه"
-                      >
-                        <Filter size={16} />
-                      </button>
-                      <button
-                        onClick={async () => await updateStatus(app.id, 'accepted')}
-                        className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
-                        title="تایید"
-                      >
-                        <Check size={16} />
-                      </button>
-                      <button
-                        onClick={async () => await updateStatus(app.id, 'rejected')}
-                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-                        title="رد"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
+            </thead>
+            <tbody>
+              {filteredApplications.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    هیچ درخواستی یافت نشد
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filteredApplications.map((app) => (
+                  <tr key={app.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-800">
+                      {app.first_name} {app.last_name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{app.age} سال</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{app.education} - {app.field_of_study}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{app.phone}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
+                        {getStatusText(app.status)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => setSelectedApplication(app)}
+                          className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                          title="مشاهده جزئیات"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        {app.cv_path && (
+                          <button
+                            onClick={() => downloadCV(app.cv_path)}
+                            className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
+                            title="دانلود رزومه"
+                          >
+                            <Download size={16} />
+                          </button>
+                        )}
+                        <button
+                          onClick={async () => await updateStatus(app.id, 'reviewing')}
+                          className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                          title="شروع بررسی"
+                        >
+                          <Filter size={16} />
+                        </button>
+                        <button
+                          onClick={async () => await updateStatus(app.id, 'interview')}
+                          className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
+                          title="دعوت به مصاحبه"
+                        >
+                          <Filter size={16} />
+                        </button>
+                        <button
+                          onClick={async () => await updateStatus(app.id, 'accepted')}
+                          className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
+                          title="تایید"
+                        >
+                          <Check size={16} />
+                        </button>
+                        <button
+                          onClick={async () => await updateStatus(app.id, 'rejected')}
+                          className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                          title="رد"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Detail Modal */}
       {selectedApplication && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-800">جزئیات درخواست همکاری</h2>
+            <div className="p-4 sm:p-6">
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-800">جزئیات درخواست همکاری</h2>
                 <button
                   onClick={() => setSelectedApplication(null)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"

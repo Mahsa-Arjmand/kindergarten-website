@@ -3,6 +3,13 @@ import api from '../../lib/axios';
 import { Plus, Edit, Trash2, Search, X, Upload } from 'lucide-react';
 import { toJalaali, toGregorian } from 'jalaali-js';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const getStorageUrl = (path?: string | null) => {
+  if (!path) return '';
+  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
+  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
+};
+
 interface Child {
   id: number;
   first_name: string;
@@ -266,9 +273,9 @@ const AdminChildren = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">مدیریت کودکان</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">مدیریت کودکان</h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -276,7 +283,7 @@ const AdminChildren = () => {
               placeholder="جستجو..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent w-full sm:w-auto"
             />
           </div>
           <button
@@ -290,49 +297,31 @@ const AdminChildren = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تصویر</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تاریخ تولد</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">کلاس</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">ولی</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">وضعیت</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">عملیات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredChildren.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
-                  هیچ کودکی یافت نشد
-                </td>
-              </tr>
-            ) : (
-              filteredChildren.map((child) => (
-                <tr key={child.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
-                    {child.photo_path ? (
-                      <img
-                        src={`http://localhost:8000/storage/${child.photo_path}`}
-                        alt={`${child.first_name} ${child.last_name}`}
-                        className="w-12 h-12 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <span className="text-gray-400 text-xl">👶</span>
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-800">
-                    {child.first_name} {child.last_name}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{gregorianToJalali(child.birth_date)}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{child.class_name || '-'}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{child.parent_name}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+        {/* Mobile: Card Layout */}
+        <div className="md:hidden space-y-4 p-4">
+          {filteredChildren.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              هیچ کودکی یافت نشد
+            </div>
+          ) : (
+            filteredChildren.map((child) => (
+              <div key={child.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start gap-4 mb-3">
+                  {child.photo_path ? (
+                    <img
+                      src={getStorageUrl(child.photo_path)}
+                      alt={`${child.first_name} ${child.last_name}`}
+                      className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <span className="text-gray-400 text-2xl">👶</span>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-gray-800">{child.first_name} {child.last_name}</h3>
+                    <p className="text-sm text-gray-500">{child.gender === 'male' ? 'پسر' : 'دختر'}</p>
+                    <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${
                       child.status === 'active' ? 'bg-green-100 text-green-700' :
                       child.status === 'graduated' ? 'bg-blue-100 text-blue-700' :
                       'bg-gray-100 text-gray-700'
@@ -340,30 +329,112 @@ const AdminChildren = () => {
                       {child.status === 'active' ? 'فعال' :
                        child.status === 'graduated' ? 'فارغ‌التحصیل' : 'خروج'}
                     </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2 justify-end">
-                      <button
-                        onClick={() => openModal(child)}
-                        className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
-                        title="ویرایش"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(child.id)}
-                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-                        title="حذف"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <p><span className="font-medium">تاریخ تولد:</span> {gregorianToJalali(child.birth_date)}</p>
+                  <p><span className="font-medium">کلاس:</span> {child.class_name || '-'}</p>
+                  <p><span className="font-medium">ولی:</span> {child.parent_name}</p>
+                  <p><span className="font-medium">تلفن:</span> {child.parent_phone || '-'}</p>
+                </div>
+                <div className="flex gap-2 mt-4 justify-end">
+                  <button
+                    onClick={() => openModal(child)}
+                    className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                    title="ویرایش"
+                  >
+                    <Edit size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(child.id)}
+                    className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                    title="حذف"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop: Table Layout */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تصویر</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">تاریخ تولد</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">کلاس</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">ولی</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">وضعیت</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredChildren.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                    هیچ کودکی یافت نشد
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filteredChildren.map((child) => (
+                  <tr key={child.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4">
+                      {child.photo_path ? (
+                        <img
+                          src={getStorageUrl(child.photo_path)}
+                          alt={`${child.first_name} ${child.last_name}`}
+                          className="w-12 h-12 rounded-lg object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                          <span className="text-gray-400 text-xl">👶</span>
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-800">
+                      {child.first_name} {child.last_name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{gregorianToJalali(child.birth_date)}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{child.class_name || '-'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{child.parent_name}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        child.status === 'active' ? 'bg-green-100 text-green-700' :
+                        child.status === 'graduated' ? 'bg-blue-100 text-blue-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {child.status === 'active' ? 'فعال' :
+                         child.status === 'graduated' ? 'فارغ‌التحصیل' : 'خروج'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => openModal(child)}
+                          className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                          title="ویرایش"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(child.id)}
+                          className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                          title="حذف"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal */}

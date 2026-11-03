@@ -12,6 +12,7 @@ interface MapLocationProps {
   width?: string;
   lat?: number;
   lng?: number;
+  className?: string;
 }
 
 const MapLocation = ({
@@ -19,7 +20,8 @@ const MapLocation = ({
   height = '200px',
   width = '100%',
   lat = 36.6707529,
-  lng = 48.5353899
+  lng = 48.5353899,
+  className = ''
 }: MapLocationProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -61,7 +63,7 @@ const MapLocation = ({
     <div
       ref={mapRef}
       style={{ height, width, borderRadius: '12px', overflow: 'hidden' }}
-      className="border border-border-light"
+      className={`border border-border-light ${className}`}
       aria-label="نقشه مهدکودک هدیه"
     />
   );

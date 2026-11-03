@@ -102,9 +102,9 @@ const AdminRegistrations = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">مدیریت ثبت‌نام‌ها</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">مدیریت ثبت‌نام‌ها</h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -112,13 +112,13 @@ const AdminRegistrations = () => {
               placeholder="جستجو..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent w-full sm:w-auto"
             />
           </div>
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent w-full sm:w-auto"
           >
             <option value="all">همه وضعیت‌ها</option>
             <option value="new">جدید</option>
@@ -130,79 +130,141 @@ const AdminRegistrations = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">کد ثبت‌نام</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام کودک</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">سن</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام والد</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">برنامه</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">وضعیت</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">عملیات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRegistrations.length === 0 ? (
+        {/* Mobile: Card Layout */}
+        <div className="md:hidden space-y-4 p-4">
+          {filteredRegistrations.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              هیچ ثبت‌نامی یافت نشد
+            </div>
+          ) : (
+            filteredRegistrations.map((reg) => (
+              <div key={reg.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="font-bold text-gray-800">{reg.child_first_name} {reg.child_last_name}</h3>
+                    <p className="text-sm text-gray-500">{reg.registration_id}</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(reg.status)}`}>
+                    {getStatusText(reg.status)}
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <p><span className="font-medium">سن:</span> {reg.age_group}</p>
+                  <p><span className="font-medium">والد:</span> {reg.parent_first_name} {reg.parent_last_name}</p>
+                  <p><span className="font-medium">برنامه:</span> {reg.preferred_program}</p>
+                  <p><span className="font-medium">تلفن:</span> {reg.phone}</p>
+                </div>
+                <div className="flex gap-2 mt-4 justify-end">
+                  <button
+                    onClick={() => setSelectedRegistration(reg)}
+                    className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                    title="مشاهده جزئیات"
+                  >
+                    <Eye size={16} />
+                  </button>
+                  <button
+                    onClick={async () => await updateStatus(reg.id, 'reviewing')}
+                    className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                    title="شروع بررسی"
+                  >
+                    <Filter size={16} />
+                  </button>
+                  <button
+                    onClick={async () => await updateStatus(reg.id, 'approved')}
+                    className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
+                    title="تایید"
+                  >
+                    <Check size={16} />
+                  </button>
+                  <button
+                    onClick={async () => await updateStatus(reg.id, 'rejected')}
+                    className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                    title="رد"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop: Table Layout */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
               <tr>
-                <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
-                  هیچ ثبت‌نامی یافت نشد
-                </td>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">کد ثبت‌نام</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام کودک</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">سن</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">نام والد</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">برنامه</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">وضعیت</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">عملیات</th>
               </tr>
-            ) : (
-              filteredRegistrations.map((reg) => (
-                <tr key={reg.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-800">{reg.registration_id}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {reg.child_first_name} {reg.child_last_name}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{reg.age_group}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {reg.parent_first_name} {reg.parent_last_name}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{reg.preferred_program}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(reg.status)}`}>
-                      {getStatusText(reg.status)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2 justify-end">
-                      <button
-                        onClick={() => setSelectedRegistration(reg)}
-                        className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
-                        title="مشاهده جزئیات"
-                      >
-                        <Eye size={16} />
-                      </button>
-                      <button
-                        onClick={async () => await updateStatus(reg.id, 'reviewing')}
-                        className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
-                        title="شروع بررسی"
-                      >
-                        <Filter size={16} />
-                      </button>
-                      <button
-                        onClick={async () => await updateStatus(reg.id, 'approved')}
-                        className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
-                        title="تایید"
-                      >
-                        <Check size={16} />
-                      </button>
-                      <button
-                        onClick={async () => await updateStatus(reg.id, 'rejected')}
-                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-                        title="رد"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
+            </thead>
+            <tbody>
+              {filteredRegistrations.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                    هیچ ثبت‌نامی یافت نشد
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filteredRegistrations.map((reg) => (
+                  <tr key={reg.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-800">{reg.registration_id}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {reg.child_first_name} {reg.child_last_name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{reg.age_group}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {reg.parent_first_name} {reg.parent_last_name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{reg.preferred_program}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(reg.status)}`}>
+                        {getStatusText(reg.status)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => setSelectedRegistration(reg)}
+                          className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                          title="مشاهده جزئیات"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={async () => await updateStatus(reg.id, 'reviewing')}
+                          className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                          title="شروع بررسی"
+                        >
+                          <Filter size={16} />
+                        </button>
+                        <button
+                          onClick={async () => await updateStatus(reg.id, 'approved')}
+                          className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
+                          title="تایید"
+                        >
+                          <Check size={16} />
+                        </button>
+                        <button
+                          onClick={async () => await updateStatus(reg.id, 'rejected')}
+                          className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                          title="رد"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Detail Modal */}

@@ -153,9 +153,9 @@ const AdminFaqs = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">مدیریت سوالات متداول</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">مدیریت سوالات متداول</h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -163,7 +163,7 @@ const AdminFaqs = () => {
               placeholder="جستجو..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent w-full sm:w-auto"
             />
           </div>
           <button
@@ -177,82 +177,150 @@ const AdminFaqs = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">ترتیب</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">سوال</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">پاسخ</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">وضعیت</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">عملیات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredFaqs.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                  هیچ سوالی یافت نشد
-                </td>
-              </tr>
-            ) : (
-              filteredFaqs.map((faq, index) => (
-                <tr key={faq.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => moveOrder(faq.id, 'up')}
-                        disabled={index === 0}
-                        className="p-1 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
-                      >
-                        <ChevronUp size={16} />
-                      </button>
-                      <span className="text-sm font-medium text-gray-800">{faq.order + 1}</span>
-                      <button
-                        onClick={() => moveOrder(faq.id, 'down')}
-                        disabled={index === filteredFaqs.length - 1}
-                        className="p-1 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
-                      >
-                        <ChevronDown size={16} />
-                      </button>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-800">{faq.question}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">{faq.answer}</td>
-                  <td className="px-6 py-4">
+        {/* Mobile: Card Layout */}
+        <div className="md:hidden space-y-4 p-4">
+          {filteredFaqs.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              هیچ سوالی یافت نشد
+            </div>
+          ) : (
+            filteredFaqs.map((faq, index) => (
+              <div key={faq.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded">{faq.order + 1}</span>
                     <button
                       onClick={() => toggleActive(faq.id, !faq.is_active)}
                       className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                        faq.is_active 
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                        faq.is_active
+                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
                       {faq.is_active ? 'فعال' : 'غیرفعال'}
                     </button>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2 justify-end">
-                      <button
-                        onClick={() => openModal(faq)}
-                        className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
-                        title="ویرایش"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(faq.id)}
-                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-                        title="حذف"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                  </div>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => moveOrder(faq.id, 'up')}
+                      disabled={index === 0}
+                      className="p-1 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <ChevronUp size={16} />
+                    </button>
+                    <button
+                      onClick={() => moveOrder(faq.id, 'down')}
+                      disabled={index === filteredFaqs.length - 1}
+                      className="p-1 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <ChevronDown size={16} />
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <p className="font-bold text-gray-800">{faq.question}</p>
+                  <p className="text-gray-600 line-clamp-3">{faq.answer}</p>
+                </div>
+                <div className="flex gap-2 mt-4 justify-end">
+                  <button
+                    onClick={() => openModal(faq)}
+                    className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                    title="ویرایش"
+                  >
+                    <Edit size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(faq.id)}
+                    className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                    title="حذف"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop: Table Layout */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">ترتیب</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">سوال</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">پاسخ</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">وضعیت</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600">عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredFaqs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    هیچ سوالی یافت نشد
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filteredFaqs.map((faq, index) => (
+                  <tr key={faq.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => moveOrder(faq.id, 'up')}
+                          disabled={index === 0}
+                          className="p-1 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                          <ChevronUp size={16} />
+                        </button>
+                        <span className="text-sm font-medium text-gray-800">{faq.order + 1}</span>
+                        <button
+                          onClick={() => moveOrder(faq.id, 'down')}
+                          disabled={index === filteredFaqs.length - 1}
+                          className="p-1 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                          <ChevronDown size={16} />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-800">{faq.question}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">{faq.answer}</td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => toggleActive(faq.id, !faq.is_active)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                          faq.is_active
+                            ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {faq.is_active ? 'فعال' : 'غیرفعال'}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => openModal(faq)}
+                          className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                          title="ویرایش"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(faq.id)}
+                          className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                          title="حذف"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal */}

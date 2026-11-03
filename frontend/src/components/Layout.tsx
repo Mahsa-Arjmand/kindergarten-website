@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowLeft, ChevronDown, Mail, MapPin, Menu, Phone, X } from 'lucide-react';
-import MapLocation from './MapLocation';
+const MapLocation = lazy(() => import('./MapLocation'));
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -348,8 +348,13 @@ const Layout = ({ children }: LayoutProps) => {
 
       <main id="main-content">{children}</main>
 
-      <footer className="border-t border-border bg-white">
-        <div className="container-hedieh py-10">
+      <footer className="relative overflow-hidden border-t border-border-light bg-gradient-to-br from-brand-light/70 via-brand-light/30 to-pink-200/50">
+        {/* Decorative blobs */}
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 top-20 h-40 w-40 rounded-full bg-brand/30 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -left-20 bottom-20 h-48 w-48 rounded-full bg-pink-300/30 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/25 blur-3xl" />
+
+        <div className="container-hedieh relative py-10">
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             <div className="lg:col-span-2">
               <Link to="/" aria-label="صفحه اصلی مهدکودک هدیه" className="inline-flex items-center gap-3">
@@ -362,6 +367,17 @@ const Layout = ({ children }: LayoutProps) => {
               <p className="mt-4 max-w-md text-[13.5px] leading-7 text-muted">
                 فضایی گرم و امن برای تجربه‌های تازه، بازی، یادگیری و رشد همه‌جانبه کودکان.
               </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {[
+                  { color: 'bg-brand', label: 'عشق' },
+                  { color: 'bg-blue', label: 'یادگیری' },
+                  { color: 'bg-yellow', label: 'خلاقیت' },
+                ].map((tag) => (
+                  <span key={tag.label} className={`inline-flex items-center gap-1.5 rounded-full ${tag.color} px-3 py-1.5 text-[11px] font-bold text-white shadow-sm`}>
+                    {tag.label}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div>
@@ -382,42 +398,40 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
 
             <div>
-              <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">ارتباط با ما</h2>
-              <div className="mt-4 space-y-3 text-[13.5px] text-muted">
-                <a href="tel:+989127402532" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="تماس تلفنی با مهدکودک هدیه">
-                  <Phone size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
-                  <span dir="ltr">09127402532</span>
-                </a>
-                <a href="mailto:info@hediyeh-kd.ir" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="ایمیل مهدکودک هدیه">
-                  <Mail size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>info@hediyeh-kd.ir</span>
-                </a>
-                <div className="flex items-start gap-2.5">
-                  <p className="text-[12px] leading-6 text-muted">ساعات کاری: شنبه تا پنجشنبه ۷ صبح تا ۶ عصر</p>
+              <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">موقعیت ما</h2>
+              <div className="mt-4 lg:-mx-4">
+                <div className="h-[180px] lg:h-[280px]">
+                  <Suspense fallback={<div className="h-full w-full rounded-xl bg-pink-50 animate-pulse" />}>
+                    <MapLocation height="100%" width="100%" className="lg:w-[110%]" />
+                  </Suspense>
+                </div>
+                <div className="mt-3 flex items-start gap-2.5 text-[13.5px] text-muted">
+                  <MapPin size={15} className="mt-0.5 shrink-0 text-yellow" aria-hidden="true" />
+                  <span className="text-[12px] leading-6">
+                    زنجان، شهرک منظریه، نسیم ۱۰ غربی (خیابان شهید علیرضا حق وردی)، قطعه ۱۸۴
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-10 border-t border-border-light pt-8">
-            <div className="grid gap-8 md:grid-cols-2">
-              <div>
-                <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">موقعیت ما</h2>
-                <div className="mt-4">
-                  <MapLocation height="180px" width="80%" />
-                  <div className="mt-3 flex items-start gap-2.5 text-[13.5px] text-muted">
-                    <MapPin size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
-                    <span className="text-[12px] leading-6">
-                      زنجان، شهرک منظریه، نسیم ۱۰ غربی (خیابان شهید علیرضا حق وردی)، قطعه ۱۸۴
-                    </span>
-                  </div>
+          <div className="mt-10 border-t border-border-light/50 pt-8">
+            <div>
+              <h2 className="text-[11px] font-bold tracking-[0.12em] text-subtle">ارتباط با ما</h2>
+              <div className="mt-4 grid gap-4 md:grid-cols-3">
+                <a href="tel:+989127402532" className="flex items-start gap-2.5 transition hover:text-ink" aria-label="تماس تلفنی با مهدکودک هدیه">
+                  <Phone size={15} className="mt-0.5 shrink-0 text-brand" aria-hidden="true" />
+                  <span dir="ltr">09127402532</span>
+                </a>
+                <div className="flex items-start gap-2.5">
+                  <p className="text-[12px] leading-6 text-muted">ساعات کاری: شنبه تا پنجشنبه ۷ صبح تا ۳ عصر</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-border-light">
+        <div className="border-t border-border-light/50 bg-white/80 backdrop-blur-sm">
           <div className="container-hedieh flex min-h-14 flex-col items-center justify-between gap-2 py-4 text-center text-[11px] tracking-wide text-subtle sm:flex-row sm:text-right">
             <p>© {new Date().getFullYear()} مهدکودک هدیه. تمامی حقوق محفوظ است.</p>
             <div className="flex items-center gap-6">

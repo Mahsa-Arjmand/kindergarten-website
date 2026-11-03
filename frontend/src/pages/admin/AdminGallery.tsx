@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../lib/axios';
 import { Plus, Trash2, Search, X, Upload, Edit, Image as ImageIcon } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const getStorageUrl = (path?: string | null) => {
+  if (!path) return '';
+  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
+  return `${baseUrl}/storage/${path.replace(/^\/+/, '')}`;
+};
+
 interface GalleryItem {
   id: number;
   image_path: string;
@@ -168,7 +175,7 @@ const AdminGallery = () => {
   };
 
   const filteredGallery = gallery.filter(item => {
-    const matchesSearch = item.caption.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = item.caption ? item.caption.toLowerCase().includes(searchTerm.toLowerCase()) : true;
     const matchesFilter = filterCategory === 'all' || item.category === filterCategory;
     return matchesSearch && matchesFilter;
   });
@@ -205,9 +212,9 @@ const AdminGallery = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">مدیریت گالری</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">مدیریت گالری</h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -215,13 +222,13 @@ const AdminGallery = () => {
               placeholder="جستجو..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent w-full sm:w-auto"
             />
           </div>
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent w-full sm:w-auto"
           >
             <option value="all">همه دسته‌بندی‌ها</option>
             <option value="classroom">کلاس درس</option>
@@ -251,7 +258,7 @@ const AdminGallery = () => {
               <div className="relative aspect-square">
                 {item.image_path ? (
                   <img
-                    src={`http://localhost:8000/storage/${item.image_path}`}
+                    src={getStorageUrl(item.image_path)}
                     alt={item.caption}
                     className="w-full h-full object-cover"
                   />
@@ -260,7 +267,25 @@ const AdminGallery = () => {
                     <ImageIcon size={48} className="text-gray-400" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                {/* Mobile: Always visible buttons */}
+                <div className="md:hidden absolute inset-0 bg-black/50 flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => openModal(item)}
+                    className="p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
+                    title="ویرایش"
+                  >
+                    <Edit size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    title="حذف"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
+                {/* Desktop: Hover overlay */}
+                <div className="hidden md:flex absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity items-center justify-center gap-2">
                   <button
                     onClick={() => openModal(item)}
                     className="p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"

@@ -10,8 +10,10 @@ import {
   Star,
   Cloud,
   Sun,
+  X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../lib/axios';
 import type { Service, Activity, Teacher, Gallery } from '../types';
 
@@ -34,6 +36,7 @@ const Home = () => {
   const [activityState, setActivityState] = useState<SectionState>(initialSectionState);
   const [teacherState, setTeacherState] = useState<SectionState>(initialSectionState);
   const [galleryState, setGalleryState] = useState<SectionState>(initialSectionState);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = 'مهدکودک هدیه | بهترین مهدکودک و پیش‌دبستانی در منظریه زنجان | ثبت‌نام آنلاین';
@@ -136,6 +139,7 @@ const Home = () => {
                   width={800}
                   height={800}
                   fetchPriority="high"
+                  loading="eager"
                   decoding="async"
                   className="aspect-square w-full object-contain"
                 />
@@ -180,12 +184,12 @@ const Home = () => {
       </section>
 
       {/* About — pastel blue */}
-      <section aria-labelledby="about-title" className="bg-blue-soft py-10 lg:py-12">
+      <section aria-labelledby="about-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="relative order-2 lg:order-1">
             <div className="overflow-hidden rounded-[1.75rem] border-[6px] border-white bg-white shadow-[0_12px_32px_rgba(30,167,255,0.15)]">
               {gallery[1]?.image_path ? (
-                <img src={getStorageUrl(gallery[1].image_path)} alt={gallery[1].title || 'محیط هدیه'} width={1200} height={900} loading="lazy" decoding="async" className="aspect-[4/3.1] w-full object-cover" />
+                <img src={getStorageUrl(gallery[1].image_path)} alt={gallery[1].title || 'محیط هدیه'} width={600} height={450} loading="lazy" decoding="async" fetchPriority="low" className="aspect-[4/3.1] w-full object-cover" />
               ) : (
                 <div className="flex aspect-[4/3.1] items-center justify-center bg-blue-light text-sm text-muted">محیط شاد هدیه</div>
               )}
@@ -214,7 +218,7 @@ const Home = () => {
       </section>
 
       {/* Services — happy pastel cards with top color bar */}
-      <section aria-labelledby="services-title" className="bg-[#fff7fb] py-10 lg:py-12">
+      <section aria-labelledby="services-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
           <div className="mx-auto max-w-2xl text-center">
             <span className="section-kicker mx-auto">● آنچه ارائه می‌دهیم</span>
@@ -223,7 +227,7 @@ const Home = () => {
           </div>
 
           {serviceState.loading ? (
-            <div className="mt-8 grid gap-5 md:grid-cols-3">
+            <div className="mt-8 grid gap-4 grid-cols-1 md:grid-cols-3">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="overflow-hidden rounded-[1.5rem] border-2 border-white bg-white shadow-sm">
                   <div className="aspect-[4/3] animate-pulse bg-brand-light" />
@@ -235,7 +239,7 @@ const Home = () => {
               ))}
             </div>
           ) : services.length > 0 ? (
-            <div className="mt-8 grid gap-5 md:grid-cols-3">
+            <div className="mt-8 grid gap-4 grid-cols-1 md:grid-cols-3">
               {services.map((service, index) => {
                 const topColors = ['bg-brand', 'bg-blue', 'bg-yellow'];
                 const topColor = topColors[index % topColors.length];
@@ -244,7 +248,7 @@ const Home = () => {
                     <div className={`h-1.5 w-full ${topColor}`} />
                     <div className="relative overflow-hidden">
                       {service.image_path ? (
-                        <img src={getStorageUrl(service.image_path)} alt={service.title} width={800} height={600} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105" />
+                        <img src={getStorageUrl(service.image_path)} alt={service.title} width={400} height={300} loading="lazy" decoding="async" fetchPriority="low" className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105" />
                       ) : (
                         <div className="flex aspect-[4/3] items-center justify-center bg-brand-soft text-sm text-muted">تصویر خدمت</div>
                       )}
@@ -290,17 +294,17 @@ const Home = () => {
           </div>
 
           {activityState.loading ? (
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-6 grid gap-4 grid-cols-2 lg:grid-cols-4">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="aspect-[3/4] animate-pulse rounded-[1.5rem] bg-pink-50" />
               ))}
             </div>
           ) : activities.length > 0 ? (
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               {activities.map((activity) => (
                 <article key={activity.id} className="group relative overflow-hidden rounded-[1.75rem] bg-ink shadow-sm">
                   {activity.image_path ? (
-                    <img src={getStorageUrl(activity.image_path)} alt={activity.title} width={750} height={1000} loading="lazy" decoding="async" className="aspect-[3/4] w-full object-cover opacity-90 transition duration-500 group-hover:scale-105 group-hover:opacity-100" />
+                    <img src={getStorageUrl(activity.image_path)} alt={activity.title} width={375} height={500} loading="lazy" decoding="async" fetchPriority="low" className="aspect-[3/4] w-full object-cover opacity-90 transition duration-500 group-hover:scale-105 group-hover:opacity-100" />
                   ) : (
                     <div className="aspect-[3/4] bg-pink-100" />
                   )}
@@ -321,7 +325,7 @@ const Home = () => {
       </section>
 
       {/* Why — 4 colorful bubbly */}
-      <section aria-labelledby="why-title" className="bg-yellow-soft py-10 lg:py-12">
+      <section aria-labelledby="why-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-amber-700 border border-amber-100">
@@ -366,9 +370,9 @@ const Home = () => {
           </div>
 
           {teacherState.loading ? (
-            <div className="mt-6 grid gap-5 md:grid-cols-3">
+            <div className="mt-6 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 md:grid md:grid-cols-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="overflow-hidden rounded-[1.5rem] border-2 border-white bg-cream">
+                <div key={i} className="overflow-hidden rounded-[1.5rem] border-2 border-white bg-cream min-w-[240px] md:min-w-[280px] snap-start flex-shrink-0">
                   <div className="aspect-[4/3] animate-pulse bg-pink-100" />
                   <div className="p-5 space-y-3">
                     <div className="h-5 w-1/2 animate-pulse rounded-full bg-pink-100" />
@@ -378,14 +382,19 @@ const Home = () => {
               ))}
             </div>
           ) : teachers.length > 0 ? (
-            <div className="mt-6 grid gap-5 md:grid-cols-3">
-              {teachers.map((teacher) => (
-                <article key={teacher.id} className="overflow-hidden rounded-[1.75rem] border-2 border-white bg-cream shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 hover:shadow-[0_16px_32px_rgba(0,0,0,0.08)]">
-                  {teacher.image_path ? (
-                    <img src={getStorageUrl(teacher.image_path)} alt={teacher.name} width={800} height={600} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover" />
-                  ) : (
-                    <div className="flex aspect-[4/3] items-center justify-center bg-brand-soft text-sm text-muted">تصویر مربی</div>
-                  )}
+            <div className="mt-6 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 md:grid md:grid-cols-3">
+              {teachers.map((teacher, index) => (
+                <article key={teacher.id} className="overflow-hidden rounded-[1.75rem] border-2 border-white bg-cream shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 hover:shadow-[0_16px_32px_rgba(0,0,0,0.08)] min-w-[240px] md:min-w-[280px] snap-start flex-shrink-0">
+                  <img
+                    src="/teachers.png"
+                    alt={teacher.name}
+                    width={400}
+                    height={300}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                    className="aspect-[4/3] w-full object-contain"
+                  />
                   <div className="bg-white p-5">
                     <h3 className="text-[16px] font-bold text-ink">{teacher.name}</h3>
                     <p className="mt-1 inline-flex rounded-full bg-brand-light px-2.5 py-1 text-[12px] font-bold text-brand">{teacher.position}</p>
@@ -403,7 +412,7 @@ const Home = () => {
       </section>
 
       {/* Gallery — playful */}
-      <section aria-labelledby="gallery-title" className="bg-cream py-10 lg:py-12">
+      <section aria-labelledby="gallery-title" className="bg-white py-10 lg:py-12">
         <div className="container-hedieh">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
@@ -416,20 +425,28 @@ const Home = () => {
           </div>
 
           {galleryState.loading ? (
-            <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="mt-6 grid gap-3 grid-cols-2 md:grid-cols-4">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="animate-pulse rounded-[1.5rem] bg-pink-100 aspect-square" />
               ))}
             </div>
           ) : gallery.length > 0 ? (
-            <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="mt-6 grid gap-3 grid-cols-2 md:grid-cols-4">
               {gallery.map((item) => (
-                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className="group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm aspect-square">
-                  <img src={getStorageUrl(item.image_path)} alt={item.title} width={500} height={500} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div
+                  key={item.id}
+                  onClick={() => item.image_path && setSelectedImage(getStorageUrl(item.image_path))}
+                  className="group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm aspect-square cursor-pointer"
+                >
+                  {item.image_path ? (
+                    <img src={getStorageUrl(item.image_path)} alt={item.title} width={250} height={250} loading="lazy" decoding="async" fetchPriority="low" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                  ) : (
+                    <div className="h-full w-full bg-brand-soft flex items-center justify-center text-sm text-muted">تصویر گالری</div>
+                  )}
                   <div className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
                     {item.title}
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           ) : (
@@ -464,7 +481,7 @@ const Home = () => {
       </section>
 
       {/* Bottom — two bubbly cards */}
-      <section className="bg-[#fff7fb] py-6">
+      <section className="bg-white py-6">
         <div className="container-hedieh grid gap-4 md:grid-cols-2">
           <div className="rounded-[1.75rem] border-2 border-white bg-white p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
             <span className="inline-flex rounded-full bg-yellow-light px-2.5 py-1 text-[11px] font-bold text-amber-700">فرصت همکاری</span>
@@ -484,6 +501,40 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Image Lightbox */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-4xl max-h-[90vh]"
+            >
+              <img
+                src={selectedImage}
+                alt="تصویر بزرگ"
+                className="max-h-[90vh] w-auto rounded-2xl"
+              />
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute -top-4 -right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink shadow-lg transition hover:bg-ink hover:text-white"
+                aria-label="بستن"
+              >
+                <X size={20} />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
