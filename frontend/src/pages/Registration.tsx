@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -50,12 +50,6 @@ const Registration = () => {
     resolver: zodResolver(registrationSchema),
   });
 
-  useEffect(() => {
-    document.title = 'ثبت‌نام آنلاین - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute('content', 'ثبت‌نام آنلاین کودک در مهدکودک هدیه - فرم ثبت‌نام ساده و سریع');
-  }, []);
 
   const onSubmit = async (data: RegistrationFormData) => {
     console.log('Birth date:', birthDate);
@@ -84,7 +78,7 @@ const Registration = () => {
 
   if (submitted) {
     return (
-      <main className="bg-cream">
+      <div className="bg-cream">
         <div className="container-hedieh flex min-h-[60vh] items-center justify-center py-12">
           <div className="w-full max-w-[560px] rounded-2xl border border-border bg-white p-8 text-center shadow-sm sm:p-10">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage-light text-brand-dark">
@@ -102,12 +96,12 @@ const Registration = () => {
             <p className="mt-4 text-[13px] leading-6 text-muted">برای پیگیری می‌توانید با شماره 09127402532 تماس بگیرید.</p>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">ثبت‌نام</p>
@@ -301,7 +295,7 @@ const Registration = () => {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

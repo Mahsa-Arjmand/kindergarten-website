@@ -1,9 +1,10 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import seoPlugin from './vite-seo-plugin.ts'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), seoPlugin()],
   base: '/',
   // Allow the sandbox/preview proxy hosts (and any custom domain) to reach the
   // dev server; otherwise Vite answers 403 "Blocked request. This host ...".

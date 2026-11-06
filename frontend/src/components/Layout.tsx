@@ -41,47 +41,12 @@ const navGroups: NavGroup[] = [
   { label: 'فرصت همکاری', path: '/careers' },
 ];
 
-const pageMeta: Record<string, { title: string; description: string }> = {
-  '/': { title: 'مهدکودک هدیه | جایی برای رشد، بازی و کشف', description: 'مهدکودک هدیه؛ محیطی برای رشد، بازی، یادگیری و تجربه‌های شیرین کودکان.' },
-  '/about': { title: 'درباره مهدکودک هدیه', description: 'با رویکرد، ارزش‌ها و فضای مهدکودک هدیه بیشتر آشنا شوید.' },
-  '/services': { title: 'برنامه‌ها و خدمات | مهدکودک هدیه', description: 'آشنایی با برنامه‌ها و خدمات مهدکودک هدیه.' },
-  '/activities': { title: 'فعالیت‌ها | مهدکودک هدیه', description: 'فعالیت‌ها و تجربه‌های آموزشی، هنری و بازی در مهدکودک هدیه.' },
-  '/teachers': { title: 'مربیان | مهدکودک هدیه', description: 'آشنایی با مربیان و تیم آموزشی مهدکودک هدیه.' },
-  '/gallery': { title: 'گالری تصاویر | مهدکودک هدیه', description: 'تصاویر محیط، فعالیت‌ها و لحظات روزمره مهدکودک هدیه.' },
-  '/news': { title: 'اخبار و مطالب | مهدکودک هدیه', description: 'آخرین اخبار و اطلاعیه‌های مهدکودک هدیه.' },
-  '/faq': { title: 'سؤالات متداول | مهدکودک هدیه', description: 'پاسخ پرسش‌های متداول والدین درباره مهدکودک هدیه.' },
-  '/contact': { title: 'تماس با ما | مهدکودک هدیه', description: 'راه‌های ارتباطی و اطلاعات تماس مهدکودک هدیه.' },
-  '/registration': { title: 'ثبت‌نام | مهدکودک هدیه', description: 'فرم درخواست ثبت‌نام و اطلاعات مربوط به پذیرش در مهدکودک هدیه.' },
-  '/careers': { title: 'فرصت‌های همکاری | مهدکودک هدیه', description: 'فرم ارسال درخواست همکاری با مهدکودک هدیه.' },
-};
-
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>(null);
   const closeTimeout = useRef<number | null>(null);
-
-  useEffect(() => {
-    const meta = pageMeta[location.pathname] ?? pageMeta['/'];
-    document.title = meta.title;
-    document.documentElement.lang = 'fa';
-    document.documentElement.dir = 'rtl';
-    let description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-    if (!description) {
-      description = document.createElement('meta');
-      description.name = 'description';
-      document.head.appendChild(description);
-    }
-    description.content = meta.description;
-    let themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    if (!themeColor) {
-      themeColor = document.createElement('meta');
-      themeColor.name = 'theme-color';
-      document.head.appendChild(themeColor);
-    }
-    themeColor.content = '#fdfcfa';
-  }, [location.pathname]);
 
   useEffect(() => {
     setMenuOpen(false);

@@ -38,11 +38,6 @@ const Home = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = 'مهدکودک هدیه | بهترین مهدکودک و پیش‌دبستانی در منظریه زنجان | ثبت‌نام آنلاین';
-    document.querySelector('meta[name="description"]')?.setAttribute('content', 'مهدکودک هدیه در منظریه زنجان: خدمات شیرخوار، نوپا و پیش‌دبستانی با مربیان متخصص. محیطی امن و شاد برای کودکان ۲ تا ۶ سال. ثبت‌نام آنلاین و مشاهده برنامه‌ها.');
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
     const fetchData = async () => {
       const requests = [

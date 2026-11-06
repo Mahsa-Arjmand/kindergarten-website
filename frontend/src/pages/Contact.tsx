@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -35,12 +35,6 @@ const Contact = () => {
     resolver: zodResolver(contactSchema),
   });
 
-  useEffect(() => {
-    document.title = 'تماس با مهدکودک هدیه | آدرس و شماره تماس در منظریه زنجان | ثبت‌نام حضوری';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute('content', 'تماس با مهدکودک هدیه در منظریه زنجان: آدرس دقیق، شماره تلفن و ساعات کاری. برای ثبت‌نام حضوری یا سوالات می‌توانید با ما تماس بگیرید یا به مهدکودک مراجعه کنید.');
-  }, []);
 
   const onSubmit = async (data: ContactFormData) => {
     try {
@@ -54,7 +48,7 @@ const Contact = () => {
 
   if (submitted) {
     return (
-      <main className="bg-cream">
+      <div className="bg-cream">
         <div className="container-hedieh flex min-h-[60vh] items-center justify-center py-12">
           <div className="w-full max-w-[560px] rounded-2xl border border-border bg-white p-8 text-center shadow-sm sm:p-10">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage-light text-brand-dark">
@@ -67,12 +61,12 @@ const Contact = () => {
             </p>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">در ارتباط باشیم</p>
@@ -187,7 +181,7 @@ const Contact = () => {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

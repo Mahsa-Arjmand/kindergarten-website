@@ -26,15 +26,6 @@ const Gallery = () => {
     { value: 'food', label: 'غذا' },
   ];
 
-  useEffect(() => {
-    document.title = 'گالری تصاویر - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute(
-        'content',
-        'گالری تصاویر مهدکودک هدیه؛ نگاهی به محیط، کلاس‌ها، فعالیت‌ها و لحظه‌های کودکان'
-      );
-  }, []);
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -56,7 +47,7 @@ const Gallery = () => {
   }, [filter]);
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       {/* Header */}
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
@@ -122,7 +113,11 @@ const Gallery = () => {
                 >
                   <img
                     src={getStorageUrl(item.image_path)}
-                    alt={item.caption}
+                    alt={item.caption || 'تصویری از مهدکودک هدیه'}
+                    width={800}
+                    height={800}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                   />
                   <div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/15" />
@@ -135,7 +130,7 @@ const Gallery = () => {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

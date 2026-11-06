@@ -18,13 +18,6 @@ const Activities = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'کلاس‌ها و فعالیت‌ها - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute(
-        'content',
-        'کلاس‌ها و فعالیت‌های مهدکودک هدیه؛ تجربه‌های آموزشی، هنری و خلاقانه برای کودکان'
-      );
 
     const fetchActivities = async () => {
       try {
@@ -41,7 +34,7 @@ const Activities = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       {/* Header - compact */}
       <section className="border-b border-border-light bg-white">
         <div className="container-hedieh py-10 lg:py-12">
@@ -77,6 +70,10 @@ const Activities = () => {
                       <img
                         src={getStorageUrl(activity.image_path)}
                         alt={activity.title}
+                        width={800}
+                        height={600}
+                        loading="lazy"
+                        decoding="async"
                         className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                       />
                     ) : (
@@ -136,7 +133,7 @@ const Activities = () => {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

@@ -42,9 +42,6 @@ const About = () => {
   const [gallery, setGallery] = useState<Gallery[]>([]);
 
   useEffect(() => {
-    document.title = 'درباره مهدکودک هدیه | ۲۰ سال تجربه در منظریه زنجان | رویکرد آموزشی ما';
-    document.querySelector('meta[name="description"]')?.setAttribute('content', 'مهدکودک هدیه در منظریه زنجان با بیش از ۲۰ سال تجربه در آموزش کودکان. آشنایی با رویکرد آموزشی، تیم مربیان و ارزش‌های ما. ثبت‌نام آنلاین فرزندان شما.');
-
     const fetchGallery = async () => {
       try {
         const response = await api.get('/gallery');
@@ -58,7 +55,7 @@ const About = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       {/* Intro - exactly like Home hero, no blobs */}
       <section className="bg-cream">
         <div className="container-hedieh grid items-center gap-10 py-10 lg:grid-cols-[1.05fr_0.85fr] lg:gap-14 lg:py-12">
@@ -180,7 +177,7 @@ const About = () => {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -47,15 +47,6 @@ const Careers = () => {
     resolver: zodResolver(careerSchema),
   });
 
-  useEffect(() => {
-    document.title = 'همکاری با ما - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute(
-        'content',
-        'فرصت همکاری با مهدکودک هدیه؛ ارسال درخواست همکاری و رزومه'
-      );
-  }, []);
 
   const onSubmit = async (data: CareerFormData) => {
     try {
@@ -79,7 +70,7 @@ const Careers = () => {
 
   if (submitted) {
     return (
-      <main className="bg-cream">
+      <div className="bg-cream">
         <div className="container-hedieh flex min-h-[60vh] items-center justify-center py-12">
           <div className="w-full max-w-[560px] rounded-2xl border border-border bg-white p-8 text-center shadow-sm sm:p-10">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sage-light text-brand-dark">
@@ -94,12 +85,12 @@ const Careers = () => {
             </p>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">فرصت همکاری</p>
@@ -240,7 +231,7 @@ const Careers = () => {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

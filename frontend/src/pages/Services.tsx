@@ -18,14 +18,6 @@ const Services = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'خدمات مهدکودک هدیه | شیرخوار، نوپا و پیش‌دبستانی در منظریه زنجان';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute(
-        'content',
-        'خدمات مهدکودک هدیه در منظریه زنجان: برنامه شیرخوار نوزاد تا ۲ سال، نوپا ۲ تا ۴ سال، پیش‌دبستانی ۴ تا ۶ سال. با مربیان حرفه‌ای و محیطی امن. ثبت‌نام آنلاین.'
-      );
-
     const fetchServices = async () => {
       try {
         const response = await api.get('/services');
@@ -41,7 +33,7 @@ const Services = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       {/* Header - compact like Home */}
       <section className="border-b border-border-light bg-white">
         <div className="container-hedieh py-10 lg:py-12">
@@ -77,6 +69,10 @@ const Services = () => {
                       <img
                         src={getStorageUrl(service.image_path)}
                         alt={service.title}
+                        width={800}
+                        height={600}
+                        loading="lazy"
+                        decoding="async"
                         className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                       />
                     ) : (
@@ -129,7 +125,7 @@ const Services = () => {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 
