@@ -40,6 +40,7 @@ const Registration = () => {
   const [registrationId, setRegistrationId] = useState('');
   const [error, setError] = useState('');
   const [birthDate, setBirthDate] = useState('');
+  const [birthDateError, setBirthDateError] = useState('');
 
   const {
     register,
@@ -59,9 +60,11 @@ const Registration = () => {
   const onSubmit = async (data: RegistrationFormData) => {
     console.log('Birth date:', birthDate);
     if (!birthDate) {
+      setBirthDateError('لطفاً تاریخ تولد را انتخاب کنید');
       setError('لطفاً تاریخ تولد را انتخاب کنید');
       return;
     }
+    setBirthDateError('');
 
     try {
       const formData = {
@@ -155,8 +158,14 @@ const Registration = () => {
                     <label className={labelClass}>تاریخ تولد (شمسی)</label>
                     <JalaliDatePicker
                       value={birthDate}
-                      onChange={setBirthDate}
-                      error={errors.child_birth_date?.message}
+                      onChange={(value) => {
+                        setBirthDate(value);
+                        if (value) {
+                          setBirthDateError('');
+                          setError('');
+                        }
+                      }}
+                      error={birthDateError}
                     />
                   </div>
                   <div>

@@ -139,6 +139,7 @@ export interface DashboardStats {
     total: number;
     unread: number;
   };
+  children: number;
   teachers: number;
   services: number;
   activities: number;

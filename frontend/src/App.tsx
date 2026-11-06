@@ -25,10 +25,12 @@ import AdminNews from './pages/admin/AdminNews';
 import AdminFaqs from './pages/admin/AdminFaqs';
 import AdminContactMessages from './pages/admin/AdminContactMessages';
 import PrivateRoute from './components/PrivateRoute';
+import SiteLoader from './components/SiteLoader';
 
 function App() {
   return (
     <Router>
+      <SiteLoader />
       <Routes>
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/about" element={<Layout><About /></Layout>} />

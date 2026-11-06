@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ArrowLeft, ChevronDown, Mail, MapPin, Menu, Phone, X } from 'lucide-react';
+import { ArrowLeft, ChevronDown, MapPin, Menu, Phone, X } from 'lucide-react';
 const MapLocation = lazy(() => import('./MapLocation'));
 
 interface LayoutProps {

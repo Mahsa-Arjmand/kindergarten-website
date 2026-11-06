@@ -13,7 +13,6 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import api from '../lib/axios';
 import type { Service, Activity, Teacher, Gallery } from '../types';
 
@@ -189,7 +188,7 @@ const Home = () => {
           <div className="relative order-2 lg:order-1">
             <div className="overflow-hidden rounded-[1.75rem] border-[6px] border-white bg-white shadow-[0_12px_32px_rgba(30,167,255,0.15)]">
               {gallery[1]?.image_path ? (
-                <img src={getStorageUrl(gallery[1].image_path)} alt={gallery[1].title || 'محیط هدیه'} width={600} height={450} loading="lazy" decoding="async" fetchPriority="low" className="aspect-[4/3.1] w-full object-cover" />
+                <img src={getStorageUrl(gallery[1].image_path)} alt={gallery[1].caption || 'محیط هدیه'} width={600} height={450} loading="lazy" decoding="async" fetchPriority="low" className="aspect-[4/3.1] w-full object-cover" />
               ) : (
                 <div className="flex aspect-[4/3.1] items-center justify-center bg-blue-light text-sm text-muted">محیط شاد هدیه</div>
               )}
@@ -383,7 +382,7 @@ const Home = () => {
             </div>
           ) : teachers.length > 0 ? (
             <div className="mt-6 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 md:grid md:grid-cols-3">
-              {teachers.map((teacher, index) => (
+              {teachers.map((teacher) => (
                 <article key={teacher.id} className="overflow-hidden rounded-[1.75rem] border-2 border-white bg-cream shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition hover:-translate-y-1 hover:shadow-[0_16px_32px_rgba(0,0,0,0.08)] min-w-[240px] md:min-w-[280px] snap-start flex-shrink-0">
                   <img
                     src="/teachers.png"
@@ -439,13 +438,15 @@ const Home = () => {
                   className="group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm aspect-square cursor-pointer"
                 >
                   {item.image_path ? (
-                    <img src={getStorageUrl(item.image_path)} alt={item.title} width={250} height={250} loading="lazy" decoding="async" fetchPriority="low" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <img src={getStorageUrl(item.image_path)} alt={item.caption || 'تصویر گالری'} width={250} height={250} loading="lazy" decoding="async" fetchPriority="low" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                   ) : (
                     <div className="h-full w-full bg-brand-soft flex items-center justify-center text-sm text-muted">تصویر گالری</div>
                   )}
-                  <div className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
-                    {item.title}
-                  </div>
+                  {item.caption && (
+                    <div className="absolute bottom-2 right-2 max-w-[calc(100%-1rem)] truncate rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
+                      {item.caption}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -502,39 +503,34 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Image Lightbox */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      {/* Image Lightbox — CSS-only animation, no external animation library */}
+      {selectedImage && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="نمایش تصویر گالری"
+          onClick={() => setSelectedImage(null)}
+          className="lightbox-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="lightbox-panel relative max-h-[90vh] max-w-4xl"
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl max-h-[90vh]"
+            <img
+              src={selectedImage}
+              alt="تصویر بزرگ"
+              className="max-h-[90vh] w-auto rounded-2xl"
+            />
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute -top-4 -right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink shadow-lg transition hover:bg-ink hover:text-white"
+              aria-label="بستن"
             >
-              <img
-                src={selectedImage}
-                alt="تصویر بزرگ"
-                className="max-h-[90vh] w-auto rounded-2xl"
-              />
-              <button
-                onClick={() => setSelectedImage(null)}
-                className="absolute -top-4 -right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink shadow-lg transition hover:bg-ink hover:text-white"
-                aria-label="بستن"
-              >
-                <X size={20} />
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <X size={20} />
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

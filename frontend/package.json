@@ -15,7 +15,6 @@
     "@tailwindcss/postcss": "^4.3.3",
     "autoprefixer": "^10.6.0",
     "axios": "^1.20.0",
-    "framer-motion": "^14.9.0",
     "jalaali-js": "^2.0.1",
     "lucide-react": "^1.46.0",
     "postcss": "^8.5.28",
@@ -27,6 +26,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.66.9",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",

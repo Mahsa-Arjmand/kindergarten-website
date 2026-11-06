@@ -252,11 +252,51 @@ npm run preview      # پیش‌نمایش production build
 
 ## 📝 نکات مهم
 
-- هیچ Secret یا API Key در repository قرار ندارد
+- کلید نقشه در `frontend/.env.production` نمونه است؛ آن را در پنل هاست هم تنظیم و به دامنه سایت محدود کنید
 - فایل‌های .env commit نمی‌شوند
 - اطلاعات نمونه برای development استفاده می‌شوند
 - تصاویر کودکان واقعی استفاده نمی‌شود
 - تمام اطلاعات حساس در backend محافظت می‌شوند
+
+## 🚀 استقرار (Deployment) و رفع مشکلات رایج
+
+### ۱. نقشه گوگل (موقعیت ما)
+
+کلید و شناسه نقشه از طریق متغیرهای محیطی تنظیم می‌شوند و اسکریپت نقشه دیگر در
+`index.html` هارد‌کد نشده است:
+
+```env
+# frontend/.env.production
+VITE_API_URL=https://hediehkindergarten.ir/backend/public/api/v1
+VITE_GOOGLE_MAPS_API_KEY=...
+VITE_GOOGLE_MAPS_MAP_ID=      # اختیاری — پیش‌فرض DEMO_MAP_ID
+```
+
+در Google Cloud Console:
+
+1. **Maps JavaScript API** را فعال کنید.
+2. در *API key restrictions* نوع **HTTP referrers** را انتخاب و این دامنه‌ها را
+   مجاز کنید: `hediehkindergarten.ir/*`، `*.hediehkindergarten.ir/*` و برای
+   توسعه `localhost:5173/*`.
+
+اگر کلید نامعتبر یا محدود باشد، کادر نقشه به‌جای خراب کردن صفحه، دکمه
+«مشاهده روی نقشه» (لینک گوگل مپ) نمایش می‌دهد.
+
+### ۲. CORS و آدرس API
+
+- `VITE_API_URL` باید به `public` لاراول و با `/api/v1` تمام شود
+  (مثلاً `https://hediehkindergarten.ir/backend/public/api/v1`).
+- دامنه‌های مجاز در `backend/config/cors.php` تعریف شده‌اند و با متغیر
+  `CORS_ALLOWED_ORIGINS` (لیست جدا‌شده با کاما) قابل تنظیم‌اند. پس از تغییر
+  `.env` دستور `php artisan config:clear` را اجرا کنید.
+- اگر ساب‌دامین اضافه می‌کنید، آن را به `CORS_ALLOWED_ORIGINS` اضافه کنید.
+
+### ۳. لودر سایت
+
+- لودر اولیه (`#app-boot-loader`) به‌صورت inline در `index.html` قرار دارد، پس
+  حتی قبل از دانلود CSS و JS نمایش داده می‌شود.
+- پس از mount شدن React، لودر `src/components/SiteLoader.tsx` جای آن را
+  می‌گیرد و در تغییر مسیرها یک نوار پیشرفت باریک بالای صفحه نشان داده می‌شود.
 
 ## 🧪 تست
 

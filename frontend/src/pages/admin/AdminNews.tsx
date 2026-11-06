@@ -32,7 +32,7 @@ const AdminNews = () => {
     content: '',
     image: null as File | null,
     publish_date: '',
-    status: 'draft' as const,
+    status: 'draft' as News['status'],
   });
 
   useEffect(() => {
