@@ -1,0 +1,16 @@
+{
+  "name": "مهدکودک هدیه",
+  "short_name": "هدیه",
+  "description": "مهدکودک هدیه؛ کودکستان و پیش‌دبستانی با محیطی امن و شاد برای رشد، بازی و یادگیری کودکان.",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#fdfcfa",
+  "background_color": "#fdfcfa",
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

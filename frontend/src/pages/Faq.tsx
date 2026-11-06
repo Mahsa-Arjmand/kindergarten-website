@@ -9,10 +9,6 @@ const Faq = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'سوالات متداول - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute('content', 'پاسخ سوالات متداول درباره ثبت‌نام، برنامه‌ها و خدمات مهدکودک هدیه');
 
     const fetchFaqs = async () => {
       try {
@@ -33,7 +29,7 @@ const Faq = () => {
   };
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">راهنمای والدین</p>
@@ -93,7 +89,7 @@ const Faq = () => {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

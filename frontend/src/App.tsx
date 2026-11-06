@@ -11,6 +11,7 @@ import Careers from './pages/Careers';
 import Faq from './pages/Faq';
 import Contact from './pages/Contact';
 import News from './pages/News';
+import NotFound from './pages/NotFound';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLayout from './components/admin/AdminLayout';
@@ -24,10 +25,12 @@ import AdminGallery from './pages/admin/AdminGallery';
 import AdminNews from './pages/admin/AdminNews';
 import AdminFaqs from './pages/admin/AdminFaqs';
 import PrivateRoute from './components/PrivateRoute';
+import RouteSeo from './seo/RouteSeo';
 
 function App() {
   return (
     <Router>
+      <RouteSeo />
       <Routes>
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/about" element={<Layout><About /></Layout>} />
@@ -62,6 +65,8 @@ function App() {
           <Route path="news" element={<AdminNews />} />
           <Route path="faqs" element={<AdminFaqs />} />
         </Route>
+
+        <Route path="*" element={<Layout><NotFound /></Layout>} />
       </Routes>
     </Router>
   );

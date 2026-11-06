@@ -18,13 +18,6 @@ const Services = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'خدمات - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute(
-        'content',
-        'خدمات و برنامه‌های آموزشی مهدکودک هدیه برای رشد، یادگیری و شکوفایی کودکان'
-      );
 
     const fetchServices = async () => {
       try {
@@ -41,7 +34,7 @@ const Services = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       {/* Header - compact like Home */}
       <section className="border-b border-border-light bg-white">
         <div className="container-hedieh py-10 lg:py-12">
@@ -77,6 +70,10 @@ const Services = () => {
                       <img
                         src={getStorageUrl(service.image_path)}
                         alt={service.title}
+                        width={800}
+                        height={600}
+                        loading="lazy"
+                        decoding="async"
                         className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                       />
                     ) : (
@@ -129,7 +126,7 @@ const Services = () => {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

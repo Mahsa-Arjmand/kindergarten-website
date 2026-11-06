@@ -18,10 +18,6 @@ const Teachers = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'تیم آموزشی - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute('content', 'آشنایی با تیم آموزشی و مربیان متخصص مهدکودک هدیه');
 
     const fetchTeachers = async () => {
       try {
@@ -38,7 +34,7 @@ const Teachers = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       {/* Header */}
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
@@ -74,6 +70,10 @@ const Teachers = () => {
                       <img
                         src={getStorageUrl(teacher.image_path)}
                         alt={teacher.name}
+                        width={800}
+                        height={600}
+                        loading="lazy"
+                        decoding="async"
                         className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                       />
                     ) : (
@@ -150,7 +150,7 @@ const Teachers = () => {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

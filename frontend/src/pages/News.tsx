@@ -17,10 +17,6 @@ const News = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'اخبار و اطلاعیه‌ها - مهدکودک هدیه';
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute('content', 'آخرین اخبار و اطلاعیه‌های مهدکودک هدیه');
 
     const fetchNews = async () => {
       try {
@@ -37,7 +33,7 @@ const News = () => {
   }, []);
 
   return (
-    <main className="bg-cream">
+    <div className="bg-cream">
       <section className="border-b border-border-light bg-cream">
         <div className="container-hedieh py-10 lg:py-12">
           <p className="section-kicker">اخبار و اطلاعیه‌ها</p>
@@ -73,6 +69,10 @@ const News = () => {
                       <img
                         src={getStorageUrl(item.image_path)}
                         alt={item.title}
+                        width={800}
+                        height={600}
+                        loading="lazy"
+                        decoding="async"
                         className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                       />
                     ) : (
@@ -108,7 +108,7 @@ const News = () => {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

@@ -180,7 +180,7 @@ const Home = () => {
           <div className="relative order-2 lg:order-1">
             <div className="overflow-hidden rounded-[1.75rem] border-[6px] border-white bg-white shadow-[0_12px_32px_rgba(30,167,255,0.15)]">
               {gallery[1]?.image_path ? (
-                <img src={getStorageUrl(gallery[1].image_path)} alt={gallery[1].title || 'محیط هدیه'} width={1200} height={900} loading="lazy" decoding="async" className="aspect-[4/3.1] w-full object-cover" />
+                <img src={getStorageUrl(gallery[1].image_path)} alt={gallery[1].caption || 'محیط مهدکودک هدیه'} width={1200} height={900} loading="lazy" decoding="async" className="aspect-[4/3.1] w-full object-cover" />
               ) : (
                 <div className="flex aspect-[4/3.1] items-center justify-center bg-blue-light text-sm text-muted">محیط شاد هدیه</div>
               )}
@@ -419,10 +419,10 @@ const Home = () => {
           ) : gallery.length > 0 ? (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
               {gallery.map((item, index) => (
-                <Link key={item.id} to="/gallery" aria-label={`مشاهده گالری: ${item.title}`} className={['group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm', index === 0 ? 'col-span-2 row-span-2' : index === 3 ? 'col-span-2' : ''].join(' ')}>
-                  <img src={getStorageUrl(item.image_path)} alt={item.title} width={1000} height={700} loading="lazy" decoding="async" className={['h-full w-full object-cover transition duration-500 group-hover:scale-105', index === 0 ? 'min-h-[300px] md:min-h-[480px]' : 'min-h-[150px] md:min-h-[232px]'].join(' ')} />
+                <Link key={item.id} to="/gallery" aria-label={item.caption ? `مشاهده گالری: ${item.caption}` : 'مشاهده گالری تصاویر'} className={['group relative overflow-hidden rounded-[1.5rem] border-4 border-white bg-white shadow-sm', index === 0 ? 'col-span-2 row-span-2' : index === 3 ? 'col-span-2' : ''].join(' ')}>
+                  <img src={getStorageUrl(item.image_path)} alt={item.caption || 'تصویری از مهدکودک هدیه'} width={1000} height={700} loading="lazy" decoding="async" className={['h-full w-full object-cover transition duration-500 group-hover:scale-105', index === 0 ? 'min-h-[300px] md:min-h-[480px]' : 'min-h-[150px] md:min-h-[232px]'].join(' ')} />
                   <div className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-bold text-ink shadow-sm opacity-0 transition group-hover:opacity-100">
-                    {item.title}
+                    {item.caption}
                   </div>
                 </Link>
               ))}
