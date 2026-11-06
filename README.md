@@ -279,8 +279,24 @@ VITE_GOOGLE_MAPS_MAP_ID=      # اختیاری — پیش‌فرض DEMO_MAP_ID
    مجاز کنید: `hediehkindergarten.ir/*`، `*.hediehkindergarten.ir/*` و برای
    توسعه `localhost:5173/*`.
 
-اگر کلید نامعتبر یا محدود باشد، کادر نقشه به‌جای خراب کردن صفحه، دکمه
-«مشاهده روی نقشه» (لینک گوگل مپ) نمایش می‌دهد.
+اگر کلید نامعتبر یا محدود باشد، نقشه به‌صورت خودکار به **embed بدون کلید**
+(`maps.google.com/maps?...&output=embed`) و سپس به دکمه «مشاهده روی نقشه»
+سقوط می‌کند؛ صفحه هرگز خراب نمی‌شود.
+
+#### اگر پیام `RefererDeniedMapError` دیدید
+
+یعنی دامنه‌ای که سایت از آن باز شده در محدودیت‌های کلید نیست:
+
+1. در Google Cloud Console → *APIs & Services → Credentials* کلید را باز کنید.
+2. در *Website restrictions* دامنه فعلی را اضافه کنید (هر دو حالت با و بدون
+   `www.`؛ برای تست `http://localhost:5173/*`).
+3. مطمئن شوید **Maps JavaScript API** فعال و Billing وصل است. اگر Billing وصل
+   نباشد، پیام `BillingNotEnabledMapError` و صفحه خاکستری «For development
+   purposes only» دیده می‌شود.
+4. کش مرورگر/CDN را پاک کنید: پیام‌های `libraries=places` و
+   «google.maps.Marker is deprecated» مربوط به نسخه قدیمی است که اسکریپت نقشه
+   را در `index.html` هارد‌کد می‌کرد؛ بعد از `npm run build` و آپلود مجدد
+   `dist` نباید دیده شوند.
 
 ### ۲. CORS و آدرس API
 
